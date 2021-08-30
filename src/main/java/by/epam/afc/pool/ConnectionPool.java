@@ -118,7 +118,6 @@ public class ConnectionPool {
                 break;
             }
         }
-
     }
 
     @Override
