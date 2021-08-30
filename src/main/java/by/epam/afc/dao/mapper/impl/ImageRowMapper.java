@@ -1,7 +1,7 @@
 package by.epam.afc.dao.mapper.impl;
 
 import by.epam.afc.dao.mapper.RowMapper;
-import by.epam.afc.dao.model.Image;
+import by.epam.afc.dao.entity.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static by.epam.afc.dao.constants.ColumnName.*;
+import static by.epam.afc.dao.ColumnName.*;
 
 public class ImageRowMapper implements RowMapper<Image> {
     static final Logger logger = LogManager.getLogger(ImageRowMapper.class);

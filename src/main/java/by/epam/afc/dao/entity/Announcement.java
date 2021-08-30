@@ -1,7 +1,7 @@
-package by.epam.afc.dao.model;
+package by.epam.afc.dao.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Announcement {
     private int id;
@@ -10,12 +10,12 @@ public class Announcement {
     private BigDecimal price;
     private int primaryImageId;
     private String description;
-    private Date publicationDate;
-    private Status announcementStatus;
+    private LocalDateTime publicationDate;
+    private Status status;
     private Category category;
 
     public Announcement(int id, int ownerId, String title, BigDecimal price, int primaryImageId,
-                        String description, Date publicationDate, Status announcementStatus, Category category) {
+                        String description, LocalDateTime publicationDate, Status announcementStatus, Category category) {
         this.id = id;
         this.ownerId = ownerId;
         this.title = title;
@@ -23,7 +23,7 @@ public class Announcement {
         this.primaryImageId = primaryImageId;
         this.description = description;
         this.publicationDate = publicationDate;
-        this.announcementStatus = announcementStatus;
+        this.status = announcementStatus;
         this.category = category;
     }
 
@@ -75,39 +75,34 @@ public class Announcement {
         this.description = description;
     }
 
-    public Date getPublicationDate() {
+    public LocalDateTime getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(Date publicationDate) {
+    public void setPublicationDate(LocalDateTime publicationDate) {
         this.publicationDate = publicationDate;
     }
 
-    public Status getAnnouncementStatus() {
-        return announcementStatus;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setAnnouncementStatus(Status announcementStatus) {
-        this.announcementStatus = announcementStatus;
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public enum Status {
         MODERATING,
         ACTIVE,
         INACTIVE
-    }
-
-    public enum Category {
-        REAL_ESTATE,
-        AUTO_AND_TRANSPORT,
-        APPLIANCES,
-        COMPUTER_AND_COMPONENTS,
-        PHONES_AND_TABLETS,
-        FURNITURE,
-        HOUSING,
-        REPAIR_AND_CONSTRUCTION,
-        GARDEN,
-        OTHER
     }
 
     @Override
@@ -125,7 +120,7 @@ public class Announcement {
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (publicationDate != null ? !publicationDate.equals(that.publicationDate) : that.publicationDate != null)
             return false;
-        if (announcementStatus != that.announcementStatus) return false;
+        if (status != that.status) return false;
         return category == that.category;
     }
 
@@ -138,7 +133,7 @@ public class Announcement {
         result = 31 * result + primaryImageId;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (publicationDate != null ? publicationDate.hashCode() : 0);
-        result = 31 * result + (announcementStatus != null ? announcementStatus.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
         return result;
     }
@@ -153,7 +148,7 @@ public class Announcement {
                 ", primaryImageId=" + primaryImageId +
                 ", description='" + description + '\'' +
                 ", publicationDate=" + publicationDate +
-                ", announcementStatus=" + announcementStatus +
+                ", announcementStatus=" + status +
                 ", category=" + category +
                 '}';
     }
@@ -169,7 +164,7 @@ public class Announcement {
         private BigDecimal nestedPrice;
         private int nestedPrimaryImageId;
         private String nestedDescription;
-        private Date nestedPublicationDate;
+        private LocalDateTime nestedPublicationDate;
         private Status nestedAnnouncementStatus;
         private Category nestedCategory;
 
@@ -203,7 +198,7 @@ public class Announcement {
             return this;
         }
 
-        public AnnouncementBuilder publicationDate(Date publicationDate) {
+        public AnnouncementBuilder publicationDate(LocalDateTime publicationDate) {
             nestedPublicationDate = publicationDate;
             return this;
         }

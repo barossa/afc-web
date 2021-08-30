@@ -1,13 +1,13 @@
 package by.epam.afc.dao.impl;
 
 import by.epam.afc.dao.MessageDao;
+import by.epam.afc.dao.entity.Dialog;
+import by.epam.afc.dao.entity.Image;
+import by.epam.afc.dao.entity.Message;
 import by.epam.afc.dao.mapper.impl.ImageRowMapper;
 import by.epam.afc.dao.mapper.impl.MessageRowMapper;
-import by.epam.afc.dao.model.Dialog;
-import by.epam.afc.dao.model.Image;
-import by.epam.afc.dao.model.Message;
-import by.epam.afc.pool.ConnectionPool;
 import by.epam.afc.exception.DaoException;
+import by.epam.afc.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.epam.afc.dao.constants.ColumnName.*;
-import static by.epam.afc.dao.constants.TableName.IMAGES;
-import static by.epam.afc.dao.constants.TableName.MESSAGES;
+import static by.epam.afc.dao.ColumnName.*;
+import static by.epam.afc.dao.TableName.IMAGES;
+import static by.epam.afc.dao.TableName.MESSAGES;
 
 public final class MessageDaoImpl implements MessageDao {
 
@@ -55,7 +55,7 @@ public final class MessageDaoImpl implements MessageDao {
         try (
                 Connection connection = connectionPool.getConnection();
                 PreparedStatement statement = connection.prepareStatement(SELECT_ALL_MESSAGES);
-                ResultSet resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery()
         ) {
             List<Message> messages = new ArrayList<>();
             MessageRowMapper messageMapper = new MessageRowMapper();
@@ -173,12 +173,11 @@ public final class MessageDaoImpl implements MessageDao {
             } else {
                 statement.setInt(6, Image.UNDEFINED_IMAGE_ID);
             }
-
             statement.execute();
+
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                int messageId = generatedKeys.getInt(MESSAGE_ID);
-                message.setId(messageId);
+                message.setId(generatedKeys.getInt(ID_KEY));
                 return Optional.of(message);
             } else {
                 logger.error("Can't get generated keys from Result Set!");

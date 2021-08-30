@@ -1,4 +1,4 @@
-package by.epam.afc.dao.model;
+package by.epam.afc.dao.entity;
 
 public class User {
     private int id;

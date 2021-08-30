@@ -1,12 +1,13 @@
 package by.epam.afc.dao.mapper.impl;
 
+import by.epam.afc.dao.entity.Category;
 import by.epam.afc.dao.mapper.RowMapper;
-import by.epam.afc.dao.model.Announcement;
+import by.epam.afc.dao.entity.Announcement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static by.epam.afc.dao.constants.ColumnName.*;
+import static by.epam.afc.dao.ColumnName.*;
 
 public class AnnouncementRowMapper implements RowMapper<Announcement> {
     @Override
@@ -18,9 +19,9 @@ public class AnnouncementRowMapper implements RowMapper<Announcement> {
                 .price(rs.getBigDecimal(PRICE))
                 .primaryImageId(rs.getInt(PROFILE_IMAGE_ID))
                 .description(rs.getString(DESCRIPTION))
-                .publicationDate(rs.getTimestamp(PUBLICATION_DATE))
+                .publicationDate(rs.getTimestamp(PUBLICATION_DATE).toLocalDateTime())
                 .announcementStatus(Announcement.Status.valueOf(rs.getString(STATUS_DESCRIPTION)))
-                .category(Announcement.Category.valueOf(rs.getString(CATEGORY_DESCRIPTION)))
+                .category(new Category(rs.getInt(CATEGORY_ID), rs.getString(CATEGORY_DESCRIPTION)))
                 .build();
     }
 }

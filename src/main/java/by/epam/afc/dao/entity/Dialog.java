@@ -1,4 +1,4 @@
-package by.epam.afc.dao.model;
+package by.epam.afc.dao.entity;
 
 public class Dialog {
     private int id;
@@ -59,9 +59,7 @@ public class Dialog {
 
         if (id != dialog.id) return false;
         if (announcementId != dialog.announcementId) return false;
-        if (visible != dialog.visible) return false;
-
-        return true;
+        return visible == dialog.visible;
     }
 
     @Override

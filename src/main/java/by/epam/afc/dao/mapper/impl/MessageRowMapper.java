@@ -1,12 +1,12 @@
 package by.epam.afc.dao.mapper.impl;
 
 import by.epam.afc.dao.mapper.RowMapper;
-import by.epam.afc.dao.model.Message;
+import by.epam.afc.dao.entity.Message;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static by.epam.afc.dao.constants.ColumnName.*;
+import static by.epam.afc.dao.ColumnName.*;
 
 public class MessageRowMapper implements RowMapper<Message> {
 

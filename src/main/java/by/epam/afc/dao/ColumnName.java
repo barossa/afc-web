@@ -1,4 +1,4 @@
-package by.epam.afc.dao.constants;
+package by.epam.afc.dao;
 
 public class ColumnName {
 

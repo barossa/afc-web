@@ -1,4 +1,4 @@
-package by.epam.afc.dao.model;
+package by.epam.afc.dao.entity;
 
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;

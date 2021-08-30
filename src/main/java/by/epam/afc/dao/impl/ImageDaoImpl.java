@@ -1,11 +1,11 @@
 package by.epam.afc.dao.impl;
 
 import by.epam.afc.dao.ImageDao;
+import by.epam.afc.dao.entity.Announcement;
+import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.mapper.impl.ImageRowMapper;
-import by.epam.afc.dao.model.Announcement;
-import by.epam.afc.dao.model.Image;
-import by.epam.afc.pool.ConnectionPool;
 import by.epam.afc.exception.DaoException;
+import by.epam.afc.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.epam.afc.dao.constants.ColumnName.*;
-import static by.epam.afc.dao.constants.TableName.ANNOUNCEMENT_IMAGES;
-import static by.epam.afc.dao.constants.TableName.IMAGES;
+import static by.epam.afc.dao.ColumnName.*;
+import static by.epam.afc.dao.TableName.ANNOUNCEMENT_IMAGES;
+import static by.epam.afc.dao.TableName.IMAGES;
 
 public final class ImageDaoImpl implements ImageDao {
 
@@ -129,10 +129,10 @@ public final class ImageDaoImpl implements ImageDao {
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                int imageId = generatedKeys.getInt(IMAGE_ID);
-                image.setId(imageId);
+                image.setId(generatedKeys.getInt(ID_KEY));
                 return Optional.of(image);
             } else {
+                logger.error("Can't get generated keys from Result Set!");
                 return Optional.empty();
             }
 

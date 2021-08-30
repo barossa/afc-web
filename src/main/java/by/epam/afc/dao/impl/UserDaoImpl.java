@@ -1,12 +1,12 @@
 package by.epam.afc.dao.impl;
 
 import by.epam.afc.dao.UserDao;
+import by.epam.afc.dao.entity.Image;
+import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.mapper.impl.ImageRowMapper;
 import by.epam.afc.dao.mapper.impl.UserRowMapper;
-import by.epam.afc.dao.model.Image;
-import by.epam.afc.dao.model.User;
-import by.epam.afc.pool.ConnectionPool;
 import by.epam.afc.exception.DaoException;
+import by.epam.afc.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static by.epam.afc.dao.constants.ColumnName.*;
-import static by.epam.afc.dao.constants.TableName.*;
+import static by.epam.afc.dao.ColumnName.*;
+import static by.epam.afc.dao.TableName.*;
 
 public final class UserDaoImpl implements UserDao {
 
@@ -48,7 +48,14 @@ public final class UserDaoImpl implements UserDao {
             + PASSWORD + ", " + EMAIL + ", " + PHONE + ", " + ROLE_ID + ", " + STATUS_ID + ", " + ABOUT + ", " + PROFILE_IMAGE_ID + ") "
             + "VALUES(?,?,?,?,?,?,?,?,?,?);";
 
-    private static final String SELECT_USER_PASSWORD = "SELECT " + PASSWORD + " FROM " + USERS + " WHERE " + USER_ID + "=?;";
+    private static final String SELECT_USER_ID_BY_LOGIN_AND_PASSWORD = "SELECT " + USER_ID + " FROM " + USERS
+            + " WHERE " + LOGIN + "=? AND " + PASSWORD + "=?;";
+
+    private static final String SELECT_USER_ID_BY_EMAIL_AND_PASSWORD = "SELECT " + USER_ID + " FROM " + USERS
+            + " WHERE " + EMAIL + "=? AND " + PASSWORD + "=?;";
+
+    private static final String SELECT_USER_ID_BY_PHONE_AND_PASSWORD = "SELECT " + USER_ID + " FROM " + USERS
+            + " WHERE " + PHONE + "=? AND " + PASSWORD + "=?;";
 
     private static final String UPDATE_USER_PASSWORD = "UPDATE " + USERS + " SET " + PASSWORD + "=? WHERE " + USER_ID + "=?;";
 
@@ -68,7 +75,7 @@ public final class UserDaoImpl implements UserDao {
         try (
                 Connection connection = pool.getConnection();
                 PreparedStatement statement = connection.prepareStatement(SELECT_ALL_USERS);
-                ResultSet resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery()
         ) {
 
             List<User> users = new ArrayList<>();
@@ -174,9 +181,13 @@ public final class UserDaoImpl implements UserDao {
             statement.execute();
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
-            int userId = generatedKeys.getInt(USER_ID);
-            user.setId(userId);
-            return Optional.of(user);
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getInt(ID_KEY));
+                return Optional.of(user);
+            } else {
+                logger.error("Can't get generated keys from Result Set!");
+                return Optional.empty();
+            }
 
         } catch (SQLException e) {
             logger.error("Can't save new user!", e);
@@ -186,28 +197,64 @@ public final class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<String> findUserPassword(User user) throws DaoException {
-        Optional<User> toUpdate = findById(user.getId());
-        if (!toUpdate.isPresent()) {
-            logger.warn("User id=" + user.getId() + " is not exist!");
-            return Optional.empty();
-        }
-        try (
-                Connection connection = pool.getConnection();
-                PreparedStatement statement = connection.prepareStatement(SELECT_USER_PASSWORD);
-        ) {
-            statement.setInt(1, user.getId());
-            ResultSet resultSet = statement.executeQuery();
+    public Optional<User> authenticate(User user, String password) throws DaoException {
+        if (user.getLogin() != null && !user.getLogin().isEmpty()) { //Authentication by login
 
-            if (resultSet.next()) {
-                return Optional.of(resultSet.getString(PASSWORD));
-            } else {
-                return Optional.empty();
+            try (Connection connection = pool.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(SELECT_USER_ID_BY_LOGIN_AND_PASSWORD)) {
+                statement.setString(1, user.getLogin());
+                statement.setString(2, password);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    int userId = resultSet.getInt(USER_ID);
+                    return findById(userId);
+                } else {
+                    return Optional.empty();
+                }
+            } catch (SQLException e) {
+                logger.error("Can't authenticate user by login and password: ", e);
+                throw new DaoException("Can't authenticate user by login", e);
             }
 
-        } catch (SQLException e) {
-            logger.error("Can't find user password!", e);
-            throw new DaoException("Can't find user password!", e);
+        } else if (user.getEmail() != null && !user.getEmail().isEmpty()) { //Authentication by email
+
+            try (Connection connection = pool.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(SELECT_USER_ID_BY_EMAIL_AND_PASSWORD)) {
+                statement.setString(1, user.getEmail());
+                statement.setString(2, password);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    int userId = resultSet.getInt(USER_ID);
+                    return findById(userId);
+                } else {
+                    return Optional.empty();
+                }
+            } catch (SQLException e) {
+                logger.error("Can't authenticate user by email and password: ", e);
+                throw new DaoException("Can't authenticate user by email", e);
+            }
+
+        } else if (user.getPhone() != null && !user.getPhone().isEmpty()) { //Authentication by phone
+
+            try (Connection connection = pool.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(SELECT_USER_ID_BY_PHONE_AND_PASSWORD)) {
+                statement.setString(1, user.getPhone());
+                statement.setString(2, password);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    int userId = resultSet.getInt(USER_ID);
+                    return findById(userId);
+                } else {
+                    return Optional.empty();
+                }
+            } catch (SQLException e) {
+                logger.error("Can't authenticate user by phone and password: ", e);
+                throw new DaoException("Can't authenticate user by phone", e);
+            }
+
+        } else {
+            logger.debug("Empty authentication field! Can't recognize user");
+            return Optional.empty();
         }
     }
 

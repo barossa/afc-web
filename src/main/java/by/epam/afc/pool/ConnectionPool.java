@@ -8,9 +8,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Deque;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -25,8 +25,8 @@ public class ConnectionPool {
 
     private static ConnectionPool instance = null;
 
-    private Deque<ProxyConnection> freeConnections;
-    private Deque<ProxyConnection> busyConnections;
+    private Queue<ProxyConnection> freeConnections;
+    private Queue<ProxyConnection> busyConnections;
 
     private ConnectionPool() {
         freeConnections = new LinkedBlockingDeque<>(INITIAL_POOL_SIZE);
@@ -34,7 +34,7 @@ public class ConnectionPool {
         ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
         try {
             for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
-                freeConnections.offerLast((ProxyConnection) connectionFactory.getConnection());
+                freeConnections.offer((ProxyConnection) connectionFactory.getConnection());
             }
             if (freeConnections.isEmpty()) {
                 logger.fatal("Unable to initialize connection pool");
@@ -63,8 +63,8 @@ public class ConnectionPool {
     }
 
     public Connection getConnection() {
-        ProxyConnection connection = freeConnections.pollFirst();
-        busyConnections.offerLast(connection);
+        ProxyConnection connection = freeConnections.poll();
+        busyConnections.offer(connection);
         logger.debug("Supplied connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
         return connection;
     }
@@ -72,10 +72,15 @@ public class ConnectionPool {
     public boolean releaseConnection(Connection connection) {
         if (connection instanceof ProxyConnection) {
             ProxyConnection proxyConnection = (ProxyConnection) connection;
-            busyConnections.removeFirstOccurrence(proxyConnection);
-            freeConnections.offerLast(proxyConnection);
-            logger.debug("Released connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
-            return true;
+            boolean removed = busyConnections.remove(proxyConnection);
+            boolean offered = freeConnections.offer(proxyConnection);
+            if (removed && offered) {
+                logger.debug("Released connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
+                return true;
+            } else {
+                logger.error("Connection could not being released!");
+                return false;
+            }
         } else {
             logger.error("Invalid connection could not being released: not instanceof" + ConnectionPool.class);
         }
