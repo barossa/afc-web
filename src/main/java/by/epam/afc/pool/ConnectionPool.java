@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,8 +30,8 @@ public class ConnectionPool {
     private Queue<ProxyConnection> busyConnections;
 
     private ConnectionPool() {
-        freeConnections = new LinkedBlockingDeque<>(INITIAL_POOL_SIZE);
-        busyConnections = new LinkedBlockingDeque<>(INITIAL_POOL_SIZE);
+        freeConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
+        busyConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
         ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
         try {
             for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
