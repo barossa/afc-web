@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -26,8 +25,8 @@ public class ConnectionPool {
 
     private static ConnectionPool instance = null;
 
-    private Queue<ProxyConnection> freeConnections;
-    private Queue<ProxyConnection> busyConnections;
+    private final Queue<ProxyConnection> freeConnections;
+    private final Queue<ProxyConnection> busyConnections;
 
     private ConnectionPool() {
         freeConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
