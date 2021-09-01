@@ -10,7 +10,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -25,8 +24,8 @@ public class ConnectionPool {
 
     private static ConnectionPool instance = null;
 
-    private final Queue<ProxyConnection> freeConnections;
-    private final Queue<ProxyConnection> busyConnections;
+    private final LinkedBlockingQueue<ProxyConnection> freeConnections;
+    private final LinkedBlockingQueue<ProxyConnection> busyConnections;
 
     private ConnectionPool() {
         freeConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
@@ -63,35 +62,41 @@ public class ConnectionPool {
     }
 
     public Connection getConnection() {
-        ProxyConnection connection = freeConnections.poll();
-        busyConnections.offer(connection);
-        logger.debug("Supplied connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
+        ProxyConnection connection = null;
+        try {
+            connection = freeConnections.take();
+            busyConnections.put(connection);
+            logger.debug("Supplied connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
+        } catch (InterruptedException e) {
+            logger.error("Error occurred while supplying connection:", e);
+        }
         return connection;
     }
 
     public boolean releaseConnection(Connection connection) {
         if (connection instanceof ProxyConnection) {
             ProxyConnection proxyConnection = (ProxyConnection) connection;
-            boolean removed = busyConnections.remove(proxyConnection);
-            boolean offered = freeConnections.offer(proxyConnection);
-            if (removed && offered) {
+            try {
+                busyConnections.remove(proxyConnection);
+                freeConnections.put(proxyConnection);
                 logger.debug("Released connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
                 return true;
-            } else {
+            } catch (InterruptedException e) {
                 logger.error("Connection could not being released!");
                 return false;
             }
         } else {
             logger.error("Invalid connection could not being released: not instanceof" + ConnectionPool.class);
+            return false;
         }
-        return false;
     }
 
     public void destroyPool() throws DaoException {
-        for (ProxyConnection freeConnection : freeConnections) {
+        for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
             try {
-                freeConnection.closeDirectly();
-            } catch (SQLException e) {
+                ProxyConnection connection = freeConnections.take();
+                connection.closeDirectly();
+            } catch (SQLException | InterruptedException e) {
                 logger.error("Error occurred while destroying pool: ", e);
                 throw new DaoException("Error occurred while destroying connection pool!");
             }
