@@ -6,6 +6,6 @@ import by.epam.afc.exception.ServiceException;
 import java.util.Optional;
 
 public interface UserService {
-    Optional<User> authenticate(User user, char[] password) throws ServiceException;
+    Optional<User> authenticate(String authField, char[] password) throws ServiceException;
     void updatePassword(User user, char[] newPassword) throws ServiceException;
 }

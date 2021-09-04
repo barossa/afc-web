@@ -19,19 +19,14 @@ public class LoginCommand implements Command {
     @Override
     public Router execute(HttpServletRequest request) {
         Router router;
-        String loginField = request.getParameter(LOGIN);
-        //// TODO: 9/2/21 WHAT IS THE LOGIN FIELD
-        User user = User.getBuilder()
-                .login(loginField)
-                .build();
+        String authField = request.getParameter(AUTH_FIELD);
         String password = request.getParameter(PASSWORD);
         try {
             UserServiceImpl service = new UserServiceImpl();
-            Optional<User> optionalUser = service.authenticate(user, password.toCharArray());
+            Optional<User> optionalUser = service.authenticate(authField, password.toCharArray());
             if(optionalUser.isPresent()){
                 HttpSession session = request.getSession();
                 session.setAttribute(USER, optionalUser.get());
-                // TODO: 9/2/21 DETERMINE USER ROLE
                 router = new Router(REDIRECT,request.getContextPath() +  ABOUT_USER);
             }else{
                 request.setAttribute(WRONG_LOGIN_OR_PASSWORD, true);

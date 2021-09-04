@@ -23,8 +23,7 @@
 
     <fmt:message key="login.loginPlaceholder" var="loginPlaceholder"/>
     <fmt:message key="login.passwordPlaceholder" var="passwordPlaceholder"/>
-    <fmt:message key="login.loginRequired" var="loginRequired"/>
-    <fmt:message key="login.passwordRequired" var="passwordRequired"/>
+    <fmt:message key="login.incorrectValue" var="incorrectValue"/>
 
 </head>
 <body>
@@ -42,13 +41,13 @@
 						<fmt:message key="login.title"/>
 					</span>
 
-                <div class="wrap-input100 validate-input m-b-23" data-validate="${loginRequired}">
+                <div class="wrap-input100 validate-input m-b-23" data-validate="${incorrectValue}">
                     <span class="label-input100"><fmt:message key="login.user"/></span>
-                    <input class="input100" type="text" name="login" placeholder="${loginPlaceholder}">
+                    <input class="input100" type="text" name="authField" placeholder="${loginPlaceholder}">
                     <span class="focus-input100" data-symbol="&#xf206;"></span>
                 </div>
 
-                <div class="wrap-input100 validate-input" data-validate="${passwordRequired}">
+                <div class="wrap-input100 validate-input" data-validate="${incorrectValue}">
                     <span class="label-input100"><fmt:message key="login.password"/></span>
                     <input class="input100" type="password" name="password" placeholder="${passwordPlaceholder}">
                     <span class="focus-input100" data-symbol="&#xf190;"></span>

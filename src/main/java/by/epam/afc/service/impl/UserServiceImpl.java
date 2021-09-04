@@ -5,8 +5,9 @@ import by.epam.afc.dao.impl.DaoHolder;
 import by.epam.afc.dao.impl.UserDaoImpl;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;
-import by.epam.afc.service.PasswordCryptor;
 import by.epam.afc.service.UserService;
+import by.epam.afc.service.util.PasswordCryptor;
+import by.epam.afc.service.validator.impl.CredentialsValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +17,31 @@ public class UserServiceImpl implements UserService {
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     @Override
-    public Optional<User> authenticate(User user, char[] password) throws ServiceException { //// TODO: 9/2/21 Add validation log/pass
+    public Optional<User> authenticate(String authField, char[] password) throws ServiceException { //// TODO: 9/2/21 Add validation log/pass
+        CredentialsValidatorImpl validator = CredentialsValidatorImpl.getInstance();
+
+        User user;
+        if (validator.validateLogin(authField)) {
+            user = User.getBuilder()
+                    .login(authField)
+                    .build();
+        } else if (validator.validateEmail(authField)) {
+            user = User.getBuilder()
+                    .email(authField)
+                    .build();
+        } else if (validator.validatePhone(authField)) {
+            user = User.getBuilder()
+                    .phone(authField)
+                    .build();
+        } else {
+            logger.debug("Can't recognize valid auth field!");
+            return Optional.empty();
+        }
+
+        if (!validator.validatePassword(String.valueOf(password))) {
+            return Optional.empty();
+        }
+
         UserDaoImpl userDao = DaoHolder.getUserDao();
         try {
             Optional<String> optionalHash = userDao.findEncryptedPassword(user);

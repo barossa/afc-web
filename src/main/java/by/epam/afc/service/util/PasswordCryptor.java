@@ -1,4 +1,4 @@
-package by.epam.afc.service;
+package by.epam.afc.service.util;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
