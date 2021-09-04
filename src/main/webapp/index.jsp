@@ -8,6 +8,6 @@
 <h1><%= "Hello World!" %>
 </h1>
 <br/>
-<a href="hello-se">Hello Servlet</a>
+<a href="${pageContext.request.contextPath}/jsp/pages/auth/login.jsp">LogIn</a>
 </body>
 </html>

@@ -1,8 +1,8 @@
 package by.epam.afc.service.impl;
 
+import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.impl.DaoHolder;
 import by.epam.afc.dao.impl.UserDaoImpl;
-import by.epam.afc.dao.entity.User;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.PasswordCryptor;
@@ -16,11 +16,18 @@ public class UserServiceImpl implements UserService {
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     @Override
-    public Optional<User> authenticate(User user, char[] password) throws ServiceException {
+    public Optional<User> authenticate(User user, char[] password) throws ServiceException { //// TODO: 9/2/21 Add validation log/pass
         UserDaoImpl userDao = DaoHolder.getUserDao();
-        String encrypted = PasswordCryptor.encrypt(password);
         try {
-            return userDao.authenticate(user, encrypted);
+            Optional<String> optionalHash = userDao.findEncryptedPassword(user);
+            if (optionalHash.isPresent()) {
+                String hash = optionalHash.get();
+                boolean verified = PasswordCryptor.verify(password, hash.toCharArray());
+                if (verified) {
+                    return userDao.findUniqUser(user);
+                }
+            }
+            return Optional.empty();
         } catch (DaoException e) {
             logger.error("Can't authenticate user: ", e);
             throw new ServiceException("Can't authenticate user: ", e);

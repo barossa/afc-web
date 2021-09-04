@@ -1,6 +1,5 @@
 package by.epam.afc.dao.entity;
 
-import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 
 public class Image {
@@ -9,13 +8,13 @@ public class Image {
     private int id;
     private LocalDateTime uploadData;
     private int uploadedByUserId;
-    private BufferedImage image;
+    private String base64;
 
-    public Image(int id, LocalDateTime uploadData, int uploadedByUserId, BufferedImage image) {
+    public Image(int id, LocalDateTime uploadData, int uploadedByUserId, String base64) {
         this.id = id;
         this.uploadData = uploadData;
         this.uploadedByUserId = uploadedByUserId;
-        this.image = image;
+        this.base64 = base64;
     }
 
     public int getId() {
@@ -42,12 +41,12 @@ public class Image {
         this.uploadedByUserId = uploadedByUserId;
     }
 
-    public BufferedImage getImage() {
-        return image;
+    public String getBase64() {
+        return base64;
     }
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
+    public void setImage(String base64) {
+        this.base64 = base64;
     }
 
     public static ImageBuilder getBuilder() {
@@ -59,20 +58,18 @@ public class Image {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Image image1 = (Image) o;
+        Image image = (Image) o;
 
-        if (id != image1.id) return false;
-        if (uploadedByUserId != image1.uploadedByUserId) return false;
-        if (uploadData != null ? !uploadData.equals(image1.uploadData) : image1.uploadData != null) return false;
-        return image != null ? image.equals(image1.image) : image1.image == null;
+        if (uploadedByUserId != image.uploadedByUserId) return false;
+        if (uploadData != null ? !uploadData.equals(image.uploadData) : image.uploadData != null) return false;
+        return base64 != null ? base64.equals(image.base64) : image.base64 == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (uploadData != null ? uploadData.hashCode() : 0);
+        int result = uploadData != null ? uploadData.hashCode() : 0;
         result = 31 * result + uploadedByUserId;
-        result = 31 * result + (image != null ? image.hashCode() : 0);
+        result = 31 * result + (base64 != null ? base64.hashCode() : 0);
         return result;
     }
 
@@ -82,7 +79,8 @@ public class Image {
                 "id=" + id +
                 ", uploadData=" + uploadData +
                 ", uploadedByUserId=" + uploadedByUserId +
-                ", image=" + image +
+                ", base64=" +
+                (base64.isEmpty() ? "empty" : "exists...") +
                 '}';
     }
 
@@ -90,7 +88,7 @@ public class Image {
         private int nestedId = UNDEFINED_IMAGE_ID;
         private LocalDateTime nestedUploadData;
         private int nestedUploadedByUserId;
-        private BufferedImage nestedImage;
+        private String nestedBase64;
 
         public ImageBuilder id(int id) {
             nestedId = id;
@@ -107,13 +105,13 @@ public class Image {
             return this;
         }
 
-        public ImageBuilder image(BufferedImage image) {
-            nestedImage = image;
+        public ImageBuilder base64(String base64) {
+            nestedBase64 = base64;
             return this;
         }
 
         public Image build() {
-            return new Image(nestedId, nestedUploadData, nestedUploadedByUserId, nestedImage);
+            return new Image(nestedId, nestedUploadData, nestedUploadedByUserId, nestedBase64);
         }
     }
 }

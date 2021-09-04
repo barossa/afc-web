@@ -10,4 +10,9 @@ public class PasswordCryptor {
     public static String encrypt(char[] password){
         return BCrypt.withDefaults().hashToString(DEFAULT_CRYPT_COST, password);
     }
+
+    public static boolean verify(char[] password, char[] hash){
+        BCrypt.Result result = BCrypt.verifyer().verify(password, hash);
+        return result.verified;
+    }
 }

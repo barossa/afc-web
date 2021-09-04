@@ -1,10 +1,8 @@
 package by.epam.afc.controller;
 
-import by.epam.afc.command.Command;
-import by.epam.afc.command.CommandProvider;
-import by.epam.afc.command.Router;
-import by.epam.afc.exception.DaoException;
-import by.epam.afc.pool.ConnectionPool;
+import by.epam.afc.controller.command.Command;
+import by.epam.afc.controller.command.CommandProvider;
+import by.epam.afc.controller.command.Router;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static by.epam.afc.controller.PagePath.*;
+import static by.epam.afc.controller.command.Router.DispatchType.*;
 
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
 public class Controller extends HttpServlet {
@@ -36,9 +37,16 @@ public class Controller extends HttpServlet {
         CommandProvider commandProvider = CommandProvider.getInstance();
         String commandName = request.getParameter(COMMAND);
         Optional<Command> commandOptional = commandProvider.defineCommand(commandName);
-        Command command = commandOptional.orElseThrow(IllegalArgumentException::new);
-        Router router = command.execute(request);
-        switch (router.getDispatchType()){
+        Router router;
+        if(commandOptional.isPresent()){
+            Command command = commandOptional.get();
+            router = command.execute(request);
+        }else{
+            // TODO: 9/2/21 GO TO PAGE PATH COMMAND
+            router = new Router(REDIRECT, INDEX);
+        }
+        System.out.println(router.getTargetPath());
+        switch (router.getDispatchType()) {
             case FORWARD:
                 RequestDispatcher dispatcher = request.getRequestDispatcher(router.getTargetPath());
                 dispatcher.forward(request, response);
@@ -48,14 +56,7 @@ public class Controller extends HttpServlet {
                 break;
             default:
                 logger.error("Invalid router type!");
-        }
-    }
-
-    public void destroy() {
-        try {
-            ConnectionPool.getInstance().destroyPool();
-        } catch (DaoException e) {
-            logger.error("Can't destroy connection pool: ", e);
+                response.sendError(500);
         }
     }
 }

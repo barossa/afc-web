@@ -6,13 +6,18 @@ import org.apache.logging.log4j.Logger;
 public final class DaoHolder {
     static final Logger logger = LogManager.getLogger(DaoHolder.class);
 
-    private static final UserDaoImpl userDao = new UserDaoImpl();
-    private static final MessageDaoImpl messageDao = new MessageDaoImpl();
-    private static final ImageDaoImpl imageDao = new ImageDaoImpl();
-    private static final DialogDaoImpl dialogDao = new DialogDaoImpl();
-    private static final AnnouncementDaoImpl announcementDao = new AnnouncementDaoImpl();
+    private static final UserDaoImpl userDao;
+    private static final MessageDaoImpl messageDao;
+    private static final ImageDaoImpl imageDao;
+    private static final DialogDaoImpl dialogDao;
+    private static final AnnouncementDaoImpl announcementDao;
 
     static {
+        userDao = new UserDaoImpl();
+        messageDao = new MessageDaoImpl();
+        imageDao = new ImageDaoImpl();
+        dialogDao = new DialogDaoImpl();
+        announcementDao = new AnnouncementDaoImpl();
         logger.info("Dao initialized successfully.");
     }
 

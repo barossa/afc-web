@@ -9,14 +9,11 @@ import by.epam.afc.pool.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +40,6 @@ public final class ImageDaoImpl implements ImageDao {
             + " FROM " + IMAGES
             + " INNER JOIN " + ANNOUNCEMENT_IMAGES + " ON " + IMAGES + "." + IMAGE_ID + "=" + ANNOUNCEMENT_IMAGES + "." + IMAGE_ID
             + " WHERE " + ANNOUNCEMENT_ID + "= ?;";
-
-    private static final String DEFAULT_PROFILE_IMAGE_FORMAT = "png";
 
     static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
@@ -105,7 +100,7 @@ public final class ImageDaoImpl implements ImageDao {
              PreparedStatement statement = connection.prepareStatement(UPDATE_BY_IMAGE_ID)) {
             statement.setTimestamp(1, Timestamp.valueOf(image.getUploadData()));
             statement.setInt(2, image.getUploadedByUserId());
-            statement.setBinaryStream(3, getImageStream(image.getImage()));
+            statement.setBinaryStream(3, getImageStream(image.getBase64()));
             statement.setInt(4, image.getId());
             statement.execute();
             return Optional.of(image);
@@ -124,7 +119,7 @@ public final class ImageDaoImpl implements ImageDao {
 
             statement.setTimestamp(1, Timestamp.valueOf(image.getUploadData()));
             statement.setInt(2, image.getUploadedByUserId());
-            statement.setBinaryStream(3, getImageStream(image.getImage()));
+            statement.setBinaryStream(3, getImageStream(image.getBase64()));
             statement.execute();
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -163,13 +158,15 @@ public final class ImageDaoImpl implements ImageDao {
         }
     }
 
-    private InputStream getImageStream(BufferedImage image) throws DaoException {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+    private InputStream getImageStream(String base64) throws DaoException {
+        /*try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ImageIO.write(image, DEFAULT_PROFILE_IMAGE_FORMAT, outputStream);
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (IOException e) {
             logger.error("Can't transform Image to InputStream");
             throw new DaoException("Can't transform incorrect image!", e);
-        }
+        }*/
+        byte[] imageBytes = Base64.getDecoder().decode(base64);
+        return new ByteArrayInputStream(imageBytes);
     }
 }

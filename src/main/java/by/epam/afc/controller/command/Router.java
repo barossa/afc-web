@@ -1,4 +1,4 @@
-package by.epam.afc.command;
+package by.epam.afc.controller.command;
 
 public class Router {
     private final DispatchType dispatchType;

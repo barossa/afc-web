@@ -109,7 +109,8 @@ public class User {
     public enum Role {
         USER,
         MODERATOR,
-        ADMINISTRATOR
+        ADMINISTRATOR,
+        GUEST
     }
 
     public enum Status {

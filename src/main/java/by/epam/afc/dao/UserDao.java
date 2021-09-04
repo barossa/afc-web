@@ -6,6 +6,7 @@ import by.epam.afc.exception.DaoException;
 import java.util.Optional;
 
 public interface UserDao extends BaseDao<User>{
-    Optional<User> authenticate(User user, String password) throws DaoException;
+    Optional<String> findEncryptedPassword(User user) throws DaoException;
+    Optional<User> findUniqUser(User user) throws DaoException;
     void updateUserPassword(User user, String hash) throws DaoException;
 }
