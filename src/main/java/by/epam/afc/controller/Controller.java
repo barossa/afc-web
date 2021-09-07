@@ -43,9 +43,8 @@ public class Controller extends HttpServlet {
             router = command.execute(request);
         }else{
             // TODO: 9/2/21 GO TO PAGE PATH COMMAND
-            router = new Router(REDIRECT, INDEX);
+            router = new Router(REDIRECT, request.getContextPath() + INDEX);
         }
-        System.out.println(router.getTargetPath());
         switch (router.getDispatchType()) {
             case FORWARD:
                 RequestDispatcher dispatcher = request.getRequestDispatcher(router.getTargetPath());

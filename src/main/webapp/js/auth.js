@@ -7,7 +7,7 @@
     [ Focus input ]*/
     $('.input100').each(function(){
         $(this).on('blur', function(){
-            if($(this).val().trim() != "") {
+            if($(this).val().trim() !== "") {
                 $(this).addClass('has-val');
             }
             else {
@@ -25,7 +25,7 @@
         var check = true;
 
         for(var i=0; i<input.length; i++) {
-            if(validate(input[i]) == false){
+            if(validate(input[i]) === false){
                 showValidate(input[i]);
                 check=false;
             }
@@ -42,7 +42,7 @@
     });
 
     function validate (input) {
-        if($(input).attr('type') == 'text' || $(input).attr('name') == 'authField') {
+        if($(input).attr('type') === 'text' || $(input).attr('name') === 'authField') {
             if($(input).val().trim().match(/^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\..*[A-Za-z]$/) != null) { // mail regex
                 if($(input).val().trim().length <= 100){
                     return true;
@@ -54,7 +54,7 @@
             }else return $(input).val().trim().match(/^\+?\d{10,15}$/) != null; // phone regex
         }
         else {
-            if($(input).val().trim() == ''){
+            if($(input).val().trim() === ''){
                 return false;
             }
         }

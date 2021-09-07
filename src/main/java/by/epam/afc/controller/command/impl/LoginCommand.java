@@ -27,16 +27,16 @@ public class LoginCommand implements Command {
             if(optionalUser.isPresent()){
                 HttpSession session = request.getSession();
                 session.setAttribute(USER, optionalUser.get());
+                session.setAttribute(AUTHORIZED, true);
                 router = new Router(REDIRECT,request.getContextPath() +  ABOUT_USER);
             }else{
                 request.setAttribute(WRONG_LOGIN_OR_PASSWORD, true);
                 router = new Router(FORWARD, LOGIN_PAGE);
             }
-
         } catch (ServiceException e) {
-            //// TODO: 9/4/21 CUSTOM ERROR PAGE 
+            //// TODO: 9/4/21 CUSTOM ERROR PAGE
             request.setAttribute(EXCEPTION, e);
-            router = new Router(REDIRECT, ERROR_PAGE);
+            router = new Router(REDIRECT, ERROR_505);
         }
         return router;
     }

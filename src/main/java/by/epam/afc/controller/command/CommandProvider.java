@@ -1,12 +1,12 @@
 package by.epam.afc.controller.command;
 
-import by.epam.afc.controller.command.impl.LoginCommand;
+import by.epam.afc.controller.command.impl.*;
+import by.epam.afc.controller.command.impl.go.ToRegisterPage;
 
 import java.util.EnumMap;
 import java.util.Optional;
 
-import static by.epam.afc.controller.command.CommandType.LOGIN_COMMAND;
-import static by.epam.afc.controller.command.CommandType.valueOf;
+import static by.epam.afc.controller.command.CommandType.*;
 
 public class CommandProvider {
     private static CommandProvider instance;
@@ -14,6 +14,10 @@ public class CommandProvider {
 
     private CommandProvider() {
         commands.put(LOGIN_COMMAND, new LoginCommand());
+        commands.put(CHANGE_LOCALE, new ChangeLocale());
+        commands.put(FORGOT_PASSWORD, new ForgotPassword());
+        commands.put(REGISTER_COMMAND, new RegisterCommand());
+        commands.put(LOGOUT_COMMAND, new LogoutCommand());
         //commands.add(commandType,new Command());
     }
 

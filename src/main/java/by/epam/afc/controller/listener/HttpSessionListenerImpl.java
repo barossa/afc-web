@@ -6,15 +6,21 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
+import static by.epam.afc.controller.RequestAttribute.LOCALE;
+import static by.epam.afc.controller.SessionAttribute.*;
+import static by.epam.afc.dao.entity.User.Role.GUEST;
+
 @WebListener
 public class HttpSessionListenerImpl implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         HttpSession session = se.getSession();
-        session.setAttribute("locale", "en_US");
         User guest = User.getBuilder()
-                .role(User.Role.GUEST)
+                .role(GUEST)
                 .build();
-        session.setAttribute("user", guest);
+        session.setAttribute(USER, guest);
+        session.setAttribute(AUTHORIZED, false);
+        session.setAttribute(LANGUAGE, "English(US)");
+        session.setAttribute(LOCALE, "en_US");
     }
 }

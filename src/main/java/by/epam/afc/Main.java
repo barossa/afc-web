@@ -12,11 +12,6 @@ import java.util.Optional;
 public class Main {
     public static void main(String[] args) throws DaoException, ServiceException {
         UserDaoImpl dao = DaoHolder.getUserDao();
-        User user = User.getBuilder()
-                .login("admin")
-                .build();
-        UserServiceImpl service = new UserServiceImpl();
-
 
     }
 }
