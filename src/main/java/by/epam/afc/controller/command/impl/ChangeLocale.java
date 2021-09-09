@@ -5,6 +5,7 @@ import by.epam.afc.controller.command.Router;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.RequestAttribute.LOCALE;
 import static by.epam.afc.controller.SessionAttribute.LANGUAGE;
 import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
@@ -28,6 +29,9 @@ public class ChangeLocale implements Command {
                 session.setAttribute(LANGUAGE, "English(US)");
         }
         String latestPath = (String) session.getAttribute(LATEST_CONTEXT_PATH);
-        return new Router(FORWARD, "/jsp/pages/aboutUser.jsp");
+        if(latestPath == null){
+            latestPath = INDEX;
+        }
+        return new Router(FORWARD, latestPath);
     }
 }

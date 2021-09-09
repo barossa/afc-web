@@ -1,0 +1,22 @@
+@font-face {
+    font-family: Rialtoc;
+    src: url('../fonts/rialtoc/font/rialtoc.ttf') format('ttf');
+    font-weight: 20;
+    font-style: normal;
+}
+
+.nav-font-main {
+    color: whitesmoke !important;
+    font-family: Rialtoc, serif !important;
+    font-size: 25px !important;
+    font-weight: bold !important;
+}
+
+.nav-font {
+    color: whitesmoke !important;
+    font-family: Rialtoc, serif !important;
+    font-size: 15px !important;
+    font-weight: bolder !important;
+
+}
+

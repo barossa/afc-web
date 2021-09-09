@@ -7,27 +7,29 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+import static by.epam.afc.controller.PagePath.CONTROLLER;
 import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
 
-@WebFilter(urlPatterns = {"/*"})
+@WebFilter(urlPatterns = {"/jsp/*", "/controller"})
 public class LatestPageFilter implements Filter {
     private static final String REFERER = "referer";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("LATEST PAGE FILTER");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpSession session = request.getSession();
         String currentUrl = request.getHeader(REFERER);
-        if(currentUrl == null){
+        if (currentUrl == null) {
             currentUrl = request.getContextPath() + INDEX;
         }
-        String contextPath = request.getContextPath();
-        String currentPath = currentUrl.substring(contextPath.length());
-        System.out.println("URL:" + currentUrl);
-        System.out.println("LATEST CONTPATH: " + currentPath);
-        session.setAttribute(LATEST_CONTEXT_PATH, currentPath);
+        if (!currentUrl.contains(CONTROLLER)) {
+            String contextPath = request.getContextPath();
+            int cutIndex = currentUrl.lastIndexOf(contextPath) + contextPath.length();
+            String currentPath = currentUrl.substring(cutIndex);
+            HttpSession session = request.getSession();
+            System.out.println("New latest path:" + currentPath);
+            session.setAttribute(LATEST_CONTEXT_PATH, currentPath);
+        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

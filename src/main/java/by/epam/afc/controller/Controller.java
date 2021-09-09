@@ -15,14 +15,13 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Optional;
 
-import static by.epam.afc.controller.PagePath.*;
-import static by.epam.afc.controller.command.Router.DispatchType.*;
+import static by.epam.afc.controller.PagePath.INDEX;
+import static by.epam.afc.controller.RequestAttribute.COMMAND;
+import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
 public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger(Controller.class);
-
-    private static final String COMMAND = "command";
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
@@ -38,10 +37,10 @@ public class Controller extends HttpServlet {
         String commandName = request.getParameter(COMMAND);
         Optional<Command> commandOptional = commandProvider.defineCommand(commandName);
         Router router;
-        if(commandOptional.isPresent()){
+        if (commandOptional.isPresent()) {
             Command command = commandOptional.get();
             router = command.execute(request);
-        }else{
+        } else {
             // TODO: 9/2/21 GO TO PAGE PATH COMMAND
             router = new Router(REDIRECT, request.getContextPath() + INDEX);
         }

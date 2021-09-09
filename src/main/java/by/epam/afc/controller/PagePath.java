@@ -11,4 +11,6 @@ public class PagePath {
     public static final String REGISTER_PAGE = "/jsp/pages/auth/register.jsp";
     public static final String FORGOT_PASS_PAGE = "/jsp/pages/auth/forgotPassword.jsp";
     public static final String ABOUT_USER= "/jsp/pages/aboutUser.jsp";
+
+    public static final String CONTROLLER = "/controller?";
 }

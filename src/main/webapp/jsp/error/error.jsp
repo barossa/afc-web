@@ -1,10 +1,10 @@
 <%@ page isErrorPage="true" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>Error 500</title>
+    <title>Error ${pageContext.errorData.statusCode}</title>
 </head>
 <body>
-<h2>Error 500</h2>
+<h2>Error ${pageContext.errorData.statusCode}</h2>
 <hr/>
 <table>
     <tr>
