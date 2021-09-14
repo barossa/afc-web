@@ -42,47 +42,49 @@
              <span class="login-form-title p-b-45">
 						<fmt:message key="auth.regTitle"/>
 					</span>
-
-            <div class="form-group input-group me-auto">
+            <form class="login-form validate-form" method="post" <%--action="${pageContext.request.contextPath}/controller"--%>>
+                <input type="hidden" name="command0" value="register_command">
+            <div class="form-group input-group me-auto" style="width: 48.5%; display: inline-flex;">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-pencil"></i> </span>
                 </div>
-                <input name="" class="form-control" placeholder="${firstnamePlaceholder}" type="text">
-                <div class="input-group-prepend"
-                style="margin-left: 10px;">
-                    <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-pencil"></i> </span>
-                </div>
-                <input name="" class="form-control" placeholder="${lastnamePlaceholder}" type="text">
+                <input name="firstname" class="input form-control" placeholder="${firstnamePlaceholder}" type="text">
             </div>
+                <div class="form-group input-group me-auto" style="width: 50%; display: inline-flex;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-pencil"></i> </span>
+                    </div>
+                    <input name="lastname" class="input form-control" placeholder="${lastnamePlaceholder}" type="text">
+                </div>
             <div class="form-group input-group m-t-10">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-envelope"></i> </span>
                 </div>
-                <input name="" class="form-control" placeholder="${emailPlaceholder}" type="email">
+                <input name="email" class="input form-control" placeholder="${emailPlaceholder}" type="text">
             </div>
             <div class="form-group input-group m-t-10">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-phone"></i> </span>
                 </div>
-                <input name="" class="form-control" placeholder="${phonePlaceholder}" type="text">
+                <input name="phone" class="input form-control" placeholder="${phonePlaceholder}" type="text">
             </div> <!-- form-group// -->
             <div class="form-group input-group m-t-10">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-user"></i> </span>
                 </div>
-                <input class="form-control" placeholder="${loginPlaceholder}" type="text">
+                <input name="login" class="input form-control" placeholder="${loginPlaceholder}" type="text">
             </div> <!-- form-group end.// -->
             <div class="form-group input-group m-t-10">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-lock"></i> </span>
                 </div>
-                <input class="form-control" placeholder="${firstPassPlaceholder}" type="password">
+                <input name="firstPass" class="input form-control" placeholder="${firstPassPlaceholder}" type="password">
             </div> <!-- form-group// -->
             <div class="form-group input-group m-t-10">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-lock"></i> </span>
                 </div>
-                <input class="form-control" placeholder="${secondPassPlaceholder}" type="password">
+                <input name="secondPass" class="input form-control" placeholder="${secondPassPlaceholder}" type="password">
             </div> <!-- form-group// -->
             <div class="form-group text-center m-t-30">
                 <button type="submit" class="btn btn-primary btn-block"><fmt:message key="auth.register"/></button>
@@ -91,6 +93,7 @@
             <div class="text-center">
                 <a href="${pageContext.request.contextPath}/jsp/pages/auth/login.jsp"><fmt:message key="auth.login"/></a>
             </div>
+            </form>
         </div>
     </div>
 </div>

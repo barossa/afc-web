@@ -1,61 +1,102 @@
-
 (function ($) {
     "use strict";
 
-
-    /*==================================================================
-   [ Focus input ]*/
-    $('.input').each(function(){
-        $(this).on('blur', function(){
-            if($(this).val().trim() !== "") {
-                $(this).addClass('has-val');
-            }
-            else {
-                $(this).removeClass('has-val');
-            }
-        })
-    })
-
-
     /*==================================================================
     [ Validate ]*/
-    var input = $('.validate-input .input');
+    var input = $('.validate-form .input');
 
-    $('.validate-form').on('submit',function(){
+    $('.validate-form').on('submit', function () {
         var check = true;
-
-        for(var i=0; i<input.length; i++) {
-            if(validate(input[i]) === false){
+        for (var i = 0; i < input.length; i++) {
+            if (validate(input[i]) === false) {
                 showValidate(input[i]);
-                check=false;
+                check = false;
             }
         }
-
+        alert("PASS CHECK: " + comparePasswords())
+        if (!comparePasswords()) {
+            check = false;
+            showValidate(firstPassField);
+            showValidate(secondPassField);
+        }else{
+            hideValidate(firstPassField);
+            hideValidate(secondPassField);
+        }
         return check;
     });
 
 
-    $('.validate-form .input').each(function(){
-        $(this).focus(function(){
+    input.each(function () {
+        $(this).focus(function () {
             hideValidate(this);
         });
     });
 
-    function validate (input) {
-        if($(input).attr('type') === 'text' || $(input).attr('name') === 'authField') {
-            if($(input).val().trim().match(/^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\..*[A-Za-z]$/) != null) { // mail regex
-                if($(input).val().trim().length <= 100){
-                    return true;
-                }
-            }else if($(input).val().trim().match(/^(?=.*[A-Za-z0-9]$)[A-Za-z]\w{0,19}$/) != null){ // login regex
-                if($(input).val().trim().length <= 20){
-                    return true;
-                }
-            }else return $(input).val().trim().match(/^\+?\d{10,15}$/) != null; // phone regex
+    var firstPassField;
+    var secondPassField;
+
+    function comparePasswords() {
+        if (firstPassField == null || secondPassField == null) {
+            return false;
         }
-        else {
-            if($(input).val().trim() === ''){
-                return false;
+        var firstPass, secondPass;
+        firstPass = $(firstPassField).val().trim();
+        secondPass = $(secondPassField).val().trim();
+
+        if (firstPass != null && secondPass != null) {
+            if (firstPass === secondPass) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function validate(input) {
+        if (type === 'text' || type === 'password') {
+            var fieldName = $(input).attr('name');
+            var fieldValue = $(input).val().trim();
+            var fieldRegex;
+            var maxLength;
+            switch (fieldName) {
+                case "firstname":
+                    maxLength = 20;
+                    fieldRegex = "^[А-Яа-яA-Za-z]+$";
+                    break;
+                case "lastname":
+                    maxLength = 20;
+                    fieldRegex = "^[А-Яа-яA-Za-z]+$";
+                    break;
+                case "email":
+                    maxLength = 100;
+                    fieldRegex = "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$";
+                    break;
+                case "phone":
+                    maxLength = 12;
+                    fieldRegex = "^\\+?\\d{10,15}$";
+                    break;
+                case "login":
+                    maxLength = 20;
+                    fieldRegex = "^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$";
+                    break;
+                case "firstPass":
+                    firstPassField = input;
+                    fieldRegex = "^[^ ]{5,30}$";
+                    maxLength = 30;
+                    break;
+                case "secondPass":
+                    secondPassField = input;
+                    fieldRegex = "^[^ ]{5,30}$";
+                    maxLength = 30;
+                    break;
+                default:
+                    return false;
+            }
+            var flag = fieldValue.match(fieldRegex) != null;
+            if (flag) {
+                var length = fieldValue.length;
+                return length <= maxLength && length > 0;
+            } else {
+                return false; // don't meet regex
             }
         }
     }
@@ -71,7 +112,6 @@
 
         $(thisAlert).removeClass('alert-validate');
     }
-
 
 
 })(jQuery);

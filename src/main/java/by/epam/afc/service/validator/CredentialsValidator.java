@@ -1,6 +1,7 @@
 package by.epam.afc.service.validator;
 
 public interface CredentialsValidator {
+    boolean validateName(String name);
     boolean validateLogin(String login);
     boolean validateEmail(String email);
     boolean validatePhone(String phone);

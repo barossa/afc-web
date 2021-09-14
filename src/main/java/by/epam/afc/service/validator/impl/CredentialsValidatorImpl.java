@@ -6,22 +6,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CredentialsValidatorImpl implements CredentialsValidator {
+    private static final String NAME_REGEX = "^[А-Яа-яA-Za-z]+$";
     private static final String LOGIN_REGEX = "^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$";
     private static final String EMAIL_REGEX = "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$";
     private static final String PHONE_REGEX = "^\\+?\\d{10,15}$";
     private static final String PASSWORD_REGEX = "^[^ ]{5,30}$";
 
+    private static final int MAX_NAME_LENGTH = 20;
     private static final int MAX_LOGIN_LENGTH = 20;
     private static final int MAX_EMAIL_LENGTH = 100;
 
     private static final CredentialsValidatorImpl instance = new CredentialsValidatorImpl();
 
+    private final Pattern namePattern;
     private final Pattern loginPattern;
     private final Pattern emailPattern;
     private final Pattern phonePattern;
     private final Pattern passPattern;
 
     private CredentialsValidatorImpl(){
+        namePattern = Pattern.compile(NAME_REGEX);
         loginPattern = Pattern.compile(LOGIN_REGEX);
         emailPattern = Pattern.compile(EMAIL_REGEX);
         phonePattern = Pattern.compile(PHONE_REGEX);
@@ -30,6 +34,15 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
 
     public static CredentialsValidatorImpl getInstance(){
         return instance;
+    }
+
+    @Override
+    public boolean validateName(String name){
+        if (name != null && name.length() <= MAX_LOGIN_LENGTH){
+            Matcher matcher = namePattern.matcher(name);
+            return matcher.matches();
+        }
+        return false;
     }
 
     @Override
