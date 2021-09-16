@@ -5,15 +5,16 @@
     [ Validate ]*/
     var input = $('.validate-form .input');
 
+    $(document).ready(function() {
     $('.validate-form').on('submit', function () {
         var check = true;
         for (var i = 0; i < input.length; i++) {
-            if (validate(input[i]) === false) {
+            var result = validate(input[i]);
+            if (result == null || result === false) {
                 showValidate(input[i]);
                 check = false;
             }
         }
-        alert("PASS CHECK: " + comparePasswords())
         if (!comparePasswords()) {
             check = false;
             showValidate(firstPassField);
@@ -22,9 +23,15 @@
             hideValidate(firstPassField);
             hideValidate(secondPassField);
         }
-        return check;
+        if(!check){
+            alert("CHECK IS FALSE!");
+        }
+        if(check){
+            registerAction();
+        }
+        return false;
+     });
     });
-
 
     input.each(function () {
         $(this).focus(function () {
@@ -32,6 +39,11 @@
         });
     });
 
+    var firstnameField;
+    var lastnameField;
+    var loginField;
+    var emailField;
+    var phoneField;
     var firstPassField;
     var secondPassField;
 
@@ -51,8 +63,27 @@
         return false;
     }
 
+    function registerAction(){
+        $.ajax({
+            url: "/Ads_from_Chest_war_exploded/controller",
+            type: "POST",
+            data: $('#registrationForm').serialize(),
+
+            success: function (response, status, request){
+                if(response.redirect !== null && response.redirect !== 'undefined'){
+                    window.location.href = response.redirect;
+                }
+                insertResponseData(response);
+            },
+
+            error: function(response) {
+                insertResponseData(response)
+            }
+        });
+    }
+
     function validate(input) {
-        if (type === 'text' || type === 'password') {
+        if ($(input).attr('type') === 'text' || $(input).attr('type') === 'password') {
             var fieldName = $(input).attr('name');
             var fieldValue = $(input).val().trim();
             var fieldRegex;
@@ -61,34 +92,40 @@
                 case "firstname":
                     maxLength = 20;
                     fieldRegex = "^[А-Яа-яA-Za-z]+$";
+                    firstnameField = input;
                     break;
                 case "lastname":
                     maxLength = 20;
                     fieldRegex = "^[А-Яа-яA-Za-z]+$";
+                    lastnameField = input;
                     break;
                 case "email":
                     maxLength = 100;
                     fieldRegex = "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$";
+                    emailField = input;
                     break;
                 case "phone":
                     maxLength = 12;
                     fieldRegex = "^\\+?\\d{10,15}$";
+                    phoneField = input;
                     break;
                 case "login":
                     maxLength = 20;
                     fieldRegex = "^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$";
+                    loginField = input;
                     break;
-                case "firstPass":
+                case "password":
+                    fieldRegex = "^[^ ]{5,30}$";
+                    maxLength = 30;
                     firstPassField = input;
-                    fieldRegex = "^[^ ]{5,30}$";
-                    maxLength = 30;
                     break;
-                case "secondPass":
-                    secondPassField = input;
+                case "passwordRepeat":
                     fieldRegex = "^[^ ]{5,30}$";
                     maxLength = 30;
+                    secondPassField = input;
                     break;
                 default:
+                    alert("UNKNOWN FIELD NAME: " + fieldName);
                     return false;
             }
             var flag = fieldValue.match(fieldRegex) != null;
@@ -113,5 +150,41 @@
         $(thisAlert).removeClass('alert-validate');
     }
 
+    function insertResponseData(response){
+        $().each(response, function (key, value){
+            switch (key){
+                case "firstname":
+                    insertOrWarning(firstnameField, value)
+                    break;
+                case "lastname":
+                    insertOrWarning(lastnameField, value);
+                    break;
+                case "login":
+                    insertOrWarning(loginField, value);
+                    break;
+                case "email":
+                    insertOrWarning(emailField, value);
+                    break;
+                case "phone":
+                    insertOrWarning(phoneField, value);
+                    break;
+                case "password":
+                    insertOrWarning(firstPassField, value);
+                    break;
+                case "password_repeat":
+                    insertOrWarning(secondPassField, value);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    function insertOrWarning(field, value){
+        if(value === ""){
+            showValidate(field);
+        }
+            field.value = value;
+    }
 
 })(jQuery);

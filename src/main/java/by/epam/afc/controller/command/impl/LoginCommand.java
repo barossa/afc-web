@@ -6,6 +6,7 @@ import by.epam.afc.dao.entity.User;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.Optional;
@@ -17,7 +18,7 @@ import static by.epam.afc.controller.command.Router.DispatchType.*;
 
 public class LoginCommand implements Command {
     @Override
-    public Router execute(HttpServletRequest request) {
+    public Router execute(HttpServletRequest request, HttpServletResponse response) {
         Router router;
         String authField = request.getParameter(AUTH_FIELD);
         String password = request.getParameter(PASSWORD);

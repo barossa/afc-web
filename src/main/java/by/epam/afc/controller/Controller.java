@@ -9,14 +9,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Optional;
 
 import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
+import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
@@ -39,10 +42,11 @@ public class Controller extends HttpServlet {
         Router router;
         if (commandOptional.isPresent()) {
             Command command = commandOptional.get();
-            router = command.execute(request);
+            router = command.execute(request, response);
         } else {
-            // TODO: 9/2/21 GO TO PAGE PATH COMMAND
-            router = new Router(REDIRECT, request.getContextPath() + INDEX);
+            HttpSession session = request.getSession();
+            String latestPath = (String) session.getAttribute(LATEST_CONTEXT_PATH);
+            router = new Router(REDIRECT, request.getContextPath() + latestPath);
         }
         switch (router.getDispatchType()) {
             case FORWARD:
@@ -51,6 +55,8 @@ public class Controller extends HttpServlet {
                 break;
             case REDIRECT:
                 response.sendRedirect(router.getTargetPath());
+                break;
+            case NOT_REQUIRED:
                 break;
             default:
                 logger.error("Invalid router type!");

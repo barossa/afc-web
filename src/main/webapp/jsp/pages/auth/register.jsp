@@ -20,7 +20,6 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/util.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/auth/register.css"/>">
 
-
     <fmt:message key="auth.incorrectValue" var="incorrectValue"/>
     <fmt:message key="auth.firstnamePlaceholder" var="firstnamePlaceholder"/>
     <fmt:message key="auth.lastnamePlaceholder" var="lastnamePlaceholder"/>
@@ -42,8 +41,8 @@
              <span class="login-form-title p-b-45">
 						<fmt:message key="auth.regTitle"/>
 					</span>
-            <form class="login-form validate-form" method="post" <%--action="${pageContext.request.contextPath}/controller"--%>>
-                <input type="hidden" name="command0" value="register_command">
+            <form id="registrationForm" class="login-form validate-form" action="${pageContext.request.contextPath}/controller" method="post">
+                <input type="hidden" name="command" value="register_command">
             <div class="form-group input-group me-auto" style="width: 48.5%; display: inline-flex;">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-pencil"></i> </span>
@@ -74,20 +73,20 @@
                 </div>
                 <input name="login" class="input form-control" placeholder="${loginPlaceholder}" type="text">
             </div> <!-- form-group end.// -->
-            <div class="form-group input-group m-t-10">
+            <div class="form-group input-group m-t-10" data-validate="OPA-PA">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-lock"></i> </span>
                 </div>
-                <input name="firstPass" class="input form-control" placeholder="${firstPassPlaceholder}" type="password">
+                <input name="password" class="input form-control" placeholder="${firstPassPlaceholder}" type="password">
             </div> <!-- form-group// -->
             <div class="form-group input-group m-t-10">
                 <div class="input-group-prepend">
                     <span class="input-group-text p-b-14 p-t-14"> <i class="fa fa-lock"></i> </span>
                 </div>
-                <input name="secondPass" class="input form-control" placeholder="${secondPassPlaceholder}" type="password">
+                <input name="passwordRepeat" class="input form-control" placeholder="${secondPassPlaceholder}" type="password">
             </div> <!-- form-group// -->
             <div class="form-group text-center m-t-30">
-                <button type="submit" class="btn btn-primary btn-block"><fmt:message key="auth.register"/></button>
+                <button id="submitButton" type="submit" class="btn btn-primary btn-block"><fmt:message key="auth.register"/></button>
             </div> <!-- form-group// -->
             <p class="text-center m-t-30"><fmt:message key="auth.alreadyHaveAccount"/></p>
             <div class="text-center">
@@ -110,6 +109,7 @@
 <script src="<c:url value="/vendor/countdowntime/countdowntime.js"/>"></script>
 <script src="<c:url value="/vendor/popper/popper.js"/>"></script>
 <script src="<c:url value="/js/register.js"/>"></script>
+<script src="<c:url value="/vendor/messageResource/js/messageResource.js"/>"></script>
 
 </body>
 </html>

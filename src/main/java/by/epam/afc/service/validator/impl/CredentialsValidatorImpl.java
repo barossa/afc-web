@@ -1,7 +1,10 @@
 package by.epam.afc.service.validator.impl;
 
+import by.epam.afc.dao.entity.User;
 import by.epam.afc.service.validator.CredentialsValidator;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +20,14 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final int MAX_EMAIL_LENGTH = 100;
 
     private static final CredentialsValidatorImpl instance = new CredentialsValidatorImpl();
+
+    public static final String FIRSTNAME = "firstname";
+    public static final String LASTNAME = "lastname";
+    public static final String LOGIN = "login";
+    public static final String EMAIL = "email";
+    public static final String PHONE = "phone";
+    public static final String PASSWORD = "password";
+    public static final String PASSWORD_REPEAT = "password_repeat";
 
     private final Pattern namePattern;
     private final Pattern loginPattern;
@@ -79,5 +90,35 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
             return matcher.matches();
         }
         return false;
+    }
+
+    @Override
+    public Map<String, String> validateCredentials(Map<String, String> credentialsMap) {
+        Map<String, String> correctCredentials = new HashMap<>(credentialsMap);
+
+        if(!validateName(correctCredentials.get(FIRSTNAME))){
+            correctCredentials.put(FIRSTNAME, "");
+        }
+        if(!validateName(correctCredentials.get(LASTNAME))){
+            correctCredentials.put(LASTNAME, "");
+        }
+        if(!validateLogin(correctCredentials.get(LOGIN))){
+            correctCredentials.put(LOGIN, "");
+        }
+        if(!validateEmail(correctCredentials.get(EMAIL))){
+            correctCredentials.put(EMAIL, "");
+        }
+        if(!validatePhone(correctCredentials.get(PHONE))){
+            correctCredentials.put(PHONE, "");
+        }
+
+        String password = correctCredentials.get(PASSWORD);
+        String passwordRepeat = correctCredentials.get(PASSWORD_REPEAT);
+        if(!password.equals(passwordRepeat)){
+            correctCredentials.put(PASSWORD, "");
+            correctCredentials.put(PASSWORD_REPEAT, "");
+        }
+
+        return correctCredentials;
     }
 }

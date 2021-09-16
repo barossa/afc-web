@@ -11,7 +11,10 @@ import by.epam.afc.service.validator.impl.CredentialsValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
 import java.util.Optional;
+
+import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
 public class UserServiceImpl implements UserService {
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
@@ -60,6 +63,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> register(Map<String, String> credentialsMap) throws ServiceException {
+        CredentialsValidatorImpl credentialsValidator = CredentialsValidatorImpl.getInstance();
+        Map<String, String> validatedCredentials = credentialsValidator.validateCredentials(credentialsMap);
+        if (validatedCredentials.containsValue("")) {
+            return Optional.empty();
+        }
+
+        User user = User.getBuilder()
+                .firstName(validatedCredentials.get(FIRSTNAME))
+                .lastName(validatedCredentials.get(LASTNAME))
+                .login(validatedCredentials.get(LOGIN))
+                .email(validatedCredentials.get(EMAIL))
+                .phone(validatedCredentials.get(PHONE))
+                .build();
+        UserDaoImpl userDao = DaoHolder.getUserDao();
+        try {
+            Optional<User> optionalSaved = userDao.save(user);
+            if (!optionalSaved.isPresent()) {
+                logger.error("Saved user is empty!");
+                throw new ServiceException("UserDao returned empty saved user!");
+            }
+            User savedUser = optionalSaved.get();
+            char[] password = validatedCredentials.get(PASSWORD).toCharArray();
+            updatePassword(savedUser, password);
+            return Optional.of(savedUser);
+
+        } catch (DaoException e) {
+            logger.error("Can't register user:", e);
+            throw new ServiceException("Can't register user", e);
+        }
+    }
+
+    @Override
     public void updatePassword(User user, char[] newPassword) throws ServiceException {
         UserDaoImpl userDao = DaoHolder.getUserDao();
         String encrypted = PasswordCryptor.encrypt(newPassword);
@@ -68,6 +104,42 @@ public class UserServiceImpl implements UserService {
         } catch (DaoException e) {
             logger.error("can't update user id= " + user.getId() + " password: ", e);
             throw new ServiceException("Can't update user password: ", e);
+        }
+    }
+
+    @Override
+    public boolean findLogin(String login) throws ServiceException {
+        UserDaoImpl userDao = DaoHolder.getUserDao();
+        try {
+            Optional<User> optionalUser = userDao.findByLogin(login);
+            return optionalUser.isPresent();
+        } catch (DaoException e) {
+            logger.error("Can't determine login existing: ", e);
+            throw new ServiceException("Can't determine login existing", e);
+        }
+    }
+
+    @Override
+    public boolean findEmail(String email) throws ServiceException {
+        UserDaoImpl userDao = DaoHolder.getUserDao();
+        try {
+            Optional<User> optionalUser = userDao.findByEmail(email);
+            return optionalUser.isPresent();
+        } catch (DaoException e) {
+            logger.error("Can't determine email existing: ", e);
+            throw new ServiceException("Can't determine email existing", e);
+        }
+    }
+
+    @Override
+    public boolean findPhone(String phone) throws ServiceException {
+        UserDaoImpl userDao = DaoHolder.getUserDao();
+        try {
+            Optional<User> optionalUser = userDao.findByPhone(phone);
+            return optionalUser.isPresent();
+        } catch (DaoException e) {
+            logger.error("Can't determine phone existing: ", e);
+            throw new ServiceException("Can't determine phone existing", e);
         }
     }
 }

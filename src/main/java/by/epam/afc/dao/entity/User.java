@@ -1,6 +1,8 @@
 package by.epam.afc.dao.entity;
 
 public class User {
+    public static final int UNDEFINED_USER_ID = -1;
+
     private int id;
     private String firstname;
     private String lastname;
@@ -172,7 +174,7 @@ public class User {
     }
 
     public static class UserBuilder {
-        private int nestedId;
+        private int nestedId = UNDEFINED_USER_ID;
         private String nestedFirstName;
         private String nestedLastName;
         private String nestedLogin;

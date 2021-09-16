@@ -228,25 +228,49 @@ public final class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findUniqUser(User user) throws DaoException {
-        int userId;
-        try (Connection connection = pool.getConnection();
-             PreparedStatement statement = getSelectUserIdStatement(connection, user);
-             ResultSet resultSet = statement.executeQuery()
-        ) {
+        String login = user.getLogin();
+        String email = user.getEmail();
+        String phone = user.getPhone();
 
-            if (resultSet.next()) {
-                userId = resultSet.getInt(USER_ID);
-            } else {
-                return Optional.empty();
-            }
-
-        } catch (NullPointerException e) {
-            logger.debug("Empty authentication field! Can't recognize user");
+        if (login != null && !login.isEmpty()) {
+            return findByLogin(login);
+        } else if (email != null && !email.isEmpty()) {
+            return findByEmail(email);
+        }else if (phone != null && !phone.isEmpty()) {
+            return findByPhone(phone);
+        } else {
+            logger.error("Can't find uniq field of provided user!");
             return Optional.empty();
-        } catch (SQLException e) {
-            logger.error("Can't find user's password: ", e);
-            throw new DaoException("Can't find user's password", e);
         }
+    }
+
+    @Override
+    public Optional<User> findByLogin(String login) throws DaoException {
+        Optional<Integer> optionalUserId = findUserIdByLogin(login);
+        if(!optionalUserId.isPresent()){
+            return Optional.empty();
+        }
+        int userId = optionalUserId.get();
+        return findById(userId);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) throws DaoException {
+        Optional<Integer> optionalUserId = findUserIdByEmail(email);
+        if(!optionalUserId.isPresent()){
+            return Optional.empty();
+        }
+        int userId = optionalUserId.get();
+        return findById(userId);
+    }
+
+    @Override
+    public Optional<User> findByPhone(String phone) throws DaoException {
+        Optional<Integer> optionalUserId = findUserIdByPhone(phone);
+        if(!optionalUserId.isPresent()){
+            return Optional.empty();
+        }
+        int userId = optionalUserId.get();
         return findById(userId);
     }
 
@@ -271,25 +295,34 @@ public final class UserDaoImpl implements UserDao {
         }
     }
 
-    private PreparedStatement getSelectUserIdStatement(Connection connection, User user) throws SQLException {
-        String selectStatement;
-        String identParam;
-        if (user.getLogin() != null && !user.getLogin().isEmpty()) {
-            selectStatement = SELECT_USER_ID_BY_LOGIN;
-            identParam = user.getLogin();
-        } else if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-            selectStatement = SELECT_USER_ID_BY_EMAIL;
-            identParam = user.getEmail();
-        }else if (user.getPhone() != null && !user.getPhone().isEmpty()) {
-            selectStatement = SELECT_USER_ID_BY_PHONE;
-            identParam = user.getPhone();
-        } else {
-            logger.error("Can't find uniq field of provided user!");
-            return null;
+    private Optional<Integer> findUserIdByLogin(String login) throws DaoException{
+        return findUserId(login, SELECT_USER_ID_BY_LOGIN);
+    }
+
+    private Optional<Integer> findUserIdByEmail(String email) throws DaoException{
+        return findUserId(email, SELECT_USER_ID_BY_EMAIL);
+    }
+
+    private Optional<Integer> findUserIdByPhone(String phone) throws DaoException{
+        return findUserId(phone, SELECT_USER_ID_BY_PHONE);
+    }
+
+    private Optional<Integer> findUserId(String identField, String selectQuery) throws DaoException {
+        try(Connection connection = pool.getConnection();
+            PreparedStatement statement = connection.prepareStatement(selectQuery)){
+            statement.setString(1, identField);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                int userId = resultSet.getInt(USER_ID);
+                return Optional.of(userId);
+            }else{
+                return Optional.empty();
+            }
+
+        }catch (SQLException e){
+            logger.error("Can't find user id: ", e);
+            throw new DaoException("Can't find user id", e);
         }
-        PreparedStatement statement = connection.prepareStatement(selectStatement);
-        statement.setString(1, identParam);
-        return statement;
     }
 
 }
