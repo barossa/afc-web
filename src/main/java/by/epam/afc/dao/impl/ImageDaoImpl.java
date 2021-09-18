@@ -124,8 +124,8 @@ public final class ImageDaoImpl implements ImageDao {
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                image.setId(generatedKeys.getInt(ID_KEY));
-                return Optional.of(image);
+                int imageId = generatedKeys.getInt(ID_KEY);
+                return findById(imageId);
             } else {
                 logger.error("Can't get generated keys from Result Set!");
                 return Optional.empty();

@@ -11,9 +11,8 @@ import java.io.IOException;
 import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.SessionAttribute.AUTHORIZED;
 
-@WebFilter(urlPatterns = {"/jsp/pages/auth/*"})
-public class AuthAccessFilter implements Filter {
-    @Override
+public class AuthAccessFilter {
+
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpSession session = request.getSession();
@@ -22,7 +21,7 @@ public class AuthAccessFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         }else{
             HttpServletResponse response = (HttpServletResponse) servletResponse;
-            response.sendRedirect(request.getContextPath() + INDEX);
+            request.getRequestDispatcher(INDEX).forward(servletRequest, servletResponse);
         }
     }
 }

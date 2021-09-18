@@ -52,7 +52,7 @@ style="background-color: #d9534f !important;">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false"
                    style="font-size: 15px; font-weight: bolder; color: whitesmoke;">
-                    ${language}
+                    <fmt:message key="language"/>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="${pageContext.request.contextPath}/controller?command=change_locale&locale=en_US">English(US)</a></li>

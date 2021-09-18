@@ -20,7 +20,6 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
                 .build();
         session.setAttribute(USER, guest);
         session.setAttribute(AUTHORIZED, false);
-        session.setAttribute(LANGUAGE, "English(US)");
         session.setAttribute(LOCALE, "en_US");
     }
 }

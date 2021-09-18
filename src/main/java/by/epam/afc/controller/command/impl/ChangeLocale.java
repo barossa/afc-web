@@ -23,11 +23,9 @@ public class ChangeLocale implements Command {
         switch (locale) {
             case "ru_RU":
                 session.setAttribute(LOCALE, "ru_RU");
-                session.setAttribute(LANGUAGE, "Русский(RU)");
                 break;
             default:
                 session.setAttribute(LOCALE, "en_US");
-                session.setAttribute(LANGUAGE, "English(US)");
         }
         String latestPath = (String) session.getAttribute(LATEST_CONTEXT_PATH);
         if(latestPath == null){

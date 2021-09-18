@@ -149,8 +149,8 @@ public final class UserDaoImpl implements UserDao {
             updateUser.setString(3, user.getLogin());
             updateUser.setString(4, user.getEmail());
             updateUser.setString(5, user.getPhone());
-            updateUser.setInt(6, user.getRole().ordinal() + ENUM_INDEX_DIFFERENCE);
-            updateUser.setInt(7, user.getStatus().ordinal() + ENUM_INDEX_DIFFERENCE);
+            updateUser.setInt(6, user.getRole().ordinal());
+            updateUser.setInt(7, user.getStatus().ordinal());
             updateUser.setString(8, user.getAbout());
             updateUser.setInt(9, user.getProfileImage().getId());
             updateUser.setInt(10, user.getId());
@@ -177,16 +177,16 @@ public final class UserDaoImpl implements UserDao {
             statement.setString(4, UNDEFINED_USER_PASSWORD);
             statement.setString(5, user.getEmail());
             statement.setString(6, user.getPhone());
-            statement.setInt(7, User.Role.USER.ordinal() + ENUM_INDEX_DIFFERENCE);
-            statement.setInt(8, User.Status.DELAYED_REG.ordinal() + ENUM_INDEX_DIFFERENCE);
+            statement.setInt(7, user.getRole().ordinal());
+            statement.setInt(8, user.getStatus().ordinal());
             statement.setString(9, user.getAbout());
             statement.setInt(10, DEFAULT_USER_IMAGE_ID);
             statement.execute();
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                user.setId(generatedKeys.getInt(ID_KEY));
-                return Optional.of(user);
+                int userId = generatedKeys.getInt(ID_KEY);
+                return findById(userId);
             } else {
                 logger.error("Can't get generated keys from Result Set!");
                 return Optional.empty();

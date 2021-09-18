@@ -13,8 +13,10 @@ import java.util.Optional;
 
 import static by.epam.afc.controller.PagePath.*;
 import static by.epam.afc.controller.RequestAttribute.*;
-import static by.epam.afc.controller.SessionAttribute.*;
-import static by.epam.afc.controller.command.Router.DispatchType.*;
+import static by.epam.afc.controller.SessionAttribute.AUTHORIZED;
+import static by.epam.afc.controller.SessionAttribute.USER;
+import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
+import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
 public class LoginCommand implements Command {
     @Override
@@ -25,12 +27,24 @@ public class LoginCommand implements Command {
         try {
             UserServiceImpl service = new UserServiceImpl();
             Optional<User> optionalUser = service.authenticate(authField, password.toCharArray());
-            if(optionalUser.isPresent()){
+            if (optionalUser.isPresent()) {
                 HttpSession session = request.getSession();
-                session.setAttribute(USER, optionalUser.get());
+                User user = optionalUser.get();
+                session.setAttribute(USER, user);
                 session.setAttribute(AUTHORIZED, true);
-                router = new Router(REDIRECT,request.getContextPath() +  ABOUT_USER);
-            }else{
+
+                switch (user.getStatus()) {
+                    case DELAYED_REG:
+                        router = new Router(REDIRECT, request.getContextPath() + CONFIRMATION_PAGE);
+                        break;
+                    case BANNED:
+                        router = new Router(REDIRECT, request.getContextPath() + BAN_PAGE);
+                        break;
+                    default:
+                        router = new Router(REDIRECT, request.getContextPath() + INDEX);
+                }
+
+            } else {
                 request.setAttribute(WRONG_LOGIN_OR_PASSWORD, true);
                 router = new Router(FORWARD, LOGIN_PAGE);
             }

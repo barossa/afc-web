@@ -102,7 +102,7 @@ public final class DialogDaoImpl implements DialogDao {
              PreparedStatement updateDialog = connection.prepareStatement(UPDATE_DIALOG);
              PreparedStatement updateUserDialog = connection.prepareStatement(UPDATE_USER_DIALOG_INFO)) {
 
-            updateDialog.setInt(1, dialog.getType().ordinal() + ENUM_INDEX_DIFFERENCE);
+            updateDialog.setInt(1, dialog.getType().ordinal());
             updateDialog.setInt(2, dialog.getAnnouncementId());
             updateDialog.setInt(3, dialog.getId());
             updateDialog.execute();
@@ -125,14 +125,14 @@ public final class DialogDaoImpl implements DialogDao {
              PreparedStatement insertDialog = connection.prepareStatement(INSERT_DIALOG,
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            insertDialog.setInt(1, dialog.getType().ordinal() + ENUM_INDEX_DIFFERENCE);
+            insertDialog.setInt(1, dialog.getType().ordinal());
             insertDialog.setInt(2, dialog.getAnnouncementId());
             insertDialog.execute();
 
             ResultSet generatedKeys = insertDialog.getGeneratedKeys();
             if (generatedKeys.next()) {
-                dialog.setId(generatedKeys.getInt(ID_KEY));
-                return Optional.of(dialog);
+                int dialogId = generatedKeys.getInt(ID_KEY);
+                return findById(dialogId);
             } else {
                 return Optional.empty();
             }

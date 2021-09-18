@@ -19,22 +19,25 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static by.epam.afc.controller.PagePath.*;
+import static by.epam.afc.controller.RequestAttribute.COMMAND;
 import static by.epam.afc.controller.SessionAttribute.AUTHORIZED;
 import static by.epam.afc.controller.SessionAttribute.USER;
-import static by.epam.afc.controller.command.Router.DispatchType.*;
+import static by.epam.afc.controller.command.CommandType.TO_CONFIRM_PAGE;
+import static by.epam.afc.controller.command.Router.DispatchType.NOT_REQUIRED;
+import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
 public class RegisterCommand implements Command {
     private static final String JSON_CONTENT_TYPE = "application/json";
+    public static final String REDIRECT_KEY = "redirect";
+    private static final String CONFIRMATION_REDIRECT = CONTROLLER + COMMAND + "=" + TO_CONFIRM_PAGE;
 
     Logger logger = LogManager.getLogger(RegisterCommand.class);
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("INITIAL CONTENT TYPE: " + response.getContentType());
         String firstname = request.getParameter(RequestAttribute.FIRSTNAME);
         String lastname = request.getParameter(RequestAttribute.LASTNAME);
         String login = request.getParameter(RequestAttribute.LOGIN);
@@ -65,24 +68,30 @@ public class RegisterCommand implements Command {
                     session.setAttribute(USER, user);
                     session.setAttribute(AUTHORIZED, true);
                     logger.debug("Registered new User[id=" + user.getId() + "]");
-                    return new Router(REDIRECT, request.getContextPath() + ACCOUNT_CONFIRMATION);
+
+                    /*return new Router(REDIRECT, request.getContextPath() + CONFIRMATION_REDIRECT);
+*/
+                    Map<String, String> redirectResponse = new HashMap<>();
+                    redirectResponse.put(REDIRECT_KEY, request.getContextPath() + CONFIRMATION_REDIRECT);
+                    sendJsonResponse(redirectResponse, response);
                 }
             } catch (ServiceException e) {
                 logger.error("Can't validate registration credential", e);
                 return new Router(REDIRECT, request.getContextPath() + ERROR_505);
+            } catch (IOException e){
+                logger.error("Error occurred while sending JSON redirect.", e);
+                return new Router(REDIRECT, request.getContextPath() + ERROR_505);
             }
         }
 
-        String jsonResponse = new Gson().toJson(validatedCredentials);
-        response.setContentType(JSON_CONTENT_TYPE);
-        try(PrintWriter writer = response.getWriter()){
-            writer.append(jsonResponse);
-        }catch (IOException e){
+        try {
+            sendJsonResponse(validatedCredentials, response);
+        } catch (IOException e) {
             logger.error("Error occurred while sending JSON response.", e);
             return new Router(REDIRECT, ERROR_500);
         }
 
-        return new Router(FORWARD, REGISTER_PAGE);
+        return new Router(NOT_REQUIRED, NONE);
     }
 
     private void existCheck(Map<String, String> credentialsMap) throws ServiceException {
@@ -98,6 +107,14 @@ public class RegisterCommand implements Command {
         }
         if (userService.findPhone(phone)) {
             credentialsMap.put(PHONE, "");
+        }
+    }
+
+    private void sendJsonResponse(Map<String, String> data, HttpServletResponse response) throws IOException {
+        String jsonResponse = new Gson().toJson(data);
+        response.setContentType(JSON_CONTENT_TYPE);
+        try (PrintWriter writer = response.getWriter()) {
+            writer.append(jsonResponse);
         }
     }
 

@@ -109,6 +109,7 @@ public class User {
     }
 
     public enum Role {
+        UNDEFINED,
         USER,
         MODERATOR,
         ADMINISTRATOR,
@@ -116,6 +117,7 @@ public class User {
     }
 
     public enum Status {
+        UNDEFINED,
         DELAYED_REG,
         ACTIVE,
         BANNED

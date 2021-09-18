@@ -9,5 +9,6 @@ public enum CommandType {
     TO_HOME_PAGE,
     TO_LOGIN_PAGE,
     TO_REGISTER_PAGE,
-    TO_FORGOT_PASS_PAGE
+    TO_FORGOT_PASS_PAGE,
+    TO_CONFIRM_PAGE
 }

@@ -198,14 +198,9 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
         }
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_ANNOUNCEMENT)) {
-            statement.setInt(1, announcement.getOwnerId());
-            statement.setString(2, announcement.getTitle());
-            statement.setBigDecimal(3, announcement.getPrice());
-            statement.setInt(4, announcement.getPrimaryImageId());
-            statement.setString(5, announcement.getDescription());
-            statement.setTimestamp(6, Timestamp.valueOf(announcement.getPublicationDate()));
-            statement.setInt(7, announcement.getStatus().ordinal() + ENUM_INDEX_DIFFERENCE);
-            statement.setInt(8, announcement.getCategory().getId());
+            fillStatement(statement, announcement);
+            statement.setInt(9, announcement.getId());
+            statement.execute();
             return Optional.of(announcement);
         } catch (SQLException e) {
             logger.error("Can't update announcement by id=" + announcement.getId(), e);
@@ -218,19 +213,13 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT_ANNOUNCEMENT,
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, announcement.getOwnerId());
-            statement.setString(2, announcement.getTitle());
-            statement.setBigDecimal(3, announcement.getPrice());
-            statement.setInt(4, announcement.getPrimaryImageId());
-            statement.setString(5, announcement.getDescription());
-            statement.setTimestamp(6, Timestamp.valueOf(announcement.getPublicationDate()));
-            statement.setInt(7, announcement.getStatus().ordinal() + ENUM_INDEX_DIFFERENCE);
+            fillStatement(statement, announcement);
             statement.execute();
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                announcement.setId(generatedKeys.getInt(ID_KEY));
-                return Optional.of(announcement);
+                int announcementId = generatedKeys.getInt(ID_KEY);
+                return findById(announcementId);
             } else {
                 logger.error("Can't get generated keys from Result Set!");
                 return Optional.empty();
@@ -240,5 +229,16 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
             logger.error("Can't save new announcement:", e);
             throw new DaoException("Can't save new announcement", e);
         }
+    }
+
+    private void fillStatement(PreparedStatement statement, Announcement announcement) throws SQLException {
+        statement.setInt(1, announcement.getOwnerId());
+        statement.setString(2, announcement.getTitle());
+        statement.setBigDecimal(3, announcement.getPrice());
+        statement.setInt(4, announcement.getPrimaryImageId());
+        statement.setString(5, announcement.getDescription());
+        statement.setTimestamp(6, Timestamp.valueOf(announcement.getPublicationDate()));
+        statement.setInt(7, announcement.getStatus().ordinal());
+        statement.setInt(8, announcement.getCategory().getId());
     }
 }

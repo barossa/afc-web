@@ -100,6 +100,7 @@ public class Announcement {
     }
 
     public enum Status {
+        UNDEFINED,
         MODERATING,
         ACTIVE,
         INACTIVE

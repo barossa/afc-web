@@ -177,8 +177,8 @@ public final class MessageDaoImpl implements MessageDao {
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                message.setId(generatedKeys.getInt(ID_KEY));
-                return Optional.of(message);
+                int messageId = generatedKeys.getInt(ID_KEY);
+                return findById(messageId);
             } else {
                 logger.error("Can't get generated keys from Result Set!");
                 return Optional.empty();

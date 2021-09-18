@@ -1,6 +1,5 @@
 package by.epam.afc.service.validator.impl;
 
-import by.epam.afc.dao.entity.User;
 import by.epam.afc.service.validator.CredentialsValidator;
 
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     public static final String EMAIL = "email";
     public static final String PHONE = "phone";
     public static final String PASSWORD = "password";
-    public static final String PASSWORD_REPEAT = "password_repeat";
+    public static final String PASSWORD_REPEAT = "passwordRepeat";
 
     private final Pattern namePattern;
     private final Pattern loginPattern;
@@ -35,7 +34,7 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     private final Pattern phonePattern;
     private final Pattern passPattern;
 
-    private CredentialsValidatorImpl(){
+    private CredentialsValidatorImpl() {
         namePattern = Pattern.compile(NAME_REGEX);
         loginPattern = Pattern.compile(LOGIN_REGEX);
         emailPattern = Pattern.compile(EMAIL_REGEX);
@@ -43,13 +42,13 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         passPattern = Pattern.compile(PASSWORD_REGEX);
     }
 
-    public static CredentialsValidatorImpl getInstance(){
+    public static CredentialsValidatorImpl getInstance() {
         return instance;
     }
 
     @Override
-    public boolean validateName(String name){
-        if (name != null && name.length() <= MAX_LOGIN_LENGTH){
+    public boolean validateName(String name) {
+        if (name != null && name.length() <= MAX_NAME_LENGTH) {
             Matcher matcher = namePattern.matcher(name);
             return matcher.matches();
         }
@@ -58,7 +57,7 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
 
     @Override
     public boolean validateLogin(String login) {
-        if (login != null && login.length() <= MAX_LOGIN_LENGTH){
+        if (login != null && login.length() <= MAX_LOGIN_LENGTH) {
             Matcher matcher = loginPattern.matcher(login);
             return matcher.matches();
         }
@@ -67,7 +66,7 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
 
     @Override
     public boolean validateEmail(String email) {
-        if (email != null && email.length() <= MAX_EMAIL_LENGTH){
+        if (email != null && email.length() <= MAX_EMAIL_LENGTH) {
             Matcher matcher = emailPattern.matcher(email);
             return matcher.matches();
         }
@@ -76,16 +75,16 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
 
     @Override
     public boolean validatePhone(String phone) {
-        if (phone != null && !phone.isEmpty()){
-           Matcher matcher = phonePattern.matcher(phone);
-           return matcher.matches();
+        if (phone != null && !phone.isEmpty()) {
+            Matcher matcher = phonePattern.matcher(phone);
+            return matcher.matches();
         }
         return false;
     }
 
     @Override
     public boolean validatePassword(String password) {
-        if (password != null && !password.isEmpty()){
+        if (password != null && !password.isEmpty()) {
             Matcher matcher = passPattern.matcher(password);
             return matcher.matches();
         }
@@ -96,25 +95,25 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     public Map<String, String> validateCredentials(Map<String, String> credentialsMap) {
         Map<String, String> correctCredentials = new HashMap<>(credentialsMap);
 
-        if(!validateName(correctCredentials.get(FIRSTNAME))){
+        if (!validateName(correctCredentials.get(FIRSTNAME))) {
             correctCredentials.put(FIRSTNAME, "");
         }
-        if(!validateName(correctCredentials.get(LASTNAME))){
+        if (!validateName(correctCredentials.get(LASTNAME))) {
             correctCredentials.put(LASTNAME, "");
         }
-        if(!validateLogin(correctCredentials.get(LOGIN))){
+        if (!validateLogin(correctCredentials.get(LOGIN))) {
             correctCredentials.put(LOGIN, "");
         }
-        if(!validateEmail(correctCredentials.get(EMAIL))){
+        if (!validateEmail(correctCredentials.get(EMAIL))) {
             correctCredentials.put(EMAIL, "");
         }
-        if(!validatePhone(correctCredentials.get(PHONE))){
+        if (!validatePhone(correctCredentials.get(PHONE))) {
             correctCredentials.put(PHONE, "");
         }
 
         String password = correctCredentials.get(PASSWORD);
         String passwordRepeat = correctCredentials.get(PASSWORD_REPEAT);
-        if(!password.equals(passwordRepeat)){
+        if (!password.equals(passwordRepeat)) {
             correctCredentials.put(PASSWORD, "");
             correctCredentials.put(PASSWORD_REPEAT, "");
         }

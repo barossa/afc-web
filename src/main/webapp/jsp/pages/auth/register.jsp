@@ -40,7 +40,7 @@
 
              <span class="login-form-title p-b-45">
 						<fmt:message key="auth.regTitle"/>
-					</span>
+             </span>
             <form id="registrationForm" class="login-form validate-form" action="${pageContext.request.contextPath}/controller" method="post">
                 <input type="hidden" name="command" value="register_command">
             <div class="form-group input-group me-auto" style="width: 48.5%; display: inline-flex;">

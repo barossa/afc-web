@@ -60,8 +60,5 @@ public class ColumnName {
     /*ANNOUNCEMENT_STATUSES*/
     public static final String STATUS_DESCRIPTION = "status_description";
 
-    /*ENUMS*/
-    public static final int ENUM_INDEX_DIFFERENCE = 1;
-
 }
 

@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.Map;
 import java.util.Optional;
 
+import static by.epam.afc.dao.entity.User.Role.USER;
+import static by.epam.afc.dao.entity.User.Status.DELAYED_REG;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
 public class UserServiceImpl implements UserService {
@@ -76,6 +78,8 @@ public class UserServiceImpl implements UserService {
                 .login(validatedCredentials.get(LOGIN))
                 .email(validatedCredentials.get(EMAIL))
                 .phone(validatedCredentials.get(PHONE))
+                .role(USER)
+                .status(DELAYED_REG)
                 .build();
         UserDaoImpl userDao = DaoHolder.getUserDao();
         try {
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService {
             User savedUser = optionalSaved.get();
             char[] password = validatedCredentials.get(PASSWORD).toCharArray();
             updatePassword(savedUser, password);
+            System.out.println("SAVED USER: " + savedUser);
             return Optional.of(savedUser);
 
         } catch (DaoException e) {

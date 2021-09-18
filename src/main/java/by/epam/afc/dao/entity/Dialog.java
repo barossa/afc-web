@@ -46,6 +46,7 @@ public class Dialog {
     }
 
     public enum Type {
+        UNDEFINED,
         PRIVATE,
         ANNOUNCEMENT
     }
