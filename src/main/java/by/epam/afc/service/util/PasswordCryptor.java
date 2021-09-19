@@ -3,15 +3,20 @@ package by.epam.afc.service.util;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class PasswordCryptor {
+    private static final PasswordCryptor instance = new PasswordCryptor();
     private static final int DEFAULT_CRYPT_COST = 10;
 
     private PasswordCryptor(){}
 
-    public static String encrypt(char[] password){
+    public static PasswordCryptor getInstance(){
+        return instance;
+    }
+
+    public String encrypt(char[] password){
         return BCrypt.withDefaults().hashToString(DEFAULT_CRYPT_COST, password);
     }
 
-    public static boolean verify(char[] password, char[] hash){
+    public boolean verify(char[] password, char[] hash){
         BCrypt.Result result = BCrypt.verifyer().verify(password, hash);
         return result.verified;
     }

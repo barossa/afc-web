@@ -8,6 +8,7 @@ import by.epam.afc.dao.mapper.impl.ImageRowMapper;
 import by.epam.afc.dao.mapper.impl.MessageRowMapper;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
+import by.epam.afc.service.util.QueryHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.IMAGES;
 import static by.epam.afc.dao.TableName.MESSAGES;
+import static by.epam.afc.service.validator.impl.SearchRequestValidatorImpl.SPLIT_CHARACTER;
 
 public final class MessageDaoImpl implements MessageDao {
 
@@ -38,6 +40,12 @@ public final class MessageDaoImpl implements MessageDao {
             + " FROM " + MESSAGES
             + " INNER JOIN " + IMAGES + " ON " + MESSAGES + "." + IMAGE_ID + "=" + IMAGES + "." + IMAGE_ID
             + " WHERE " + DIALOG_ID + "=?;";
+
+    private static final String SELECT_BY_REGEX = "SELECT " + MESSAGE_ID + "," + DIALOG_ID + "," + SENDER_ID + "," + SENT_TIME + ","
+            + TEXT_CONTENT + "," + GRAPHIC_CONTENT + "," + IMAGE_ID + "," + UPLOAD_DATA + "," + UPLOADED_BY + "," + BIN_IMAGE
+            + " FROM " + MESSAGES
+            + " INNER JOIN " + IMAGES + " ON " + MESSAGES + "." + IMAGE_ID + "=" + IMAGES + "." + IMAGE_ID
+            + " WHERE " + TEXT_CONTENT;
 
     private static final String UPDATE_BY_MESSAGE_ID = "UPDATE " + MESSAGES + " SET " + DIALOG_ID + "=?," + SENDER_ID + "=?," + SENT_TIME + "=?,"
             + TEXT_CONTENT + "=?," + GRAPHIC_CONTENT + "=?," + IMAGE_ID + "=? " + "WHERE " + MESSAGE_ID + " =?;";
@@ -192,8 +200,26 @@ public final class MessageDaoImpl implements MessageDao {
 
     @Override
     public List<Message> findByPart(String part) throws DaoException {
-        //// TODO: 8/20/21 PROTECT FROM SQL INJECTION
-        return null;
+        String[] patterns = part.split(SPLIT_CHARACTER);
+        QueryHelper helper = QueryHelper.getInstance();
+
+        String query = helper.completeRegexpQuery(SELECT_BY_REGEX, patterns);
+        List<Message> messages = new ArrayList<>();
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            MessageRowMapper mapper = new MessageRowMapper();
+            while(resultSet.next()){
+                Message message = mapper.mapRows(resultSet);
+                messages.add(message);
+            }
+            return messages;
+
+        } catch (SQLException e) {
+            logger.error("Can't find messages by part.", e);
+            throw new DaoException("Can't find messages by part.", e);
+        }
     }
 
     @Override

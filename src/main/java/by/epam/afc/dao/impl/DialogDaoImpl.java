@@ -36,6 +36,18 @@ public final class DialogDaoImpl implements DialogDao {
             + " INNER JOIN " + USER_DIALOGS + " ON " + DIALOGS + "." + DIALOG_ID + "=" + USER_DIALOGS + "." + DIALOG_ID
             + " WHERE " + DIALOG_ID + "=?;";
 
+    private static final String SELECT_BY_USER_ID = "SELECT " + DIALOGS + "." + DIALOG_ID + "," + TYPE_DESCRIPTION + "," + ANNOUNCEMENT_ID + "," + VISIBLE
+            + " FROM " + DIALOGS
+            + " INNER JOIN " + DIALOG_TYPES + " ON " + DIALOGS + "." + TYPE_ID + "=" + DIALOG_TYPES + "." + TYPE_ID
+            + " INNER JOIN " + USER_DIALOGS + " ON " + DIALOGS + "." + DIALOG_ID + "=" + USER_DIALOGS + "." + DIALOG_ID
+            + " WHERE " + USER_DIALOGS + "." + USER_ID + " = ?;";
+
+    private static final String SELECT_BY_ANNOUNCEMENT_ID = "SELECT " + DIALOG_ID + "," + TYPE_DESCRIPTION + "," + ANNOUNCEMENT_ID + "," + VISIBLE
+            + " FROM " + DIALOGS
+            + " INNER JOIN " + DIALOG_TYPES + " ON " + DIALOGS + "." + TYPE_ID + "=" + DIALOG_TYPES + "." + TYPE_ID
+            + " INNER JOIN " + USER_DIALOGS + " ON " + DIALOGS + "." + DIALOG_ID + "=" + USER_DIALOGS + "." + DIALOG_ID
+            + " WHERE " + ANNOUNCEMENT_ID + " = ?;";
+
     private static final String UPDATE_DIALOG = "UPDATE " + DIALOGS + " SET " + TYPE_ID + "=?," + ANNOUNCEMENT_ID + "=?"
             + " WHERE " + DIALOG_ID + "=?;";
 
@@ -144,31 +156,58 @@ public final class DialogDaoImpl implements DialogDao {
     }
 
     @Override
-    public List<Dialog> findByUser(User user) throws DaoException {//// TODO: 8/30/21  
-        return null;
-    }
-
-    @Override
-    public Optional<Dialog> findByAnnouncement(Announcement announcement) throws DaoException { /// TODO: 8/30/21  
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Dialog> findByMessage(Message message) throws DaoException {//// TODO: 8/30/21  
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean saveUserDialogInfo(User user, Dialog dialog) throws DaoException { //// TODO: 8/30/21   
+    public List<Dialog> findByUser(User user) throws DaoException {
         try (Connection connection = pool.getConnection();
-        PreparedStatement statement = connection.prepareStatement(INSERT_USER_DIALOG_INFO)){
+             PreparedStatement statement = connection.prepareStatement(SELECT_BY_USER_ID)) {
+            return findByUniqueId(statement, user.getId());
+
+        } catch (SQLException e) {
+            logger.error("Can't find dialogs by user id:", e);
+            throw new DaoException("Can't find dialogs by user id.", e);
+        }
+    }
+
+    @Override
+    public List<Dialog> findByAnnouncement(Announcement announcement) throws DaoException {
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_BY_ANNOUNCEMENT_ID)) {
+            return findByUniqueId(statement, announcement.getId());
+
+        } catch (SQLException e) {
+            logger.error("Can't find dialogs by announcement id:", e);
+            throw new DaoException("Can't find dialogs by announcement id.", e);
+        }
+    }
+
+    @Override
+    public Optional<Dialog> findByMessage(Message message) throws DaoException {
+        return findById(message.getDialogId());
+    }
+
+    @Override
+    public boolean saveUserDialogInfo(User user, Dialog dialog) throws DaoException { //// TODO: 8/30/21   ??
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_USER_DIALOG_INFO)) {
             statement.setInt(1, user.getId());
             statement.setInt(2, dialog.getId());
             statement.setBoolean(3, dialog.isVisible());
             return statement.execute();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("Can't update user's dialog info:", e);
             throw new DaoException("Can't update user's dialog info", e);
         }
+    }
+
+    private List<Dialog> findByUniqueId(PreparedStatement statement, int id) throws SQLException {
+        statement.setInt(1, id);
+        ResultSet resultSet = statement.executeQuery();
+        List<Dialog> dialogs = new ArrayList<>();
+        DialogRowMapper mapper = new DialogRowMapper();
+        while (resultSet.next()) {
+            Dialog dialog = mapper.mapRows(resultSet);
+            dialogs.add(dialog);
+        }
+        resultSet.close();
+        return dialogs;
     }
 }

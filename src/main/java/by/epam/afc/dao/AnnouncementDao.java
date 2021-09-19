@@ -10,10 +10,8 @@ import java.util.Optional;
 
 public interface AnnouncementDao extends BaseDao<Announcement> {
     List<Announcement> findByOwner(User owner) throws DaoException;
-
     List<Announcement> findByCategory(Category category) throws DaoException;
-
+    List<Announcement> findByName(String name) throws DaoException;
     List<Category> findAllCategories() throws DaoException;
-
     Optional<Category> findCategoryForName(String category) throws DaoException;
 }

@@ -25,7 +25,7 @@ public class LoginCommand implements Command {
         String authField = request.getParameter(AUTH_FIELD);
         String password = request.getParameter(PASSWORD);
         try {
-            UserServiceImpl service = new UserServiceImpl();
+            UserServiceImpl service = UserServiceImpl.getInstance();
             Optional<User> optionalUser = service.authenticate(authField, password.toCharArray());
             if (optionalUser.isPresent()) {
                 HttpSession session = request.getSession();
@@ -49,9 +49,8 @@ public class LoginCommand implements Command {
                 router = new Router(FORWARD, LOGIN_PAGE);
             }
         } catch (ServiceException e) {
-            //// TODO: 9/4/21 CUSTOM ERROR PAGE
             request.setAttribute(EXCEPTION, e);
-            router = new Router(REDIRECT, ERROR_505);
+            router = new Router(FORWARD, ERROR_505);
         }
         return router;
     }

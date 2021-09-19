@@ -48,43 +48,51 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
 
     @Override
     public boolean validateName(String name) {
-        if (name != null && name.length() <= MAX_NAME_LENGTH) {
-            Matcher matcher = namePattern.matcher(name);
-            return matcher.matches();
+        if (name != null) {
+            if (name.length() > 0 && name.length() <= MAX_NAME_LENGTH) {
+                Matcher matcher = namePattern.matcher(name);
+                return matcher.matches();
+            }
         }
         return false;
     }
 
     @Override
     public boolean validateLogin(String login) {
-        if (login != null && login.length() <= MAX_LOGIN_LENGTH) {
-            Matcher matcher = loginPattern.matcher(login);
-            return matcher.matches();
+        if (login != null) {
+            if (login.length() > 0 && login.length() <= MAX_LOGIN_LENGTH) {
+                Matcher matcher = loginPattern.matcher(login);
+                return matcher.matches();
+            }
         }
         return false;
     }
 
     @Override
     public boolean validateEmail(String email) {
-        if (email != null && email.length() <= MAX_EMAIL_LENGTH) {
-            Matcher matcher = emailPattern.matcher(email);
-            return matcher.matches();
+        if (email != null) {
+            if (email.length() > 0 && email.length() <= MAX_EMAIL_LENGTH) {
+                Matcher matcher = emailPattern.matcher(email);
+                return matcher.matches();
+            }
         }
         return false;
     }
 
     @Override
     public boolean validatePhone(String phone) {
-        if (phone != null && !phone.isEmpty()) {
-            Matcher matcher = phonePattern.matcher(phone);
-            return matcher.matches();
+        if (phone != null) {
+            if (phone.length() > 0) {
+                Matcher matcher = phonePattern.matcher(phone);
+                return matcher.matches();
+            }
         }
         return false;
     }
 
     @Override
     public boolean validatePassword(String password) {
-        if (password != null && !password.isEmpty()) {
+        if (password != null && password.length() > 0) {
             Matcher matcher = passPattern.matcher(password);
             return matcher.matches();
         }

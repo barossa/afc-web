@@ -19,7 +19,14 @@ import static by.epam.afc.dao.entity.User.Status.DELAYED_REG;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
 public class UserServiceImpl implements UserService {
+    private static final UserServiceImpl instance = new UserServiceImpl();
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
+    private UserServiceImpl(){}
+
+    public static UserServiceImpl getInstance(){
+        return instance;
+    }
 
     @Override
     public Optional<User> authenticate(String authField, char[] password) throws ServiceException { //// TODO: 9/2/21 Add validation log/pass
@@ -52,7 +59,8 @@ public class UserServiceImpl implements UserService {
             Optional<String> optionalHash = userDao.findEncryptedPassword(user);
             if (optionalHash.isPresent()) {
                 String hash = optionalHash.get();
-                boolean verified = PasswordCryptor.verify(password, hash.toCharArray());
+                PasswordCryptor cryptor = PasswordCryptor.getInstance();
+                boolean verified = cryptor.verify(password, hash.toCharArray());
                 if (verified) {
                     return userDao.findUniqUser(user);
                 }
@@ -103,7 +111,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(User user, char[] newPassword) throws ServiceException {
         UserDaoImpl userDao = DaoHolder.getUserDao();
-        String encrypted = PasswordCryptor.encrypt(newPassword);
+        PasswordCryptor cryptor = PasswordCryptor.getInstance();
+        String encrypted = cryptor.encrypt(newPassword);
         try {
             userDao.updateUserPassword(user, encrypted);
         } catch (DaoException e) {

@@ -22,11 +22,9 @@ import java.util.Optional;
 
 import static by.epam.afc.controller.PagePath.*;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
-import static by.epam.afc.controller.SessionAttribute.AUTHORIZED;
-import static by.epam.afc.controller.SessionAttribute.USER;
+import static by.epam.afc.controller.SessionAttribute.*;
 import static by.epam.afc.controller.command.CommandType.TO_CONFIRM_PAGE;
-import static by.epam.afc.controller.command.Router.DispatchType.NOT_REQUIRED;
-import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
+import static by.epam.afc.controller.command.Router.DispatchType.*;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
 public class RegisterCommand implements Command {
@@ -61,7 +59,7 @@ public class RegisterCommand implements Command {
             try {
                 existCheck(validatedCredentials);
                 if (!validatedCredentials.containsValue("")) {// Exists validation
-                    UserServiceImpl userService = new UserServiceImpl();
+                    UserServiceImpl userService = UserServiceImpl.getInstance();
                     Optional<User> registeredUser = userService.register(credentialsMap);
                     User user = registeredUser.orElseThrow(ServiceException::new);
                     HttpSession session = request.getSession();
@@ -69,8 +67,6 @@ public class RegisterCommand implements Command {
                     session.setAttribute(AUTHORIZED, true);
                     logger.debug("Registered new User[id=" + user.getId() + "]");
 
-                    /*return new Router(REDIRECT, request.getContextPath() + CONFIRMATION_REDIRECT);
-*/
                     Map<String, String> redirectResponse = new HashMap<>();
                     redirectResponse.put(REDIRECT_KEY, request.getContextPath() + CONFIRMATION_REDIRECT);
                     sendJsonResponse(redirectResponse, response);
@@ -91,11 +87,11 @@ public class RegisterCommand implements Command {
             return new Router(REDIRECT, ERROR_500);
         }
 
-        return new Router(NOT_REQUIRED, NONE);
+        return new Router(FORWARD, REGISTER_PAGE);
     }
 
     private void existCheck(Map<String, String> credentialsMap) throws ServiceException {
-        UserServiceImpl userService = new UserServiceImpl();
+        UserServiceImpl userService = UserServiceImpl.getInstance();
         String login = credentialsMap.get(LOGIN);
         String email = credentialsMap.get(EMAIL);
         String phone = credentialsMap.get(PHONE);
