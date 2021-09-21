@@ -146,7 +146,7 @@ public final class MessageDaoImpl implements MessageDao {
             if (message.isGraphicsContent()) {
                 statement.setInt(6, message.getImage().getId());
             } else {
-                statement.setInt(6, Image.UNDEFINED_IMAGE_ID);
+                statement.setInt(6, Image.UNDEFINED_ID);
             }
 
             statement.execute();
@@ -179,7 +179,7 @@ public final class MessageDaoImpl implements MessageDao {
                     throw new DaoException("Can't save new image from message!");
                 }
             } else {
-                statement.setInt(6, Image.UNDEFINED_IMAGE_ID);
+                statement.setInt(6, Image.UNDEFINED_ID);
             }
             statement.execute();
 

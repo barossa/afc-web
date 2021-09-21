@@ -1,20 +1,11 @@
 package by.epam.afc.dao.entity;
 
-public class Category {
-    private int id;
+public class Category extends BaseEntity {
     private String description;
 
     public Category(int id, String description) {
-        this.id = id;
+        super(id);
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getDescription() {

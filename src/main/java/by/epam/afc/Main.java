@@ -1,6 +1,7 @@
 package by.epam.afc;
 
 import by.epam.afc.dao.DialogDao;
+import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.impl.DaoHolder;
 import by.epam.afc.dao.impl.UserDaoImpl;
@@ -14,6 +15,8 @@ public class Main {
     public static void main(String[] args) throws DaoException, ServiceException {
         DialogDao dao = DaoHolder.getDialogDao();
         dao.findByUser(User.getBuilder().id(0).build());
+
+        Announcement announcement;
 
     }
 }

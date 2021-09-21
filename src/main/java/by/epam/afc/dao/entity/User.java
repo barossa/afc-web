@@ -1,9 +1,6 @@
 package by.epam.afc.dao.entity;
 
-public class User {
-    public static final int UNDEFINED_USER_ID = -1;
-
-    private int id;
+public class User extends BaseEntity{
     private String firstname;
     private String lastname;
     private String login;
@@ -16,7 +13,7 @@ public class User {
 
     public User(int id, String firstname, String lastname, String login, String email,
                 String phone, Role role, Status status, String about, Image profileImage) {
-        this.id = id;
+        super(id);
         this.firstname = firstname;
         this.lastname = lastname;
         this.login = login;
@@ -26,14 +23,6 @@ public class User {
         this.status = status;
         this.about = about;
         this.profileImage = profileImage;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFirstname() {
@@ -176,7 +165,7 @@ public class User {
     }
 
     public static class UserBuilder {
-        private int nestedId = UNDEFINED_USER_ID;
+        private int nestedId = UNDEFINED_ID;
         private String nestedFirstName;
         private String nestedLastName;
         private String nestedLogin;

@@ -2,27 +2,16 @@ package by.epam.afc.dao.entity;
 
 import java.time.LocalDateTime;
 
-public class Image {
-    public static final int UNDEFINED_IMAGE_ID = -1;
-
-    private int id;
+public class Image extends BaseEntity{
     private LocalDateTime uploadData;
     private int uploadedByUserId;
     private String base64;
 
     public Image(int id, LocalDateTime uploadData, int uploadedByUserId, String base64) {
-        this.id = id;
+        super(id);
         this.uploadData = uploadData;
         this.uploadedByUserId = uploadedByUserId;
         this.base64 = base64;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public LocalDateTime getUploadData() {
@@ -85,7 +74,7 @@ public class Image {
     }
 
     public static class ImageBuilder {
-        private int nestedId = UNDEFINED_IMAGE_ID;
+        private int nestedId = UNDEFINED_ID;
         private LocalDateTime nestedUploadData;
         private int nestedUploadedByUserId;
         private String nestedBase64;

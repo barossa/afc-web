@@ -3,8 +3,7 @@ package by.epam.afc.dao.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class Announcement {
-    private int id;
+public class Announcement extends BaseEntity{
     private int ownerId;
     private String title;
     private BigDecimal price;
@@ -16,7 +15,7 @@ public class Announcement {
 
     public Announcement(int id, int ownerId, String title, BigDecimal price, int primaryImageId,
                         String description, LocalDateTime publicationDate, Status announcementStatus, Category category) {
-        this.id = id;
+        super(id);
         this.ownerId = ownerId;
         this.title = title;
         this.price = price;
@@ -25,14 +24,6 @@ public class Announcement {
         this.publicationDate = publicationDate;
         this.status = announcementStatus;
         this.category = category;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getOwnerId() {
@@ -159,11 +150,11 @@ public class Announcement {
     }
 
     public static class AnnouncementBuilder {
-        private int nestedId;
-        private int nestedOwnerId;
+        private int nestedId = UNDEFINED_ID;
+        private int nestedOwnerId = UNDEFINED_ID;
         private String nestedTitle;
         private BigDecimal nestedPrice;
-        private int nestedPrimaryImageId;
+        private int nestedPrimaryImageId = UNDEFINED_ID;
         private String nestedDescription;
         private LocalDateTime nestedPublicationDate;
         private Status nestedAnnouncementStatus;

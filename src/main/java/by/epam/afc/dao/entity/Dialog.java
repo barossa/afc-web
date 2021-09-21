@@ -1,24 +1,15 @@
 package by.epam.afc.dao.entity;
 
-public class Dialog {
-    private int id;
+public class Dialog extends BaseEntity{
     private int announcementId;
     private boolean visible;
     private Type type;
 
     public Dialog(int id, int announcementId, boolean visible, Type type) {
-        this.id = id;
+        super(id);
         this.announcementId = announcementId;
         this.visible = visible;
         this.type = type;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getAnnouncementId() {
@@ -87,7 +78,7 @@ public class Dialog {
     }
 
     public static class DialogBuilder {
-        private int nestedId;
+        private int nestedId = UNDEFINED_ID;
         private int nestedAnnouncementId;
         private boolean nestedVisible;
         private Type nestedType;

@@ -2,8 +2,7 @@ package by.epam.afc.dao.entity;
 
 import java.time.LocalDateTime;
 
-public class Message {
-    private int id;
+public class Message extends BaseEntity{
     private int dialogId;
     private int senderId;
     private LocalDateTime sentTime;
@@ -13,21 +12,13 @@ public class Message {
 
     public Message(int id, int dialogId, int senderId, LocalDateTime sentTime, String text,
                    boolean graphicsContent, Image image) {
-        this.id = id;
+        super(id);
         this.dialogId = dialogId;
         this.senderId = senderId;
         this.sentTime = sentTime;
         this.text = text;
         this.graphicsContent = graphicsContent;
         this.image = image;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getDialogId() {
@@ -124,7 +115,7 @@ public class Message {
     }
 
     public static class MessageBuilder {
-        private int nestedId;
+        private int nestedId = UNDEFINED_ID;
         private int nestedDialogId;
         private int nestedSenderId;
         private LocalDateTime nestedSentTime;
