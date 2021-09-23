@@ -20,6 +20,7 @@ import java.util.Optional;
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
 import static by.epam.afc.service.validator.impl.SearchRequestValidatorImpl.SPLIT_CHARACTER;
+import static by.epam.afc.dao.entity.Announcement.Status;
 
 public final class AnnouncementDaoImpl implements AnnouncementDao {
     static final Logger logger = LogManager.getLogger(AnnouncementDaoImpl.class);
@@ -57,6 +58,15 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
             + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
             + " WHERE " + ANNOUNCEMENT_ID;
+
+    private static final String SELECT_ANNOUNCEMENT_BY_RANGE = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
+            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+            + " FROM " + ANNOUNCEMENTS
+            + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
+            + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
+            + " WHERE " + STATUS_ID + "=?"
+            + " ORDER BY " + ANNOUNCEMENT_ID
+            + " LIMIT ?,?;";
 
     private static final String UPDATE_ANNOUNCEMENT = "UPDATE  " + ANNOUNCEMENTS + " SET " + OWNER_ID + "=?," + TITLE + "=?," + PRICE + "=?,"
             + PRIMARY_IMAGE + "=?," + DESCRIPTION + "=?," + PUBLICATION_DATE + "=?," + STATUS_ID + "=?," + CATEGORY_ID + "=?"
@@ -182,6 +192,33 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
         } catch (SQLException e) {
             logger.error("Can't find category by name: ", e);
             throw new DaoException("Can't find category by name", e);
+        }
+    }
+
+    @Override
+    public List<Announcement> findRange(int from, int to, Status status) throws DaoException {
+        List<Announcement> announcements = new ArrayList<>();
+        if(from < 0 || to < 0){
+            return announcements;
+        }
+
+        try(Connection connection = pool.getConnection();
+        PreparedStatement statement = connection.prepareStatement(SELECT_ANNOUNCEMENT_BY_RANGE)){
+            statement.setInt(1, status.ordinal());
+            statement.setInt(2, from);
+            statement.setInt(3, to);
+            ResultSet resultSet = statement.executeQuery();
+
+            AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+            while (resultSet.next()){
+                Announcement announcement = mapper.mapRows(resultSet);
+                announcements.add(announcement);
+            }
+            return announcements;
+
+        }catch (SQLException e){
+            logger.error("Can't find announcements by range", e);
+            throw new DaoException("Can't find announcements by range", e);
         }
     }
 

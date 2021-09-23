@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
+import static by.epam.afc.dao.entity.BaseEntity.UNDEFINED_ID;
 
 public final class UserDaoImpl implements UserDao {
 
@@ -63,7 +64,6 @@ public final class UserDaoImpl implements UserDao {
     private static final String UPDATE_USER_PASSWORD = "UPDATE " + USERS + " SET " + PASSWORD + "=? WHERE " + USER_ID + "=?;";
 
     private static final String UNDEFINED_USER_PASSWORD = "UNDEFINED";
-    private static final int UNDEFINED_USER_IMAGE_ID = Image.UNDEFINED_IMAGE_ID;
     private static final int DEFAULT_USER_IMAGE_ID = 3;
 
     static final Logger logger = LogManager.getLogger(UserDaoImpl.class);
@@ -129,7 +129,7 @@ public final class UserDaoImpl implements UserDao {
             return Optional.empty();
         }
 
-        if (user.getProfileImage().getId() == UNDEFINED_USER_IMAGE_ID) {
+        if (user.getProfileImage().getId() == UNDEFINED_ID) {
             ImageDaoImpl imageDao = DaoHolder.getImageDao();
             Optional<Image> imageOptional = imageDao.save(user.getProfileImage());
             if (imageOptional.isPresent()) {

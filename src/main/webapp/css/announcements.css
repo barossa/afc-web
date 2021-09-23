@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin: 0;
+}
+#main {
+    display: flex;
+    min-height: 100vh;
+    background-color: #fff;
+    background-image: url("https://www.transparenttextures.com/patterns/diagmonds-light.png");
+}
+#main > article {
+    flex: 1;
+}
+#main > nav {
+    flex: 0 0 20vw;
+}
+#main > nav {
+    order: -1;
+}
+
+#search {
+    height: 12vh;
+}
+
+#advertisements {
+    height: calc(100vh - 12vh);
+}
+
+aside {
+    flex-grow: 1;
+}
+
+header, footer {
+    height: 9vh;
+}

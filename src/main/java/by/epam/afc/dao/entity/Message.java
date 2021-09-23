@@ -116,8 +116,8 @@ public class Message extends BaseEntity{
 
     public static class MessageBuilder {
         private int nestedId = UNDEFINED_ID;
-        private int nestedDialogId;
-        private int nestedSenderId;
+        private int nestedDialogId = UNDEFINED_ID;
+        private int nestedSenderId = UNDEFINED_ID;
         private LocalDateTime nestedSentTime;
         private String nestedText;
         private boolean nestedGraphicsContent;

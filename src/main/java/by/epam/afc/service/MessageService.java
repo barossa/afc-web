@@ -12,5 +12,7 @@ public interface MessageService {
     List<Dialog> getUserDialogs(User user) throws ServiceException;
     List<Message> getDialogMessages(Dialog dialog) throws ServiceException;
     Optional<Message> sendMessage(Message message) throws ServiceException;
+    Optional<Dialog> getPrivateDialog(User first, User second) throws ServiceException;
+    Optional<Dialog> getAnnouncementDialog(User first, User second) throws ServiceException;
 
 }

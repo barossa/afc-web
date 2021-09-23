@@ -79,7 +79,7 @@ public class Dialog extends BaseEntity{
 
     public static class DialogBuilder {
         private int nestedId = UNDEFINED_ID;
-        private int nestedAnnouncementId;
+        private int nestedAnnouncementId = UNDEFINED_ID;
         private boolean nestedVisible;
         private Type nestedType;
 
