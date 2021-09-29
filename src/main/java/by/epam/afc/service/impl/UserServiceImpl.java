@@ -18,7 +18,7 @@ import static by.epam.afc.dao.entity.User.Role.USER;
 import static by.epam.afc.dao.entity.User.Status.DELAYED_REG;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD USERS PROFILE IMAGES 
     private static final UserServiceImpl instance = new UserServiceImpl();
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 

@@ -2,36 +2,49 @@ package by.epam.afc.dao.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
-public class Announcement extends BaseEntity{
-    private int ownerId;
+public class Announcement extends BaseEntity {
+    private static final int SHORT_DESCRIPTION_LENGTH = 30;
+    private static final String TO_BE_CONTINUED = "...";
+
+    private User owner;
     private String title;
     private BigDecimal price;
-    private int primaryImageId;
+    private int primaryImageNumber;
     private String description;
+    private String shortDescription;
     private LocalDateTime publicationDate;
     private Status status;
     private Category category;
+    private Region region;
+    private List<Image> images;
 
-    public Announcement(int id, int ownerId, String title, BigDecimal price, int primaryImageId,
-                        String description, LocalDateTime publicationDate, Status announcementStatus, Category category) {
+    public Announcement(int id, User owner, String title, BigDecimal price, int primaryImageNumber,
+                        String description, LocalDateTime publicationDate, Status announcementStatus,
+                        Category category, Region region, List<Image> images) {
         super(id);
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.title = title;
         this.price = price;
-        this.primaryImageId = primaryImageId;
+        this.primaryImageNumber = primaryImageNumber;
         this.description = description;
         this.publicationDate = publicationDate;
         this.status = announcementStatus;
         this.category = category;
+        this.region = region;
+        this.images = new LinkedList<>(images);
+        initializeShortDescription();
     }
 
-    public int getOwnerId() {
-        return ownerId;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public String getTitle() {
@@ -50,12 +63,12 @@ public class Announcement extends BaseEntity{
         this.price = price;
     }
 
-    public int getPrimaryImageId() {
-        return primaryImageId;
+    public int getPrimaryImageNumber() {
+        return primaryImageNumber;
     }
 
-    public void setPrimaryImageId(int primaryImageId) {
-        this.primaryImageId = primaryImageId;
+    public void setPrimaryImageNumber(int primaryImageNumber) {
+        this.primaryImageNumber = primaryImageNumber;
     }
 
     public String getDescription() {
@@ -90,6 +103,22 @@ public class Announcement extends BaseEntity{
         this.category = category;
     }
 
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = new ArrayList<>(images);
+    }
+
     public enum Status {
         UNDEFINED,
         MODERATING,
@@ -101,48 +130,68 @@ public class Announcement extends BaseEntity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Announcement that = (Announcement) o;
 
-        if (id != that.id) return false;
-        if (ownerId != that.ownerId) return false;
-        if (primaryImageId != that.primaryImageId) return false;
+        if (primaryImageNumber != that.primaryImageNumber) return false;
+        if (owner != null ? !owner.equals(that.owner) : that.owner != null) return false;
         if (title != null ? !title.equals(that.title) : that.title != null) return false;
         if (price != null ? !price.equals(that.price) : that.price != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (publicationDate != null ? !publicationDate.equals(that.publicationDate) : that.publicationDate != null)
             return false;
         if (status != that.status) return false;
-        return category == that.category;
+        if (category != null ? !category.equals(that.category) : that.category != null) return false;
+        if (region != null ? !region.equals(that.region) : that.region != null) return false;
+        return images != null ? images.equals(that.images) : that.images == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + ownerId;
+        int result = super.hashCode();
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + primaryImageId;
+        result = 31 * result + primaryImageNumber;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (publicationDate != null ? publicationDate.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + (region != null ? region.hashCode() : 0);
+        result = 31 * result + (images != null ? images.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "Announcement{" +
-                "id=" + id +
-                ", ownerId=" + ownerId +
+                "owner=" + owner +
                 ", title='" + title + '\'' +
                 ", price=" + price +
-                ", primaryImageId=" + primaryImageId +
+                ", primaryImageNumber=" + primaryImageNumber +
                 ", description='" + description + '\'' +
                 ", publicationDate=" + publicationDate +
-                ", announcementStatus=" + status +
+                ", status=" + status +
                 ", category=" + category +
+                ", region=" + region +
+                ", images=" + images +
+                ", id=" + id +
                 '}';
+    }
+
+    private void initializeShortDescription() {
+        if (description != null) {
+            if (!description.isEmpty()) {
+                if (description.length() <= SHORT_DESCRIPTION_LENGTH) {
+                    shortDescription = description + TO_BE_CONTINUED;
+                } else {
+                    shortDescription = description.substring(0, SHORT_DESCRIPTION_LENGTH) + TO_BE_CONTINUED;
+                }
+            } else {
+                shortDescription = "";
+            }
+        }
     }
 
     public static AnnouncementBuilder getBuilder() {
@@ -151,22 +200,24 @@ public class Announcement extends BaseEntity{
 
     public static class AnnouncementBuilder {
         private int nestedId = UNDEFINED_ID;
-        private int nestedOwnerId = UNDEFINED_ID;
+        private User nestedOwner;
         private String nestedTitle;
         private BigDecimal nestedPrice;
-        private int nestedPrimaryImageId = UNDEFINED_ID;
+        private int nestedPrimaryImageNumber;
         private String nestedDescription;
         private LocalDateTime nestedPublicationDate;
         private Status nestedAnnouncementStatus;
         private Category nestedCategory;
+        private Region nestedRegion;
+        private List<Image> nestedImages = new LinkedList<>();
 
         public AnnouncementBuilder id(int id) {
             nestedId = id;
             return this;
         }
 
-        public AnnouncementBuilder ownerId(int ownerId) {
-            nestedOwnerId = ownerId;
+        public AnnouncementBuilder owner(User owner) {
+            nestedOwner = owner;
             return this;
         }
 
@@ -180,8 +231,8 @@ public class Announcement extends BaseEntity{
             return this;
         }
 
-        public AnnouncementBuilder primaryImageId(int primaryImageId) {
-            nestedPrimaryImageId = primaryImageId;
+        public AnnouncementBuilder primaryImageNumber(int primaryImageNumber) {
+            nestedPrimaryImageNumber = primaryImageNumber;
             return this;
         }
 
@@ -205,9 +256,19 @@ public class Announcement extends BaseEntity{
             return this;
         }
 
+        public AnnouncementBuilder region(Region region) {
+            nestedRegion = region;
+            return this;
+        }
+
+        public AnnouncementBuilder images(List<Image> images) {
+            nestedImages.addAll(images);
+            return this;
+        }
+
         public Announcement build() {
-            return new Announcement(nestedId, nestedOwnerId, nestedTitle, nestedPrice, nestedPrimaryImageId,
-                    nestedDescription, nestedPublicationDate, nestedAnnouncementStatus, nestedCategory);
+            return new Announcement(nestedId, nestedOwner, nestedTitle, nestedPrice, nestedPrimaryImageNumber,
+                    nestedDescription, nestedPublicationDate, nestedAnnouncementStatus, nestedCategory, nestedRegion, nestedImages);
         }
     }
 }

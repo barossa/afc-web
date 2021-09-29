@@ -21,7 +21,7 @@ import static by.epam.afc.dao.entity.BaseEntity.UNDEFINED_ID;
 import static by.epam.afc.dao.entity.Dialog.Type;
 import static by.epam.afc.dao.entity.Dialog.Type.*;
 
-public class MessageServiceImpl implements MessageService {
+public class MessageServiceImpl implements MessageService { // TODO: 9/28/21 LOAD MESSAGE IMAGES!!!
     private static final MessageServiceImpl instance = new MessageServiceImpl();
     private final Logger logger = LogManager.getLogger(MessageServiceImpl.class);
 

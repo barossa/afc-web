@@ -9,6 +9,14 @@ import java.sql.SQLException;
 import static by.epam.afc.dao.ColumnName.*;
 
 public class DialogRowMapper implements RowMapper<Dialog> {
+    private static final DialogRowMapper instance = new DialogRowMapper();
+
+    private DialogRowMapper(){}
+
+    public static DialogRowMapper getInstance(){
+        return instance;
+    }
+
     @Override
     public Dialog mapRows(ResultSet rs) throws SQLException {
         return Dialog.getBuilder()

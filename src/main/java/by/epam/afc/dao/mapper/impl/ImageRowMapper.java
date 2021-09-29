@@ -1,6 +1,7 @@
 package by.epam.afc.dao.mapper.impl;
 
 import by.epam.afc.dao.entity.Image;
+import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.mapper.RowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,18 +16,31 @@ import java.util.Base64;
 import static by.epam.afc.dao.ColumnName.*;
 
 public class ImageRowMapper implements RowMapper<Image> {
+    private static final ImageRowMapper instance = new ImageRowMapper();
+    private static final int EOF = -1;
+
     static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
 
-    private static final int EOF = -1;
+    private ImageRowMapper(){}
+
+    public static ImageRowMapper getInstance(){
+        return instance;
+    }
+
 
     @Override
     public Image mapRows(ResultSet rs) throws SQLException {
-        return Image.getBuilder()
+        User owner = User.getBuilder()
+                .id(rs.getInt(UPLOADED_BY))
+                .build();
+
+        Image image =  Image.getBuilder()
                 .id(rs.getInt(IMAGE_ID))
                 .uploadData(rs.getTimestamp(UPLOAD_DATA).toLocalDateTime())
-                .uploadedByUser(rs.getInt(UPLOADED_BY))
+                .uploadedByUser(owner)
                 .base64(readImage(rs.getBinaryStream(BIN_IMAGE), rs.getInt(IMAGE_ID)))
                 .build();
+        return image;
     }
 
     private String readImage(InputStream input, int imageId) {

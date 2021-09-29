@@ -14,10 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Optional;
 
-import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
 import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
@@ -46,6 +44,7 @@ public class Controller extends HttpServlet {
         } else {
             HttpSession session = request.getSession();
             String latestPath = (String) session.getAttribute(LATEST_CONTEXT_PATH);
+            logger.warn("Unknown command: " + (commandName == null ? "null" : commandName));
             router = new Router(REDIRECT, request.getContextPath() + latestPath);
         }
         switch (router.getDispatchType()) {

@@ -31,6 +31,13 @@
                     <fmt:message key="navbar.home"/></a>
             </li>
         </ul>
+        <ul class="navbar-nav m-l-auto">
+            <li class="nav-item active nav-font-main-ws">
+                <a class="nav-link me-auto" href="${pageContext.request.contextPath}/submitAd.jsp"
+                   style="font-size: 25px; font-weight: bold; color: whitesmoke;">
+                    <fmt:message key="announcements.submitAd"/></a>
+            </li>
+        </ul>
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-font" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"

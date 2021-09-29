@@ -10,7 +10,6 @@
 <body>
 <h1>505 - <fmt:message key="exception.505"/></h1>
     <br>
-    <fmt:message key="exception.message"/>: ${exception.getMessage()}
-    <fmt:message key="exception.stacktrace"/>: ${exception.getStackTrace()}
+    <fmt:message key="exception.message"/>: ${exception_message}
 </body>
 </html>

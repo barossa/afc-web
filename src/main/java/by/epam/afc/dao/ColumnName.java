@@ -47,7 +47,7 @@ public class ColumnName {
     public static final String OWNER_ID = "owner_id";
     public static final String TITLE = "title";
     public static final String PRICE = "price";
-    public static final String PRIMARY_IMAGE = "primary_image";
+    public static final String PRIMARY_IMAGE_NUMBER = "primary_image_number";
     public static final String DESCRIPTION = "description";
     public static final String PUBLICATION_DATE = "publication_date";
     public static final String ANNOUNCEMENT_STATUS_ID = "announcement_status_id";
@@ -59,6 +59,10 @@ public class ColumnName {
 
     /*ANNOUNCEMENT_STATUSES*/
     public static final String STATUS_DESCRIPTION = "status_description";
+
+    /*REGIONS*/
+    public static final String REGION_ID = "region_id";
+    public static final String REGION_NAME = "region_name";
 
 }
 

@@ -45,11 +45,10 @@ public class LoginCommand implements Command {
                 }
 
             } else {
-                request.setAttribute(WRONG_LOGIN_OR_PASSWORD, true);
                 router = new Router(FORWARD, LOGIN_PAGE);
             }
         } catch (ServiceException e) {
-            request.setAttribute(EXCEPTION, e);
+            request.setAttribute(EXCEPTION_MESSAGE, e.getMessage());
             router = new Router(FORWARD, ERROR_505);
         }
         return router;

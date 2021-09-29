@@ -20,6 +20,7 @@ public class CommandProvider {
         commands.put(REGISTER_COMMAND, new RegisterCommand());
         commands.put(LOGOUT_COMMAND, new LogoutCommand());
         commands.put(TO_CONFIRM_PAGE, new ToConfirmPage());
+        commands.put(FIND_ANNOUNCEMENTS, new FindAnnouncements());
         //commands.add(commandType,new Command());
     }
 

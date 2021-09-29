@@ -15,6 +15,6 @@ public class PagePath {
     public static final String CONFIRMATION_PAGE = "/jsp/pages/auth/confirmPage.jsp";
     public static final String BAN_PAGE = "/jsp/pages/banPage.jsp";
     public static final String NONE = "/";
-
     public static final String CONTROLLER = "/controller?";
+    public static final String ANNOUNCEMENTS_PAGE = "/jsp/pages/announcements.jsp";
 }

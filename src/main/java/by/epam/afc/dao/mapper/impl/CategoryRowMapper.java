@@ -9,6 +9,14 @@ import java.sql.SQLException;
 import static by.epam.afc.dao.ColumnName.*;
 
 public class CategoryRowMapper implements RowMapper<Category> {
+    private static final CategoryRowMapper instance = new CategoryRowMapper();
+
+    private CategoryRowMapper(){}
+
+    public static CategoryRowMapper getInstance(){
+        return instance;
+    }
+
     @Override
     public Category mapRows(ResultSet rs) throws SQLException {
         return new Category(rs.getInt(CATEGORY_ID), rs.getString(CATEGORY_DESCRIPTION));

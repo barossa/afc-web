@@ -17,9 +17,7 @@ body {
     flex: 1;
 }
 #main > nav {
-    flex: 0 0 20vw;
-}
-#main > nav {
+    flex: 0 0 25vw;
     order: -1;
 }
 
@@ -36,5 +34,9 @@ aside {
 }
 
 header, footer {
-    height: 9vh;
+    height: 8vh;
+}
+
+.validate-input {
+    position: relative;
 }

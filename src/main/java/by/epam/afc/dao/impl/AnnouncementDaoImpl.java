@@ -3,9 +3,11 @@ package by.epam.afc.dao.impl;
 import by.epam.afc.dao.AnnouncementDao;
 import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.dao.entity.Category;
+import by.epam.afc.dao.entity.Region;
 import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.mapper.impl.AnnouncementRowMapper;
 import by.epam.afc.dao.mapper.impl.CategoryRowMapper;
+import by.epam.afc.dao.mapper.impl.RegionRowMapper;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
 import by.epam.afc.service.util.QueryHelper;
@@ -25,67 +27,76 @@ import static by.epam.afc.dao.entity.Announcement.Status;
 public final class AnnouncementDaoImpl implements AnnouncementDao {
     static final Logger logger = LogManager.getLogger(AnnouncementDaoImpl.class);
 
-    private static final String SELECT_ALL_ANNOUNCEMENTS = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+    private static final String SELECT_ALL_ANNOUNCEMENTS = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + "," + REGION_ID + ","
+            + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION + ","
+            + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENTS
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
             + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID + ";";
 
-    private static final String SELECT_ANNOUNCEMENT_BY_ID = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+    private static final String SELECT_ANNOUNCEMENT_BY_ID = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + "," + REGION_ID + ","
+            + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION + ","
+            + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENTS
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
             + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
             + " WHERE " + ANNOUNCEMENT_ID + "=?;";
 
-    private static final String SELECT_ANNOUNCEMENTS_BY_OWNER_ID = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+    private static final String SELECT_ANNOUNCEMENTS_BY_OWNER_ID = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + "," + REGION_ID + ","
+            + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION + ","
+            + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENTS
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
             + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
             + " WHERE " + OWNER_ID + "=?;";
 
-    private static final String SELECT_ANNOUNCEMENTS_BY_CATEGORY_ID = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+    private static final String SELECT_ANNOUNCEMENTS_BY_CATEGORY_ID = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + "," + REGION_ID + ","
+            + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION + ","
+            + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENTS
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
             + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
             + " WHERE " + ANNOUNCEMENT_CATEGORY_ID + "=?;";
 
-    private static final String SELECT_ANNOUNCEMENT_BY_REGEXP = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+    private static final String SELECT_ANNOUNCEMENT_BY_REGEXP = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + "," + REGION_ID + ","
+            + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION + ","
+            + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
             + " FROM " + ANNOUNCEMENTS
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
             + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
             + " WHERE " + ANNOUNCEMENT_ID;
 
-    private static final String SELECT_ANNOUNCEMENT_BY_RANGE = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_DESCRIPTION + "," + CATEGORY_DESCRIPTION + "," + ANNOUNCEMENTS + "." + CATEGORY_ID
+    private static final String SELECT_ANNOUNCEMENT_BY_RANGE = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + "," + REGION_ID
+            + "," + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION
+            + "," + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENTS
             + " JOIN " + ANNOUNCEMENT_STATUSES + " ON " + ANNOUNCEMENTS + "." + STATUS_ID + "=" + ANNOUNCEMENT_STATUSES + "." + STATUS_ID
-            + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + ANNOUNCEMENT_ID
-            + " WHERE " + STATUS_ID + "=?"
+            + " JOIN " + ANNOUNCEMENT_CATEGORIES + " ON " + ANNOUNCEMENTS + "." + CATEGORY_ID + "=" + ANNOUNCEMENT_CATEGORIES + "." + CATEGORY_ID
+            + " WHERE " + ANNOUNCEMENTS + "." + STATUS_ID + "=?"
             + " ORDER BY " + ANNOUNCEMENT_ID
             + " LIMIT ?,?;";
 
     private static final String UPDATE_ANNOUNCEMENT = "UPDATE  " + ANNOUNCEMENTS + " SET " + OWNER_ID + "=?," + TITLE + "=?," + PRICE + "=?,"
-            + PRIMARY_IMAGE + "=?," + DESCRIPTION + "=?," + PUBLICATION_DATE + "=?," + STATUS_ID + "=?," + CATEGORY_ID + "=?"
+            + PRIMARY_IMAGE_NUMBER + "=?," + DESCRIPTION + "=?," + PUBLICATION_DATE + "=?," + STATUS_ID + "=?," + CATEGORY_ID + "=?," + REGION_ID + "=?"
             + " WHERE " + ANNOUNCEMENT_ID + "=?;";
 
     private static final String INSERT_ANNOUNCEMENT = "INSERT INTO " + ANNOUNCEMENTS + "(" + OWNER_ID + "," + TITLE + "," + PRICE + ","
-            + PRIMARY_IMAGE + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_ID + "," + CATEGORY_ID + ") VALUES(?,?,?,?,?,?,?,?);";
+            + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + STATUS_ID + "," + CATEGORY_ID + ") VALUES(?,?,?,?,?,?,?,?);";
 
     private static final String SELECT_ALL_CATEGORIES = "SELECT " + CATEGORY_ID + "," + CATEGORY_DESCRIPTION
-            + " FROM " + ANNOUNCEMENT_CATEGORIES + ";";
+            + " FROM " + ANNOUNCEMENT_CATEGORIES
+            + " ORDER BY " + CATEGORY_ID + ";";
 
     private static final String SELECT_CATEGORY_BY_DESCRIPTION = "SELECT " + CATEGORY_ID + "," + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENT_CATEGORIES
             + " WHERE " + CATEGORY_DESCRIPTION + "=?;";
 
+    private static final String SELECT_ALL_REGIONS = "SELECT " + REGION_ID + ", " + REGION_NAME + " FROM " + REGIONS
+            + " ORDER BY " + REGION_ID + ";";
+
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
-    AnnouncementDaoImpl() {
-    }
+    AnnouncementDaoImpl() {}
 
     @Override
     public List<Announcement> findByOwner(User owner) throws DaoException {
@@ -94,7 +105,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
             statement.setInt(1, owner.getId());
             ResultSet resultSet = statement.executeQuery();
             List<Announcement> announcements = new ArrayList<>();
-            AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+            AnnouncementRowMapper mapper = AnnouncementRowMapper.getInstance();
             while (resultSet.next()) {
                 Announcement announcement = mapper.mapRows(resultSet);
                 announcements.add(announcement);
@@ -121,7 +132,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
             Category foundedCategory = optionalCategory.get();
             statement.setInt(1, foundedCategory.getId());
             ResultSet resultSet = statement.executeQuery();
-            AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+            AnnouncementRowMapper mapper = AnnouncementRowMapper.getInstance();
             while (resultSet.next()) {
                 Announcement announcement = mapper.mapRows(resultSet);
                 announcements.add(announcement);
@@ -144,7 +155,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
 
-            AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+            AnnouncementRowMapper mapper = AnnouncementRowMapper.getInstance();
             while(resultSet.next()){
                 Announcement announcement = mapper.mapRows(resultSet);
                 announcements.add(announcement);
@@ -164,7 +175,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
              ResultSet resultSet = statement.executeQuery()) {
 
             List<Category> categories = new ArrayList<>();
-            CategoryRowMapper mapper = new CategoryRowMapper();
+            CategoryRowMapper mapper = CategoryRowMapper.getInstance();
             while (resultSet.next()) {
                 Category category = mapper.mapRows(resultSet);
                 categories.add(category);
@@ -177,13 +188,34 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     @Override
+    public List<Region> findAllRegions() throws DaoException {
+        try(Connection connection = pool.getConnection();
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL_REGIONS);
+            ResultSet resultSet = statement.executeQuery()){
+
+            List<Region> regions = new ArrayList<>();
+            RegionRowMapper mapper = RegionRowMapper.getInstance();
+            while(resultSet.next()){
+                Region region = mapper.mapRows(resultSet);
+                regions.add(region);
+            }
+            return regions;
+
+        }catch (SQLException e){
+            logger.error("Can't find all regions", e);
+            throw new DaoException("Can't find all regions", e);
+        }
+    }
+
+    @Override
     public Optional<Category> findCategoryForName(String category) throws DaoException {
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_CATEGORY_BY_DESCRIPTION)) {
             statement.setString(1, category);
             ResultSet resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
-                CategoryRowMapper mapper = new CategoryRowMapper();
+                CategoryRowMapper mapper = CategoryRowMapper.getInstance();
                 Category foundedCategory = mapper.mapRows(resultSet);
                 return Optional.of(foundedCategory);
             } else {
@@ -209,7 +241,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
             statement.setInt(3, to);
             ResultSet resultSet = statement.executeQuery();
 
-            AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+            AnnouncementRowMapper mapper = AnnouncementRowMapper.getInstance();
             while (resultSet.next()){
                 Announcement announcement = mapper.mapRows(resultSet);
                 announcements.add(announcement);
@@ -228,7 +260,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
              PreparedStatement statement = connection.prepareStatement(SELECT_ALL_ANNOUNCEMENTS);
              ResultSet resultSet = statement.executeQuery()) {
             List<Announcement> announcements = new ArrayList<>();
-            AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+            AnnouncementRowMapper mapper = AnnouncementRowMapper.getInstance();
             while (resultSet.next()) {
                 Announcement announcement = mapper.mapRows(resultSet);
                 announcements.add(announcement);
@@ -247,7 +279,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                AnnouncementRowMapper mapper = new AnnouncementRowMapper();
+                AnnouncementRowMapper mapper = AnnouncementRowMapper.getInstance();
                 Announcement announcement = mapper.mapRows(resultSet);
                 return Optional.of(announcement);
             } else {
@@ -270,6 +302,7 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
              PreparedStatement statement = connection.prepareStatement(UPDATE_ANNOUNCEMENT)) {
             fillStatement(statement, announcement);
             statement.setInt(9, announcement.getId());
+            statement.setInt(10, announcement.getRegion().getId());
             statement.execute();
             return Optional.of(announcement);
         } catch (SQLException e) {
@@ -302,10 +335,10 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
     }
 
     private void fillStatement(PreparedStatement statement, Announcement announcement) throws SQLException {
-        statement.setInt(1, announcement.getOwnerId());
+        statement.setInt(1, announcement.getOwner().getId());
         statement.setString(2, announcement.getTitle());
         statement.setBigDecimal(3, announcement.getPrice());
-        statement.setInt(4, announcement.getPrimaryImageId());
+        statement.setInt(4, announcement.getPrimaryImageNumber());
         statement.setString(5, announcement.getDescription());
         statement.setTimestamp(6, Timestamp.valueOf(announcement.getPublicationDate()));
         statement.setInt(7, announcement.getStatus().ordinal());

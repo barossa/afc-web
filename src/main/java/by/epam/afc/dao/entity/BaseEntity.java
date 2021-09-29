@@ -20,5 +20,19 @@ public abstract class BaseEntity {
     public int getId(){
         return id;
     }
-    // TODO: 9/21/21 EQUALS HASHCODE
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseEntity that = (BaseEntity) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

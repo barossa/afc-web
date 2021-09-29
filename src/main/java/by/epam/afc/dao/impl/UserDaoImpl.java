@@ -20,23 +20,20 @@ import java.util.Optional;
 
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
-import static by.epam.afc.dao.entity.BaseEntity.UNDEFINED_ID;
 
 public final class UserDaoImpl implements UserDao {
 
     private static final String SELECT_ALL_USERS = "SELECT " + USER_ID + ", " + FIRST_NAME + ", " + LAST_NAME + ", "
             + LOGIN + ", " + EMAIL + ", " + PHONE + ", " + ROLE_DESCRIPTION + ", " + STATUS_DESCRIPTION + ", "
-            + ABOUT + ", " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BIN_IMAGE
+            + ABOUT + ", " + IMAGE_ID
             + " FROM " + USERS
-            + " INNER JOIN " + IMAGES + " ON " + USERS + "." + PROFILE_IMAGE_ID + "=" + IMAGES + "." + IMAGE_ID
             + " INNER JOIN " + USER_STATUSES + " ON " + USERS + "." + STATUS_ID + "=" + USER_STATUSES + "." + STATUS_ID
             + " INNER JOIN " + USER_ROLES + " ON " + USERS + "." + ROLE_ID + "=" + USER_ROLES + "." + ROLE_ID + ";";
 
     private static final String SELECT_BY_ID = "SELECT " + USER_ID + ", " + FIRST_NAME + ", " + LAST_NAME + ", "
             + LOGIN + ", " + EMAIL + ", " + PHONE + ", " + ROLE_DESCRIPTION + ", " + STATUS_DESCRIPTION + ", "
-            + ABOUT + ", " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BIN_IMAGE
+            + ABOUT + ", " + IMAGE_ID
             + " FROM " + USERS
-            + " INNER JOIN " + IMAGES + " ON " + USERS + "." + PROFILE_IMAGE_ID + "=" + IMAGES + "." + IMAGE_ID
             + " INNER JOIN " + USER_STATUSES + " ON " + USERS + "." + STATUS_ID + "=" + USER_STATUSES + "." + STATUS_ID
             + " INNER JOIN " + USER_ROLES + " ON " + USERS + "." + ROLE_ID + "=" + USER_ROLES + "." + ROLE_ID
             + " WHERE " + USER_ID + " = " + "?" + ";";
@@ -82,8 +79,8 @@ public final class UserDaoImpl implements UserDao {
         ) {
 
             List<User> users = new ArrayList<>();
-            UserRowMapper userMapper = new UserRowMapper();
-            ImageRowMapper imageMapper = new ImageRowMapper();
+            UserRowMapper userMapper = UserRowMapper.getInstance();
+            ImageRowMapper imageMapper = ImageRowMapper.getInstance();
             while (resultSet.next()) {
                 User user = userMapper.mapRows(resultSet);
                 Image profileImage = imageMapper.mapRows(resultSet);
@@ -105,16 +102,14 @@ public final class UserDaoImpl implements UserDao {
         ) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
+
             if (!resultSet.next()) {
                 return Optional.empty();
             }
-            UserRowMapper userMapper = new UserRowMapper();
-            ImageRowMapper imageMapper = new ImageRowMapper();
-
+            UserRowMapper userMapper = UserRowMapper.getInstance();
             User user = userMapper.mapRows(resultSet);
-            Image profileImage = imageMapper.mapRows(resultSet);
-            user.setProfileImage(profileImage);
             return Optional.of(user);
+
         } catch (SQLException e) {
             logger.error("Can't find user by ID", e);
             throw new DaoException("Can't find user by ID", e);
@@ -127,17 +122,6 @@ public final class UserDaoImpl implements UserDao {
         if (!toUpdate.isPresent()) {
             logger.warn("User id=" + user.getId() + " is not presented for update!");
             return Optional.empty();
-        }
-
-        if (user.getProfileImage().getId() == UNDEFINED_ID) {
-            ImageDaoImpl imageDao = DaoHolder.getImageDao();
-            Optional<Image> imageOptional = imageDao.save(user.getProfileImage());
-            if (imageOptional.isPresent()) {
-                user.setProfileImage(imageOptional.get());
-            } else {
-                logger.error("Can't update user id=" + user.getId() + " profile image!");
-                throw new DaoException("Can't update user profile image!");
-            }
         }
 
         try (
@@ -155,13 +139,12 @@ public final class UserDaoImpl implements UserDao {
             updateUser.setInt(9, user.getProfileImage().getId());
             updateUser.setInt(10, user.getId());
             updateUser.execute();
+            return Optional.of(user);
         } catch (SQLException e) {
             logger.error("Can't upload new user id= " + user.getId() + " data!", e);
             logger.debug(user);
             throw new DaoException("Can't upload new user data!");
         }
-        logger.debug("User data successfully updated: " + user);
-        return Optional.of(user);
     }
 
     @Override
@@ -236,7 +219,7 @@ public final class UserDaoImpl implements UserDao {
             return findByLogin(login);
         } else if (email != null && !email.isEmpty()) {
             return findByEmail(email);
-        }else if (phone != null && !phone.isEmpty()) {
+        } else if (phone != null && !phone.isEmpty()) {
             return findByPhone(phone);
         } else {
             logger.error("Can't find uniq field of provided user!");
@@ -247,7 +230,7 @@ public final class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findByLogin(String login) throws DaoException {
         Optional<Integer> optionalUserId = findUserIdByLogin(login);
-        if(!optionalUserId.isPresent()){
+        if (!optionalUserId.isPresent()) {
             return Optional.empty();
         }
         int userId = optionalUserId.get();
@@ -257,7 +240,7 @@ public final class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findByEmail(String email) throws DaoException {
         Optional<Integer> optionalUserId = findUserIdByEmail(email);
-        if(!optionalUserId.isPresent()){
+        if (!optionalUserId.isPresent()) {
             return Optional.empty();
         }
         int userId = optionalUserId.get();
@@ -267,7 +250,7 @@ public final class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findByPhone(String phone) throws DaoException {
         Optional<Integer> optionalUserId = findUserIdByPhone(phone);
-        if(!optionalUserId.isPresent()){
+        if (!optionalUserId.isPresent()) {
             return Optional.empty();
         }
         int userId = optionalUserId.get();
@@ -295,31 +278,31 @@ public final class UserDaoImpl implements UserDao {
         }
     }
 
-    private Optional<Integer> findUserIdByLogin(String login) throws DaoException{
+    private Optional<Integer> findUserIdByLogin(String login) throws DaoException {
         return findUserId(login, SELECT_USER_ID_BY_LOGIN);
     }
 
-    private Optional<Integer> findUserIdByEmail(String email) throws DaoException{
+    private Optional<Integer> findUserIdByEmail(String email) throws DaoException {
         return findUserId(email, SELECT_USER_ID_BY_EMAIL);
     }
 
-    private Optional<Integer> findUserIdByPhone(String phone) throws DaoException{
+    private Optional<Integer> findUserIdByPhone(String phone) throws DaoException {
         return findUserId(phone, SELECT_USER_ID_BY_PHONE);
     }
 
     private Optional<Integer> findUserId(String identField, String selectQuery) throws DaoException {
-        try(Connection connection = pool.getConnection();
-            PreparedStatement statement = connection.prepareStatement(selectQuery)){
+        try (Connection connection = pool.getConnection();
+             PreparedStatement statement = connection.prepareStatement(selectQuery)) {
             statement.setString(1, identField);
             ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 int userId = resultSet.getInt(USER_ID);
                 return Optional.of(userId);
-            }else{
+            } else {
                 return Optional.empty();
             }
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("Can't find user id: ", e);
             throw new DaoException("Can't find user id", e);
         }

@@ -68,7 +68,7 @@ public final class DialogDaoImpl implements DialogDao {
              ResultSet resultSet = statement.executeQuery()) {
 
             List<Dialog> dialogs = new ArrayList<>();
-            DialogRowMapper mapper = new DialogRowMapper();
+            DialogRowMapper mapper = DialogRowMapper.getInstance();
             while (resultSet.next()) {
                 Dialog dialog = mapper.mapRows(resultSet);
                 dialogs.add(dialog);
@@ -89,7 +89,7 @@ public final class DialogDaoImpl implements DialogDao {
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                DialogRowMapper mapper = new DialogRowMapper();
+                DialogRowMapper mapper = DialogRowMapper.getInstance();
                 Dialog dialog = mapper.mapRows(resultSet);
                 return Optional.of(dialog);
             } else {
@@ -185,7 +185,7 @@ public final class DialogDaoImpl implements DialogDao {
     }
 
     @Override
-    public boolean saveUserDialogInfo(User user, Dialog dialog) throws DaoException { //// TODO: 8/30/21   ??
+    public boolean saveUserDialogInfo(User user, Dialog dialog) throws DaoException {
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT_USER_DIALOG_INFO)) {
             statement.setInt(1, user.getId());
@@ -202,7 +202,7 @@ public final class DialogDaoImpl implements DialogDao {
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
         List<Dialog> dialogs = new ArrayList<>();
-        DialogRowMapper mapper = new DialogRowMapper();
+        DialogRowMapper mapper = DialogRowMapper.getInstance();
         while (resultSet.next()) {
             Dialog dialog = mapper.mapRows(resultSet);
             dialogs.add(dialog);

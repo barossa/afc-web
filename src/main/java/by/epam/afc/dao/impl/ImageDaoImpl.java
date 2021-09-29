@@ -55,13 +55,13 @@ public final class ImageDaoImpl implements ImageDao {
         ) {
 
             List<Image> images = new ArrayList<>();
-            ImageRowMapper mapper = new ImageRowMapper();
+            ImageRowMapper mapper = ImageRowMapper.getInstance();
             while (resultSet.next()) {
                 Image image = mapper.mapRows(resultSet);
                 images.add(image);
             }
-            logger.info("Successfully read " + images.size() + " images!");
             return images;
+
         } catch (SQLException e) {
             logger.error("Can't load all images", e);
             throw new DaoException("Can't load all images", e);
@@ -75,13 +75,14 @@ public final class ImageDaoImpl implements ImageDao {
 
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            ImageRowMapper mapper = new ImageRowMapper();
+            ImageRowMapper mapper = ImageRowMapper.getInstance();
             if (resultSet.next()) {
                 Image image = mapper.mapRows(resultSet);
                 return Optional.of(image);
             } else {
                 return Optional.empty();
             }
+
         } catch (SQLException e) {
             logger.error("Can't find image by id.", e);
             throw new DaoException("Can't find image by id", e);
@@ -99,7 +100,7 @@ public final class ImageDaoImpl implements ImageDao {
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_BY_IMAGE_ID)) {
             statement.setTimestamp(1, Timestamp.valueOf(image.getUploadData()));
-            statement.setInt(2, image.getUploadedByUserId());
+            statement.setInt(2, image.getUploadedBy().getId());
             statement.setBinaryStream(3, getImageStream(image.getBase64()));
             statement.setInt(4, image.getId());
             statement.execute();
@@ -118,7 +119,7 @@ public final class ImageDaoImpl implements ImageDao {
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             statement.setTimestamp(1, Timestamp.valueOf(image.getUploadData()));
-            statement.setInt(2, image.getUploadedByUserId());
+            statement.setInt(2, image.getUploadedBy().getId());
             statement.setBinaryStream(3, getImageStream(image.getBase64()));
             statement.execute();
 
@@ -145,7 +146,7 @@ public final class ImageDaoImpl implements ImageDao {
             statement.setInt(1, announcement.getId());
             ResultSet resultSet = statement.executeQuery();
             List<Image> images = new ArrayList<>();
-            ImageRowMapper mapper = new ImageRowMapper();
+            ImageRowMapper mapper = ImageRowMapper.getInstance();
             while (resultSet.next()) {
                 Image image = mapper.mapRows(resultSet);
                 images.add(image);
@@ -158,14 +159,7 @@ public final class ImageDaoImpl implements ImageDao {
         }
     }
 
-    private InputStream getImageStream(String base64) throws DaoException {
-        /*try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            ImageIO.write(image, DEFAULT_PROFILE_IMAGE_FORMAT, outputStream);
-            return new ByteArrayInputStream(outputStream.toByteArray());
-        } catch (IOException e) {
-            logger.error("Can't transform Image to InputStream");
-            throw new DaoException("Can't transform incorrect image!", e);
-        }*/
+    private InputStream getImageStream(String base64) {
         byte[] imageBytes = Base64.getDecoder().decode(base64);
         return new ByteArrayInputStream(imageBytes);
     }

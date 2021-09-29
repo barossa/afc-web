@@ -12,7 +12,8 @@ public class RequestAttribute {
     public static final String LOGIN = "login";
     public static final String EMAIL = "email";
     public static final String PHONE = "phone";
-    public static final String WRONG_LOGIN_OR_PASSWORD = "wrongLoginOrPassword";
     public static final String LOCALE = "locale";
-    public static final String EXCEPTION = "exception";
+    public static final String ERROR_CODE = "error_code";
+    public static final String EXCEPTION_MESSAGE = "exception_message";
+    public static final String SWITCH_PARAMETER = "switchParameter";
 }

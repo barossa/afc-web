@@ -1,5 +1,6 @@
 package by.epam.afc.dao.mapper.impl;
 
+import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.mapper.RowMapper;
 import by.epam.afc.dao.entity.User;
 
@@ -9,10 +10,21 @@ import java.sql.SQLException;
 import static by.epam.afc.dao.ColumnName.*;
 
 public class UserRowMapper implements RowMapper<User> {
+    private static final UserRowMapper instance = new UserRowMapper();
+
+    private UserRowMapper(){}
+
+    public static UserRowMapper getInstance(){
+        return instance;
+    }
 
 
     @Override
     public User mapRows(ResultSet rs) throws SQLException {
+        Image profileImage = Image.getBuilder()
+                .id(rs.getInt(PROFILE_IMAGE_ID))
+                .build();
+
         return User.getBuilder()
                 .id(rs.getInt(USER_ID))
                 .firstName(rs.getString(FIRST_NAME))
@@ -23,6 +35,7 @@ public class UserRowMapper implements RowMapper<User> {
                 .role(User.Role.valueOf(rs.getString(ROLE_DESCRIPTION)))
                 .status(User.Status.valueOf(rs.getString(STATUS_DESCRIPTION)))
                 .about(rs.getString(ABOUT))
+                .profileImage(profileImage)
                 .build();
     }
 }
