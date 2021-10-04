@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
             }
             return Optional.empty();
         } catch (DaoException e) {
-            logger.error("Can't authenticate user: ", e);
-            throw new ServiceException("Can't authenticate user: ", e);
+            logger.error("Can't authenticate user", e);
+            throw new ServiceException("Can't authenticate user", e);
         }
     }
 
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
             return Optional.of(savedUser);
 
         } catch (DaoException e) {
-            logger.error("Can't register user:", e);
+            logger.error("Can't register user", e);
             throw new ServiceException("Can't register user", e);
         }
     }
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
             Optional<User> optionalUser = userDao.findByLogin(login);
             return optionalUser.isPresent();
         } catch (DaoException e) {
-            logger.error("Can't determine login existing: ", e);
+            logger.error("Can't determine login existing", e);
             throw new ServiceException("Can't determine login existing", e);
         }
     }

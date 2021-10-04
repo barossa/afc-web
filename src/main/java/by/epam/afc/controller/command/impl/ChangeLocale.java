@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Arrays;
+
 import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.RequestAttribute.LOCALE;
 import static by.epam.afc.controller.SessionAttribute.LANGUAGE;
@@ -17,6 +19,8 @@ public class ChangeLocale implements Command {
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         String locale = request.getParameter(LOCALE);
+        System.out.println(Arrays.toString(request.getParameterValues(LOCALE)));
+        /*System.out.println(Arrays.toString(request.getParameterValues(LOCALE)));*/
         if (locale == null) {
             locale = "en_US";
         }

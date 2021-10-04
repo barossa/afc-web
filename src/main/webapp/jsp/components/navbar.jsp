@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/iconic/css/material-design-iconic-font.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/montserrat/css/montserrat.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/navbar.css"/>">
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-dark bg-opacity-85"
@@ -33,28 +34,38 @@
         </ul>
         <ul class="navbar-nav m-l-auto">
             <li class="nav-item active nav-font-main-ws">
-                <a class="nav-link me-auto" href="${pageContext.request.contextPath}/submitAd.jsp"
+                <a class="nav-link me-auto" href="${pageContext.request.contextPath}/jsp/pages/submitAd.jsp"
                    style="font-size: 25px; font-weight: bold; color: whitesmoke;">
                     <fmt:message key="announcements.submitAd"/></a>
             </li>
         </ul>
+
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle nav-font" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                <a class="nav-link dropdown-toggle nav-font" href="#" id="navbarDropdown" role="button"
+                   data-bs-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false"
                    style="font-size: 15px; font-weight: bolder; color: whitesmoke;">
                     <fmt:message key="language"/>
                 </a>
+
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item nav-font"
-                           href="${pageContext.request.contextPath}/controller?command=change_locale&locale=en_US">English(US)</a>
+                    <li>
+                        <button id="eng_bt" class="dropdown-item nav-font" type="button" name="locale" value="en_US">
+                            English(US)
+                        </button>
+                        <%--href="${pageContext.request.contextPath}/controller?command=change_locale&locale=en_US">English(US)--%>
                     </li>
-                    <li><a class="dropdown-item nav-font"
-                           href="${pageContext.request.contextPath}/controller?command=change_locale&locale=ru_RU">Русский(RU)</a>
+                    <li>
+                        <button id="rus_bt" class="dropdown-item nav-font" type="button" name="locale" value="ru_RU">
+                            <%--href="${pageContext.request.contextPath}/controller?command=change_locale&locale=ru_RU">--%>
+                            Русский(RU)
+                        </button>
                     </li>
                 </ul>
             </li>
         </ul>
+
         <a class="d-flex align-items-center mx-3"
            href="#"
            id="navbarDropdownMenuLink"
@@ -77,12 +88,14 @@
             </li>
             <li>
                 <c:if test="${!sessionScope.isAuthorized}">
-                    <a class="dropdown-item nav-font" href="${pageContext.request.contextPath}/jsp/pages/auth/login.jsp">
+                    <a class="dropdown-item nav-font"
+                       href="${pageContext.request.contextPath}/jsp/pages/auth/login.jsp">
                         <fmt:message key="navbar.login"/>
                     </a>
                 </c:if>
                 <c:if test="${sessionScope.isAuthorized}">
-                    <a class="dropdown-item nav-font" href="${pageContext.request.contextPath}/controller?command=logout_command">
+                    <a class="dropdown-item nav-font"
+                       href="${pageContext.request.contextPath}/controller?command=logout_command">
                         <fmt:message key="navbar.logout"/>
                     </a>
                 </c:if>
@@ -91,9 +104,10 @@
     </div>
 </nav>
 
-<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
+<%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
+<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
 <script src="<c:url value="/vendor/popper/popper.js"/>"></script>
+<script src="<c:url value="/js/navbar.js"/>"></script>
 
 </body>
 </html>

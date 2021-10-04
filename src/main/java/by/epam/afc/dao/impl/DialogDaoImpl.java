@@ -8,6 +8,7 @@ import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.mapper.impl.DialogRowMapper;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
+import by.epam.afc.service.util.DaoTransactionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -110,9 +111,11 @@ public final class DialogDaoImpl implements DialogDao {
             return Optional.empty();
         }
 
-        try (Connection connection = pool.getConnection();
-             PreparedStatement updateDialog = connection.prepareStatement(UPDATE_DIALOG);
+        DaoTransactionHelper transactionHelper = DaoTransactionHelper.getInstance();
+        Connection connection = pool.getConnection();
+        try (PreparedStatement updateDialog = connection.prepareStatement(UPDATE_DIALOG);
              PreparedStatement updateUserDialog = connection.prepareStatement(UPDATE_USER_DIALOG_INFO)) {
+            connection.setAutoCommit(false);
 
             updateDialog.setInt(1, dialog.getType().ordinal());
             updateDialog.setInt(2, dialog.getAnnouncementId());
@@ -123,11 +126,17 @@ public final class DialogDaoImpl implements DialogDao {
             updateUserDialog.setInt(2, dialog.getId());
             updateUserDialog.execute();
 
+            connection.commit();
             return Optional.of(dialog);
 
         } catch (SQLException e) {
             logger.error("Can't update dialog with id=" + dialog.getId(), e);
+            transactionHelper.rollbackConnection(connection);
             throw new DaoException("Can't update dialog by id", e);
+
+        } finally {
+            transactionHelper.setConnectionAutocommit(connection, true);
+            transactionHelper.closeConnection(connection);
         }
     }
 

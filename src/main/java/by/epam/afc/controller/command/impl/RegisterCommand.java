@@ -30,7 +30,7 @@ import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 public class RegisterCommand implements Command {
     private static final String JSON_CONTENT_TYPE = "application/json";
     public static final String REDIRECT_KEY = "redirect";
-    private static final String CONFIRMATION_REDIRECT = CONTROLLER + COMMAND + "=" + TO_CONFIRM_PAGE;
+    private static final String CONFIRMATION_REDIRECT = CONTROLLER + "?" + COMMAND + "=" + TO_CONFIRM_PAGE;
 
     Logger logger = LogManager.getLogger(RegisterCommand.class);
 

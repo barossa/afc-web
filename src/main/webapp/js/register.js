@@ -70,28 +70,12 @@
             data: $('#registrationForm').serialize(),
 
             success: function (response){
-                /*alert("SLH: " + xhr.getResponseHeader("Location"));
-                if(xhr.getResponseHeader("Location") !== null){
-                    alert("LOCATION HEADER: " + xhr.getResponseHeader("Location"));
-                    window.location.href = xhr.getResponseHeader("Location");
-                }
-
-                var url = response.redirect;
-                alert("СУКЕС: " + url);*/
                 if(response.redirect !== undefined) {
                     alert("trying to redirect... ");
                     window.location.href = response.redirect;
                 }else if(response.email !== undefined){
                     insertResponseData(response);
                 }
-                /*var code = xhr.status;
-                alert("SUCCESS: " + code);
-                if(code === 302){
-                    alert("REDIRECT: " + response.redirect);
-                    alert("LOCATION HEADER: " + xhr.getResponseHeader("Location"));
-                    window.location.href = xhr.getResponseHeader("Location");
-                }*/
-
             },
 
             error: function (response) {
@@ -99,33 +83,6 @@
                 window.location.href = response.redirect;
             }
             }
-                /*if(xhr.getResponseHeader("Location") !== null){
-                    alert("LOCATION HEADER: " + xhr.getResponseHeader("Location"));
-                    window.location.href = xhr.getResponseHeader("Location");
-                }
-                alert("ne SUCCESS")
-                var url = response.redirect;
-                var code = response.status;
-                /!*alert(code);
-                if(url !== undefined && url.match("undefined") == null) {
-                    alert("trying to redirect... ");
-                    window.location.href = response.redirect;
-                }*!/
-                alert("REDIRECT: " + response.redirect);
-                if(code === 302 || code === 200){
-                    if(xhr.getResponseHeader("Location") !== null){
-                        alert("LOCATION HEADER: " + xhr.getResponseHeader("Location"));
-                        window.location.href = xhr.getResponseHeader("Location");
-                    }
-
-
-
-                    /!*var redirect = response.redirect;
-                    if(redirect !== undefined){
-                        window.location.href = redirect;
-                    }*!/
-                }
-            }*/
         });
     }
 

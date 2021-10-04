@@ -25,14 +25,14 @@ public final class UserDaoImpl implements UserDao {
 
     private static final String SELECT_ALL_USERS = "SELECT " + USER_ID + ", " + FIRST_NAME + ", " + LAST_NAME + ", "
             + LOGIN + ", " + EMAIL + ", " + PHONE + ", " + ROLE_DESCRIPTION + ", " + STATUS_DESCRIPTION + ", "
-            + ABOUT + ", " + IMAGE_ID
+            + ABOUT + ", " + PROFILE_IMAGE_ID
             + " FROM " + USERS
             + " INNER JOIN " + USER_STATUSES + " ON " + USERS + "." + STATUS_ID + "=" + USER_STATUSES + "." + STATUS_ID
             + " INNER JOIN " + USER_ROLES + " ON " + USERS + "." + ROLE_ID + "=" + USER_ROLES + "." + ROLE_ID + ";";
 
     private static final String SELECT_BY_ID = "SELECT " + USER_ID + ", " + FIRST_NAME + ", " + LAST_NAME + ", "
             + LOGIN + ", " + EMAIL + ", " + PHONE + ", " + ROLE_DESCRIPTION + ", " + STATUS_DESCRIPTION + ", "
-            + ABOUT + ", " + IMAGE_ID
+            + ABOUT + ", " + PROFILE_IMAGE_ID
             + " FROM " + USERS
             + " INNER JOIN " + USER_STATUSES + " ON " + USERS + "." + STATUS_ID + "=" + USER_STATUSES + "." + STATUS_ID
             + " INNER JOIN " + USER_ROLES + " ON " + USERS + "." + ROLE_ID + "=" + USER_ROLES + "." + ROLE_ID

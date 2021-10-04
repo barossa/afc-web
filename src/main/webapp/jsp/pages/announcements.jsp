@@ -14,7 +14,6 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/announcements.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
 
-
 </head>
 
 <body>
@@ -22,7 +21,6 @@
 
 <div id="main"> <%--Main flex container--%>
 
-    <%--<form method="get" action="${pageContext.request.contextPath}/controller">--%>
     <nav>
         <div class="card mx-3 my-3"> <%--Filters--%>
             <form id="filtersForm" onsubmit="return false;">
@@ -117,7 +115,7 @@
                            placeholder="${searchPlaceholder}"
                            aria-label="Search"
                            aria-describedby="search-addon"/>
-                    <button type="submit" id="searchButton" class="btn btn-primary rounded"
+                    <button type="button" id="searchButton" class="btn btn-primary rounded"
                             style="margin-left: 20px !important;">
                         <fmt:message key="announcements.search"/>
                     </button>
@@ -199,8 +197,6 @@
 </div>
 
 <script src="<c:url value="/js/announcements.js"/>"></script>
-<%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
 
 <footer>
     <c:import url="/jsp/components/footer.jsp"/>

@@ -6,14 +6,13 @@
     let input = $('.input');
 
     $(document).ready(function () {
-        $('#searchForm').on('submit', function () {
+        $('#searchButton').on('click', function () {
             /*let search = $('#searchRequest').attr('value');*/
             let validationResult = validate();
             alert(validationResult);
             if (validationResult) {
                 searchAction();
             }
-            return false;
         });
     });
 
@@ -37,21 +36,32 @@
     }
 
     function validate() {
+        let numberRegex = "^\\d*$";
         let search = $("#searchRequest")
-        let min = $("#rangeMin");
-        let max = $("#rangeMax");
-
-        let flag = search.val().match("^(?=.*[A-Za-zА-Яа-я]$)([A-Za-zА-Яа-я]+_?)+$") != null;
-
-        if(flag){
-            let minVal = $(min).val();
-            let maxVal = $(max).val();
-            flag = minVal.match("^\\d*$") != null && maxVal.match("^\\d*$") != null;
-        }
+        let minVal = $("#rangeMin").val();
+        let maxVal = $("#rangeMax").val();
 
         let searchMaxLength = 30;
+
+        let flag = search.val().match("^(?=.*[A-Za-zА-Яа-я0-9]$)([A-Za-zА-Яа-я0-9]+ ?)+$") != null;
+
         if (flag) {
-            let length = search.length;
+            if (minVal.length > 0) {
+                let minValid = minVal.match(numberRegex) !== null;
+                if (!minValid) {
+                    return false;
+                }
+            }
+            if (maxVal.length > 0) {
+                let maxValid = maxVal.match(numberRegex) !== null;
+                if (!maxValid) {
+                    return false;
+                }
+            }
+        }
+
+        if (flag) {
+            let length = search.val().length;
             return length <= searchMaxLength && length > 0;
         } else {
             return false; // don't meet regex

@@ -1,9 +1,11 @@
 package by.epam.afc.controller.listener;
 
 import by.epam.afc.dao.entity.Category;
+import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.Region;
 import by.epam.afc.dao.impl.AnnouncementDaoImpl;
 import by.epam.afc.dao.impl.DaoHolder;
+import by.epam.afc.dao.impl.ImageDaoImpl;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
 import jakarta.servlet.ServletContext;
