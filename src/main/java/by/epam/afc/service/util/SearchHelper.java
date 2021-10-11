@@ -1,21 +1,21 @@
 package by.epam.afc.service.util;
 
-public class QueryHelper {
-    private static final QueryHelper instance = new QueryHelper();
+public class SearchHelper {
+    private static final SearchHelper instance = new SearchHelper();
 
     private static final String SQL_REGEXP = "regexp";
-    private static final String REGEXP_ANY_CHARACTER = ".";
     private static final String REGEXP_ZERO_MORE_TIMES = "*";
+    private static final String REGEXP_ANY_CHARACTER = ".";
     private static final String OPENING_BRACKET = "(";
     private static final String CLOSING_BRACKET = ")";
+    private static final String REGEXP_OR = "|";
     private static final String QUERY_END = ";";
     private static final String QUOTE = "'";
     private static final String SPACE = " ";
 
+    private SearchHelper(){}
 
-    private QueryHelper(){}
-
-    public static QueryHelper getInstance(){
+    public static SearchHelper getInstance(){
         return instance;
     }
 
@@ -35,6 +35,22 @@ public class QueryHelper {
         regexpBuilder.append(QUOTE);
         regexpBuilder.append(QUERY_END);
         return regexpBuilder.toString();
+    }
+
+    public String completeRegex(String searchRequest){
+        String[] words = searchRequest.split(SPACE);
+        StringBuilder regex = new StringBuilder();
+
+        for(int i = 0; i < words.length; i++){
+            regex.append(OPENING_BRACKET);
+            regex.append(words[i]);
+            regex.append(CLOSING_BRACKET);
+            if(i != words.length - 1){
+                regex.append(REGEXP_OR);
+            }
+        }
+
+        return regex.toString();
     }
 
 }

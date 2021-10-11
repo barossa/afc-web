@@ -10,7 +10,6 @@ import by.epam.afc.dao.impl.DialogDaoImpl;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.MessageService;
-import by.epam.afc.service.util.EntityChecker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

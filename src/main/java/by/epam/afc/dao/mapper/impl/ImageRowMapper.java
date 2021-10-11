@@ -3,6 +3,7 @@ package by.epam.afc.dao.mapper.impl;
 import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.mapper.RowMapper;
+import by.epam.afc.service.util.ImageHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +18,6 @@ import static by.epam.afc.dao.ColumnName.*;
 
 public class ImageRowMapper implements RowMapper<Image> {
     private static final ImageRowMapper instance = new ImageRowMapper();
-    private static final int EOF = -1;
 
     static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
 
@@ -44,19 +44,14 @@ public class ImageRowMapper implements RowMapper<Image> {
     }
 
     private String readImage(InputStream input, int imageId) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            while (true) {
-                int value = input.read();
-                if (value == EOF) {
-                    break;
-                } else {
-                    outputStream.write(value);
-                }
-            }
-            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        try {
+            ImageHelper imageHelper = ImageHelper.getInstance();
+            byte[] bytes = imageHelper.readInputStream(input);
+
+            return Base64.getEncoder().encodeToString(bytes);
         } catch (IOException e) {
             logger.error("Can't load Image id=" + imageId, e);
         }
-        return null;
+        return "";
     }
 }

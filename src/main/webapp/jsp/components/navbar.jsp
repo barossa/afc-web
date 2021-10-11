@@ -66,46 +66,64 @@
             </li>
         </ul>
 
-        <a class="d-flex align-items-center mx-3"
+        <a class="d-flex align-items-center mx-3 rounded-circle bg-light"
            href="#"
            id="navbarDropdownMenuLink"
            role="button"
            data-bs-toggle="dropdown"
            aria-expanded="false">
-            <img src="https://mdbootstrap.com/img/new/avatars/2.jpg"
-                 class="rounded-circle"
-                 height="30"
-                 alt=""
-                 loading="lazy"/>
+            <c:choose>
+                <c:when test="${user.role != 'GUEST'}">
+                    <img src="data:image/png;Base64,${user.profileImage.base64}"
+                         class="rounded-circle"
+                         height="30"
+                         alt=""
+                         loading="lazy"/>
+                </c:when>
+                <c:otherwise>
+                    <img src="data:image/png;Base64,${applicationScope.guestImage.base64}"
+                         class="rounded-circle"
+                         height="30"
+                         alt=""
+                         loading="lazy"/>
+                </c:otherwise>
+            </c:choose>
         </a>
         <ul class="dropdown-menu dropdown-menu-end"
             aria-labelledby="navbarDropdownMenuLink">
-            <li>
-                <a class="dropdown-item nav-font" href="#">My profile</a>
-            </li>
-            <li>
-                <a class="dropdown-item nav-font" href="#">Settings</a>
-            </li>
-            <li>
-                <c:if test="${!sessionScope.isAuthorized}">
-                    <a class="dropdown-item nav-font"
-                       href="${pageContext.request.contextPath}/jsp/pages/auth/login.jsp">
+            <c:if test="${!sessionScope.isAuthorized}">
+                <li>
+                    <button class="dropdown-item nav-font reqBtn" name="command" value="to_login_page">
                         <fmt:message key="navbar.login"/>
-                    </a>
-                </c:if>
-                <c:if test="${sessionScope.isAuthorized}">
+                    </button>
+                </li>
+            </c:if>
+
+            <c:if test="${sessionScope.isAuthorized}">
+                <li>
+                    <button class="dropdown-item nav-font reqBtn" name="command" value="to_my_announcements">
+                        <fmt:message key="navbar.myAnnouncements"/>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item nav-font reqBtn" name="command" value="to_profile">
+                        <fmt:message key="navbar.profile"/>
+                    </button>
+                </li>
+                <li>
                     <a class="dropdown-item nav-font"
                        href="${pageContext.request.contextPath}/controller?command=logout_command">
                         <fmt:message key="navbar.logout"/>
                     </a>
-                </c:if>
-            </li>
+                </li>
+            </c:if>
+
         </ul>
     </div>
 </nav>
 
-<%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
+<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
+<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/vendor/popper/popper.js"/>"></script>
 <script src="<c:url value="/js/navbar.js"/>"></script>
 

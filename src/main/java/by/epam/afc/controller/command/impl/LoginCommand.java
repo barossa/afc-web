@@ -49,7 +49,7 @@ public class LoginCommand implements Command {
             }
         } catch (ServiceException e) {
             request.setAttribute(EXCEPTION_MESSAGE, e.getMessage());
-            router = new Router(FORWARD, ERROR_505);
+            router = new Router(FORWARD, ERROR_500);
         }
         return router;
     }

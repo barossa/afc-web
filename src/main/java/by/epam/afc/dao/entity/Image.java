@@ -26,7 +26,7 @@ public class Image extends BaseEntity {
         return uploadedBy;
     }
 
-    public void setUploadedByUserId(User uploadedBy) {
+    public void setUploadedBy(User uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
 
@@ -70,7 +70,7 @@ public class Image extends BaseEntity {
                 "id=" + id +
                 ", uploadData=" + uploadData +
                 ", uploadedBy=" + uploadedBy +
-                ", base64='" + base64 + '\'' +
+                ", base64='" + (base64 == null ? "empty" : "exist") + '\'' +
                 '}';
     }
 

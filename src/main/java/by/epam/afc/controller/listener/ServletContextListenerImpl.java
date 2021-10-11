@@ -1,11 +1,11 @@
 package by.epam.afc.controller.listener;
 
+import by.epam.afc.dao.ImageDao;
 import by.epam.afc.dao.entity.Category;
 import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.Region;
 import by.epam.afc.dao.impl.AnnouncementDaoImpl;
 import by.epam.afc.dao.impl.DaoHolder;
-import by.epam.afc.dao.impl.ImageDaoImpl;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
 import jakarta.servlet.ServletContext;
@@ -17,12 +17,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static by.epam.afc.controller.ContextAttribute.*;
 
 @WebListener
 public class ServletContextListenerImpl implements ServletContextListener {
     private static final Logger logger = LogManager.getLogger(ServletContextListenerImpl.class);
+
+    private static final int GUEST_IMAGE_ID = 3;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -37,6 +40,10 @@ public class ServletContextListenerImpl implements ServletContextListener {
         //Loading regions from DAO
         List<Region> regions = loadRegions();
         servletContext.setAttribute(REGIONS, regions);
+
+        //Loading guest profile image
+        Image guestImage = loadGuestImage();
+        servletContext.setAttribute(GUEST_IMAGE, guestImage);
     }
 
     @Override
@@ -50,8 +57,8 @@ public class ServletContextListenerImpl implements ServletContextListener {
     }
 
     private List<Category> loadCategories() {
-        AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
         try {
+            AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Category> allCategories = announcementDao.findAllCategories();
             String message = String.format("Successfully loaded %d announcement categories!", allCategories.size());
             logger.info(message);
@@ -63,8 +70,8 @@ public class ServletContextListenerImpl implements ServletContextListener {
     }
 
     private List<Region> loadRegions() {
-        AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
         try {
+            AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Region> regions = announcementDao.findAllRegions();
             String message = String.format("Successfully loaded %d regions!", regions.size());
             logger.info(message);
@@ -73,5 +80,17 @@ public class ServletContextListenerImpl implements ServletContextListener {
             logger.error("Error occurred while loading regions", e);
         }
         return new ArrayList<>();
+    }
+
+    private Image loadGuestImage(){
+        Image image = Image.getBuilder()
+                .build();
+        try {ImageDao imageDao = DaoHolder.getImageDao();
+            Optional<Image> optionalImage = imageDao.findById(GUEST_IMAGE_ID);
+            image =  optionalImage.orElseThrow(DaoException::new);
+        } catch (DaoException e) {
+            logger.error("Error occurred while loading GUEST profile picture");
+        }
+        return image;
     }
 }

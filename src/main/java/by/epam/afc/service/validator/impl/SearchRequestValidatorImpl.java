@@ -32,6 +32,7 @@ public class SearchRequestValidatorImpl implements SearchRequestValidator {
                 return matcher.matches();
             }
         }
+        System.out.println("INCORRECT SEARCH REQUEST");
         return false;
     }
 }

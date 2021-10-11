@@ -4,6 +4,23 @@
         bindActions();
     });
 
+    $(document).ready(
+        $('.reqBtn').on('click', function () {
+            let data = $(this).attr('name') + "=" + $(this).val();
+            alert("That works!" + data);
+            $.ajax({
+                url: "/Ads_from_Chest_war_exploded/controller",
+                type: "POST",
+                data: data,
+
+                success(response){
+                    $(document.body).html($(response.document.body).html());
+                }
+            });
+
+        })
+    )
+
     function bindActions() {
         $('#eng_bt').on('click', function (){
             sendLocale("en_US")

@@ -16,4 +16,13 @@ public class RequestAttribute {
     public static final String ERROR_CODE = "error_code";
     public static final String EXCEPTION_MESSAGE = "exception_message";
     public static final String SWITCH_PARAMETER = "switchParameter";
+    public static final String DESCRIPTION = "description";
+    public static final String REGION = "region";
+    public static final String CATEGORY = "category";
+    public static final String TITLE = "title";
+    public static final String PRICE = "price";
+    public static final String PRICE_MIN = "rangeMin";
+    public static final String PRICE_MAX = "rangeMax";
+    public static final String SEARCH = "search";
+
 }

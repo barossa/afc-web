@@ -50,8 +50,6 @@ public class ColumnName {
     public static final String PRIMARY_IMAGE_NUMBER = "primary_image_number";
     public static final String DESCRIPTION = "description";
     public static final String PUBLICATION_DATE = "publication_date";
-    public static final String ANNOUNCEMENT_STATUS_ID = "announcement_status_id";
-    public static final String ANNOUNCEMENT_CATEGORY_ID = "announcement_category_id";
 
     /*ANNOUNCEMENT_CATEGORIES*/
     public static final String CATEGORY_ID = "category_id";

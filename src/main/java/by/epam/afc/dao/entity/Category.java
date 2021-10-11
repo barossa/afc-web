@@ -8,6 +8,14 @@ public class Category extends BaseEntity {
         this.description = description;
     }
 
+    public Category(int id) {
+        super(id);
+    }
+
+    public Category(String description){
+        this.description = description;
+    }
+
     public String getDescription() {
         return description;
     }

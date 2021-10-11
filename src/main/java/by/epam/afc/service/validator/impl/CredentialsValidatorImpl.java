@@ -8,6 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CredentialsValidatorImpl implements CredentialsValidator {
+    private static final CredentialsValidatorImpl instance = new CredentialsValidatorImpl();
+
     private static final String NAME_REGEX = "^[А-Яа-яA-Za-z]+$";
     private static final String LOGIN_REGEX = "^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$";
     private static final String EMAIL_REGEX = "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$";
@@ -17,8 +19,6 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final int MAX_NAME_LENGTH = 20;
     private static final int MAX_LOGIN_LENGTH = 20;
     private static final int MAX_EMAIL_LENGTH = 100;
-
-    private static final CredentialsValidatorImpl instance = new CredentialsValidatorImpl();
 
     public static final String FIRSTNAME = "firstname";
     public static final String LASTNAME = "lastname";

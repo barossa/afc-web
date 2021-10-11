@@ -1,5 +1,7 @@
 package by.epam.afc.service.impl;
 
+import by.epam.afc.dao.ImageDao;
+import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.impl.DaoHolder;
 import by.epam.afc.dao.impl.UserDaoImpl;
@@ -22,9 +24,10 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
     private static final UserServiceImpl instance = new UserServiceImpl();
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    private UserServiceImpl(){}
+    private UserServiceImpl() {
+    }
 
-    public static UserServiceImpl getInstance(){
+    public static UserServiceImpl getInstance() {
         return instance;
     }
 
@@ -61,8 +64,12 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
                 String hash = optionalHash.get();
                 PasswordCryptor cryptor = PasswordCryptor.getInstance();
                 boolean verified = cryptor.verify(password, hash.toCharArray());
+
                 if (verified) {
-                    return userDao.findUniqUser(user);
+                    Optional<User> optionalUser = userDao.findUniqUser(user);
+                    User authenticatedUser = optionalUser.orElseThrow(DaoException::new);
+                    initializeProfileImage(authenticatedUser);
+                    return Optional.of(authenticatedUser);
                 }
             }
             return Optional.empty();
@@ -110,10 +117,10 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
 
     @Override
     public void updatePassword(User user, char[] newPassword) throws ServiceException {
-        UserDaoImpl userDao = DaoHolder.getUserDao();
-        PasswordCryptor cryptor = PasswordCryptor.getInstance();
-        String encrypted = cryptor.encrypt(newPassword);
         try {
+            UserDaoImpl userDao = DaoHolder.getUserDao();
+            PasswordCryptor cryptor = PasswordCryptor.getInstance();
+            String encrypted = cryptor.encrypt(newPassword);
             userDao.updateUserPassword(user, encrypted);
         } catch (DaoException e) {
             logger.error("can't update user id= " + user.getId() + " password: ", e);
@@ -123,8 +130,8 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
 
     @Override
     public boolean findLogin(String login) throws ServiceException {
-        UserDaoImpl userDao = DaoHolder.getUserDao();
         try {
+            UserDaoImpl userDao = DaoHolder.getUserDao();
             Optional<User> optionalUser = userDao.findByLogin(login);
             return optionalUser.isPresent();
         } catch (DaoException e) {
@@ -135,8 +142,8 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
 
     @Override
     public boolean findEmail(String email) throws ServiceException {
-        UserDaoImpl userDao = DaoHolder.getUserDao();
         try {
+            UserDaoImpl userDao = DaoHolder.getUserDao();
             Optional<User> optionalUser = userDao.findByEmail(email);
             return optionalUser.isPresent();
         } catch (DaoException e) {
@@ -147,13 +154,25 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
 
     @Override
     public boolean findPhone(String phone) throws ServiceException {
-        UserDaoImpl userDao = DaoHolder.getUserDao();
         try {
+            UserDaoImpl userDao = DaoHolder.getUserDao();
             Optional<User> optionalUser = userDao.findByPhone(phone);
             return optionalUser.isPresent();
         } catch (DaoException e) {
             logger.error("Can't determine phone existing: ", e);
             throw new ServiceException("Can't determine phone existing", e);
+        }
+    }
+
+    private void initializeProfileImage(User user) {
+        try {
+            ImageDao imageDao = DaoHolder.getImageDao();
+            Image emptyImage = user.getProfileImage();
+            Optional<Image> optionalImage = imageDao.findById(emptyImage.getId());
+            Image image = optionalImage.orElseThrow(DaoException::new);
+            user.setProfileImage(image);
+        } catch (DaoException e) {
+            logger.error("Can't initialize user profile image", e);
         }
     }
 }

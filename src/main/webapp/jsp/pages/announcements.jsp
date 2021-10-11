@@ -64,7 +64,7 @@
                         <div class="card-body left-auto">
                             <c:forEach var="category" items="${applicationScope.categories}">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="categories" class="custom-control-input"
+                                    <input type="checkbox" name="category" class="custom-control-input"
                                            id="category_${category.id}" value="${category.id}">
                                     <label class="custom-control-label">
                                         <fmt:message key="filter.category_${category.id}"/>
@@ -85,7 +85,7 @@
                         <div class="card-body left-auto">
                             <c:forEach var="region" items="${applicationScope.regions}">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="regions" class="custom-control-input"
+                                    <input type="checkbox" name="region" class="custom-control-input"
                                            id="region_${region.id}" value="${region.id}">
                                     <label class="custom-control-label">
                                         <fmt:message key="filter.region_${region.id}"/>
@@ -124,20 +124,22 @@
             </div>
         </form>
         <div id="advertisements" class="me-3">
-            <c:if test="${empty advertisements}">
+
+
+            <c:if test="${empty pagination.currentData}">
                 <div class="card">
                     <fmt:message key="search.nothingFound"/>
                 </div>
             </c:if>
-            <c:forEach var="ad" items="${advertisements}">
-                <div class="card">
+            <c:forEach var="ad" items="${pagination.currentData}">
+                <div class="card mb-2" style="min-height: 150px;">
                     <div class="row">
                         <div class="col-md-2">
                             <img class="rounded-2 mx-4 my-3"
-                                 src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg"
+                                 src="data:image/png;Base64,${ad.getPrimaryImage()}"
                                  width="130" alt="No image"/>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-7">
                             <div class="card-body">
                                 <h5 class="card-title">${ad.title}</h5>
                                 <h6 class="card-subtitle mb-2 text-muted"
@@ -156,7 +158,7 @@
                                 </small>
                             </p>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="flex-c align-content-center align-items-center h-100">
                                 <h3>
                                     <c:choose>
@@ -173,21 +175,22 @@
                     </div>
                 </div>
             </c:forEach>
-        </div>
 
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">
-                    <fmt:message key="pagination.previous"/>
-                </a>
-            </li>
-            <li class="page-item disabled"><a class="page-link">${currentPage + 1}</a></li>
-            <li class="page-item">
-                <a class="page-link" href="controller?command=find_announcements">
-                    <fmt:message key="pagination.next"/>
-                </a>
-            </li>
-        </ul>
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">
+                        <fmt:message key="pagination.previous"/>
+                    </a>
+                </li>
+                <li class="page-item disabled"><a class="page-link">${pagination_data.currentPage + 1}</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="controller?command=find_announcements">
+                        <fmt:message key="pagination.next"/>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
 
     </aside>
 
@@ -197,6 +200,9 @@
 </div>
 
 <script src="<c:url value="/js/announcements.js"/>"></script>
+<script src="<c:url value="/vendor/pagination/js/pagination.min.js"/>"></script>
+<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
+<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
 
 <footer>
     <c:import url="/jsp/components/footer.jsp"/>

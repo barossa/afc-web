@@ -73,10 +73,10 @@ public class RegisterCommand implements Command {
                 }
             } catch (ServiceException e) {
                 logger.error("Can't validate registration credential", e);
-                return new Router(REDIRECT, request.getContextPath() + ERROR_505);
+                return new Router(REDIRECT, request.getContextPath() + ERROR_500);
             } catch (IOException e){
                 logger.error("Error occurred while sending JSON redirect.", e);
-                return new Router(REDIRECT, request.getContextPath() + ERROR_505);
+                return new Router(REDIRECT, request.getContextPath() + ERROR_500);
             }
         }
 

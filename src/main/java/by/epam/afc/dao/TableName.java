@@ -15,7 +15,7 @@ public class TableName {
     public static final String ANNOUNCEMENTS = "announcements";
     public static final String ANNOUNCEMENT_STATUSES = "announcement_statuses";
     public static final String ANNOUNCEMENT_CATEGORIES = "announcement_categories";
-    public static final String ANNOUNCEMENT_IMAGES = "announcements";
+    public static final String ANNOUNCEMENT_IMAGES = "announcement_images";
     public static final String REGIONS = "regions";
 
 

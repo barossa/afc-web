@@ -1,10 +1,6 @@
 (function ($) {
     "use strict";
 
-    /*==================================================================
-    [ Validate ]*/
-    let input = $('.input');
-
     $(document).ready(function () {
         $('#searchButton').on('click', function () {
             /*let search = $('#searchRequest').attr('value');*/
@@ -17,10 +13,6 @@
     });
 
     function searchAction() {
-        let filtersForm = $('#filtersForm').serialize();
-        let searchForm = $('#searchForm').serialize();
-        $.extend(filtersForm, searchForm);
-
         var xhr = $.ajax({
             url: "/Ads_from_Chest_war_exploded/controller",
             type: "POST",

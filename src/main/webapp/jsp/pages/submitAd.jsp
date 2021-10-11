@@ -39,7 +39,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text"> <i class="fa fa-pencil-square-o m-t-6 m-b-6"></i> </span>
                 </div>
-                <input name="adTitle" class="input form-control" placeholder="${titlePlaceholder}"
+                <input id="titleField" name="title" class="input form-control" placeholder="${titlePlaceholder}"
                        type="text">
             </div>
 
@@ -47,73 +47,79 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text"> <i class="fa fa-money m-t-6 m-b-6"></i> </span>
                 </div>
-                <input name="price" min="0" max="999999999" class="input form-control" placeholder="${pricePlaceholder}"
+                <input id="priceField" name="price" min="0" max="999999999" class="input form-control" placeholder="${pricePlaceholder}"
                        type="number">
             </div>
 
 
             <div class="flex-c d-inline-flex my-1">
-            <%--Category dropdown--%>
-            <div class="dropdown flex-c justify-content-center p-2">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseCtButton"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                    <fmt:message key="announcements.chooseCategory"/>
-                </button>
-                <ul id="categoriesDropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <c:forEach var="category" items="${applicationScope.categories}">
-                        <li><a class="dropdown-item" id="category_${category.id}">
-                            <fmt:message key="filter.category_${category.id}"/>
-                        </a></li>
-                    </c:forEach>
-                </ul>
-            </div>
-            <%--Category dropdown--%>
 
-            <%--Regioon dropdown--%>
-            <div class="dropdown flex-c justify-content-center p-2">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseRgButton"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                    <fmt:message key="announcements.chooseRegion"/>
-                </button>
-                <ul id="regionsDropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <c:forEach var="region" items="${applicationScope.regions}">
-                        <li><a class="dropdown-item" id="region_${region.id}">
-                            <fmt:message key="filter.region_${region.id}"/>
-                        </a></li>
-                    </c:forEach>
-                </ul>
-            </div>
-            <%--Region dropdown--%>
+                <%--Category dropdown--%>
+                <div class="dropdown flex-c justify-content-center p-2">
+                    <input type="hidden" name="category" value="-1" id="categoryField">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseCtButton"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <fmt:message key="announcements.chooseCategory"/>
+                    </button>
+                    <ul id="categoriesDropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <c:forEach var="category" items="${applicationScope.categories}">
+                            <li><a id="${category.id}" class="dropdown-item">
+                                <fmt:message key="filter.category_${category.id}"/>
+                            </a></li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <%--Category dropdown--%>
+
+                <%--Regioon dropdown--%>
+                <div class="dropdown flex-c justify-content-center p-2">
+                    <input type="hidden" name="region" value="-1" id="regionField">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseRgButton"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                        <fmt:message key="announcements.chooseRegion"/>
+                    </button>
+                    <ul id="regionsDropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <c:forEach var="region" items="${applicationScope.regions}">
+                            <li id="${region.id}"><a class="dropdown-item">
+                                <fmt:message key="filter.region_${region.id}"/>
+                            </a></li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <%--Region dropdown--%>
             </div>
 
             <div class="input-group">
             <span class="input-group-text">
                 <fmt:message key="announcements.description"/>
             </span>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
+                <textarea id="descriptionArea" class="form-control" aria-label="With textarea"></textarea>
             </div>
 
             <div class="flex-c mt-3 justify-content-center"> <%--Submit button--%>
-                <button type="button" class="btn btn-primary w-50">
+                <button id="submitAdButton" type="button" class="btn btn-primary w-50">
                     <fmt:message key="announcements.submitAd"/>
                 </button>
-            </div> <%--Submit button--%>
+            </div>
+            <%--Submit button--%>
 
         </div>
     </div>
 
-    <div class="flex-c" id="images">
-        <div>
-            <input id="input-images" name="images" type="file" class="file" multiple
-                   data-show-upload="false" data-show-caption="true"
-                   data-allowed-file-extensions='["png", "jpg", "jpeg"]'
-                   required="required"
-                   data-browse-on-zone-click="true" data-msg-placeholder="Select {files} for upload...">
+    <form id="imagesForm" enctype="multipart/form-data">
+        <div class="flex-c" id="images">
+            <div>
+                <input id="input-images" name="images" type="file" class="file" multiple="multiple"
+                       data-show-upload="false" data-show-caption="true"
+                       data-allowed-file-extensions='["png", "jpg", "jpeg"]'
+                       required="required"
+                       data-browse-on-zone-click="true" data-msg-placeholder="Select {files} for upload...">
 
+            </div>
         </div>
-    </div>
+    </form>
 
 </div>
 

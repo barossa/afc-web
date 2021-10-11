@@ -1,6 +1,6 @@
 package by.epam.afc.dao.entity;
 
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Comparable<BaseEntity> {
     public static final int UNDEFINED_ID = -1;
 
     protected int id;
@@ -34,5 +34,10 @@ public abstract class BaseEntity {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    @Override
+    public int compareTo(BaseEntity o) {
+        return Integer.compare(id, o.getId());
     }
 }

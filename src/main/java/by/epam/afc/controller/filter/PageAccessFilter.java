@@ -14,7 +14,7 @@ import java.util.List;
 import static by.epam.afc.controller.PagePath.*;
 import static by.epam.afc.controller.SessionAttribute.USER;
 
-/*@WebFilter(urlPatterns = {"/jsp/*"})*/
+@WebFilter(urlPatterns = {"/jsp/*"})
 public class PageAccessFilter implements Filter {
     private static List<String> guestPages;
     private static List<String> userPages;
@@ -54,7 +54,8 @@ public class PageAccessFilter implements Filter {
                 INDEX,
                 ABOUT_USER,
                 BAN_PAGE,
-                SUBMIT_AD_PAGE
+                SUBMIT_AD_PAGE,
+                ANNOUNCEMENT_PAGE
         );
         /*END OF ADMINISTRATOR PAGES*/
     }

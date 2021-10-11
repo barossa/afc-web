@@ -2,6 +2,7 @@ package by.epam.afc.controller.command;
 
 import by.epam.afc.controller.command.impl.*;
 import by.epam.afc.controller.command.impl.go.ToConfirmPage;
+import by.epam.afc.controller.command.impl.go.ToLoginPage;
 import by.epam.afc.controller.command.impl.go.ToRegisterPage;
 
 import java.util.EnumMap;
@@ -20,7 +21,9 @@ public class CommandProvider {
         commands.put(REGISTER_COMMAND, new RegisterCommand());
         commands.put(LOGOUT_COMMAND, new LogoutCommand());
         commands.put(TO_CONFIRM_PAGE, new ToConfirmPage());
+        commands.put(TO_LOGIN_PAGE, new ToLoginPage());
         commands.put(FIND_ANNOUNCEMENTS, new FindAnnouncements());
+        commands.put(SUBMIT_ANNOUNCEMENT, new SubmitAnnouncement());
         //commands.add(commandType,new Command());
     }
 

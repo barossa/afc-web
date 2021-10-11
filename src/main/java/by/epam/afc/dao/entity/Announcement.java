@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Announcement extends BaseEntity {
-    private static final int SHORT_DESCRIPTION_LENGTH = 30;
+    private static final int SHORT_DESCRIPTION_LENGTH = 50;
     private static final String TO_BE_CONTINUED = "...";
 
     private User owner;
@@ -63,12 +63,20 @@ public class Announcement extends BaseEntity {
         this.price = price;
     }
 
+    public void setPrimaryImageNumber(int primaryImageNumber) {
+        this.primaryImageNumber = primaryImageNumber;
+    }
+
     public int getPrimaryImageNumber() {
         return primaryImageNumber;
     }
 
-    public void setPrimaryImageNumber(int primaryImageNumber) {
-        this.primaryImageNumber = primaryImageNumber;
+    public String getPrimaryImage() {
+        if(images.size() > primaryImageNumber){
+            Image primaryImage = images.get(primaryImageNumber);
+            return primaryImage.getBase64();
+        }
+        return "";
     }
 
     public String getDescription() {
@@ -77,6 +85,10 @@ public class Announcement extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
     }
 
     public LocalDateTime getPublicationDate() {
@@ -184,7 +196,7 @@ public class Announcement extends BaseEntity {
         if (description != null) {
             if (!description.isEmpty()) {
                 if (description.length() <= SHORT_DESCRIPTION_LENGTH) {
-                    shortDescription = description + TO_BE_CONTINUED;
+                    shortDescription = description;
                 } else {
                     shortDescription = description.substring(0, SHORT_DESCRIPTION_LENGTH) + TO_BE_CONTINUED;
                 }

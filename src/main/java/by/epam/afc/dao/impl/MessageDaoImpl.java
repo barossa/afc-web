@@ -6,7 +6,7 @@ import by.epam.afc.dao.entity.Message;
 import by.epam.afc.dao.mapper.impl.MessageRowMapper;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
-import by.epam.afc.service.util.QueryHelper;
+import by.epam.afc.service.util.SearchHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -137,7 +137,7 @@ public final class MessageDaoImpl implements MessageDao {
     @Override
     public List<Message> findByPart(String part) throws DaoException {
         String[] patterns = part.split(SPLIT_CHARACTER);
-        QueryHelper helper = QueryHelper.getInstance();
+        SearchHelper helper = SearchHelper.getInstance();
 
         String query = helper.completeRegexpQuery(SELECT_BY_REGEX, patterns);
         List<Message> messages = new ArrayList<>();

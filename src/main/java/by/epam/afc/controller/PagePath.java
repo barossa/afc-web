@@ -6,7 +6,6 @@ public class PagePath {
 
     public static final String INDEX = "/index.jsp";
     public static final String ERROR_PAGE = "/jsp/error/error.jsp";
-    public static final String ERROR_505 = "/jsp/error/error505.jsp";
     public static final String ERROR_500 = "/jsp/error/error500.jsp";
     public static final String LOGIN_PAGE = "/jsp/pages/auth/login.jsp";
     public static final String REGISTER_PAGE = "/jsp/pages/auth/register.jsp";
@@ -18,4 +17,5 @@ public class PagePath {
     public static final String CONTROLLER = "/controller";
     public static final String ANNOUNCEMENTS_PAGE = "/jsp/pages/announcements.jsp";
     public static final String SUBMIT_AD_PAGE = "/jsp/pages/submitAd.jsp";
+    public static final String ANNOUNCEMENT_PAGE = "/jsp/pages/announcement.jsp";
 }

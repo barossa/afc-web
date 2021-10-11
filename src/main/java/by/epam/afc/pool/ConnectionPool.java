@@ -66,7 +66,6 @@ public class ConnectionPool {
         try {
             connection = freeConnections.take();
             busyConnections.put(connection);
-            logger.debug("Supplied connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
         } catch (InterruptedException e) {
             logger.error("Error occurred while supplying connection:", e);
         }
@@ -77,10 +76,11 @@ public class ConnectionPool {
         if (connection instanceof ProxyConnection) {
             ProxyConnection proxyConnection = (ProxyConnection) connection;
             try {
-                busyConnections.remove(proxyConnection);
-                freeConnections.put(proxyConnection);
-                logger.debug("Released connection: [" + busyConnections.size() + "b\\" + freeConnections.size() + "f]");
-                return true;
+                boolean removed = busyConnections.remove(proxyConnection);
+                if(removed) {
+                    freeConnections.put(proxyConnection);
+                }
+                return removed;
             } catch (InterruptedException e) {
                 logger.error("Connection could not being released!");
                 return false;

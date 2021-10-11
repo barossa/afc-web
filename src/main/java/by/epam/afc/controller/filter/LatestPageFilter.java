@@ -18,18 +18,20 @@ public class LatestPageFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+
         String currentUrl = request.getHeader(REFERER);
         if (currentUrl == null) {
             currentUrl = request.getContextPath() + INDEX;
         }
+
         if (!currentUrl.contains(CONTROLLER)) {
             String contextPath = request.getContextPath();
             int cutIndex = currentUrl.lastIndexOf(contextPath) + contextPath.length();
             String currentPath = currentUrl.substring(cutIndex);
             HttpSession session = request.getSession();
-            System.out.println("New latest path:" + currentPath);
             session.setAttribute(LATEST_CONTEXT_PATH, currentPath);
         }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
