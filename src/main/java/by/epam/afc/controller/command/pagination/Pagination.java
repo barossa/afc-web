@@ -6,18 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Pagination<T extends BaseEntity> {
-    private boolean previous;
-    private boolean next;
-    private int currentPage;
-    private List<T> currentData;
+    protected boolean previous;
+    protected boolean next;
+    protected int currentPage;
+    protected List<T> currentData;
 
-    public Pagination(boolean previous, boolean next, List<T> currentData) {
+    protected Pagination(boolean previous, boolean next, List<T> currentData) {
         this.previous = previous;
         this.next = next;
         this.currentData = currentData;
     }
 
-    public Pagination(){}
+    protected Pagination(){
+        currentData = new ArrayList<>();
+    }
 
     public boolean isPrevious() {
         return previous;

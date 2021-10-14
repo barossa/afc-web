@@ -25,10 +25,14 @@
         }); /*Regions dropdown*/
 
         $(document).ready(function () {
+
+            $.getScript("js/navbar.js", function (){
+                init($);
+            })
+
             $('#submitAdButton').on('click', function () {
                 let imagesForm = $("#input-images");
                 let validationResult = validate();
-                alert(validationResult);
                 if (validationResult) {
                     uploadImages();
                 }else{
@@ -47,7 +51,6 @@
                 data: data,
 
                 success: function (response) {
-                    alert("Successfully uploaded files!")
                     submitAnnouncement();
                 },
 
@@ -60,17 +63,27 @@
 
         function submitAnnouncement() {
             let data = grabData();
-            var xhr = $.ajax({
+            $.ajax({
                 url: "/Ads_from_Chest_war_exploded/controller?command=submit_announcement",
                 type: "POST",
+                async: false, /* TEST VALUE */
                 data: data,
 
-                success: function (response) {
-                    alert("Announcement submitted!")
-                },
 
-                error: function (response) {
-                }
+                success: function (data,status,xhr) {
+                    if(xhr.status === 302){
+                        let bla = jqXHR;
+                        xhr.getAllResponseHeaders();
+                        location.replace(jqXHR.getResponseHeader("Location"))
+                    }
+                }/*,
+
+                error: function (data,status,xhr) {
+                    if(xhr.status === 302){
+                        location.replace(xhr.getResponseHeader("Location"))
+                    }
+                }*/
+
             });
         }
 
@@ -84,11 +97,11 @@
         function validate() {
             let UNDEFINED_ID = -1;
 
-            let titleRegex = "^(?=.*[A-Za-zА-Яа-я0-9]+$)[A-Za-zА-Яа-я0-9 ]*$";
+            let titleRegex = "^(?=.*[A-Za-zА-Яа-я0-9-]+$)[A-Za-zА-Яа-я0-9- ]*$";
             let priceRegex = "^\\d*$";
             let descriptionRegex = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";
 
-            let titleMaxLength = 20;
+            let titleMaxLength = 50;
             let descriptionMaxLength = 300;
             let minFileCount = 1;
 
@@ -121,10 +134,9 @@
             if (description.match(descriptionRegex) == null) {
                 return false;
             }
-            alert($("#input-images")[0].files.length);
-            /*if($("#input-images")[0].files.length < minFileCount){
+            if($("#input-images")[0].files.length < minFileCount){
                 return false;
-            }*/
+            }
             return true;
         }
 

@@ -25,6 +25,15 @@ public class AnnouncementPagination extends Pagination<Announcement> {
         this.status = status;
     }
 
+    public AnnouncementPagination(Status status) {
+        regions = new ArrayList<>();
+        categories = new ArrayList<>();
+        rangeMin = 0;
+        rangeMax = 0;
+        searchRequest = "";
+        this.status = status;
+    }
+
     public List<Region> getRegions() {
         return new ArrayList<>(regions);
     }
@@ -73,11 +82,28 @@ public class AnnouncementPagination extends Pagination<Announcement> {
         this.status = status;
     }
 
+
+
+    public boolean isEmpty() {
+        if (!regions.isEmpty()) {
+            return false;
+        }
+        if (!categories.isEmpty()) {
+            return false;
+        }
+        if (rangeMin != 0 || rangeMax != 0) {
+            return false;
+        }
+        if (!searchRequest.isEmpty()){
+            return false;
+        }
+        return currentData.isEmpty();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         AnnouncementPagination that = (AnnouncementPagination) o;
 
@@ -92,8 +118,7 @@ public class AnnouncementPagination extends Pagination<Announcement> {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (regions != null ? regions.hashCode() : 0);
+        int result = 31 * (regions != null ? regions.hashCode() : 0);
         result = 31 * result + (categories != null ? categories.hashCode() : 0);
         result = 31 * result + rangeMin;
         result = 31 * result + rangeMax;
@@ -111,6 +136,10 @@ public class AnnouncementPagination extends Pagination<Announcement> {
                 ", rangeMax=" + rangeMax +
                 ", searchRequest='" + searchRequest + '\'' +
                 ", status=" + status +
+                ", previous=" + previous +
+                ", next=" + next +
+                ", currentPage=" + currentPage +
+                ", currentData=" + (currentData == null ? "empty" : "exists") +
                 '}';
     }
 }

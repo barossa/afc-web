@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import static by.epam.afc.controller.PagePath.LOGIN_PAGE;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
+import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
 public class ToLoginPage implements Command {
     @Override

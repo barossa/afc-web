@@ -20,12 +20,12 @@ public class Region extends BaseEntity{
 
         Region region = (Region) o;
 
-        return regionName != null ? regionName.equals(region.regionName) : region.regionName == null;
+        return id == region.id;
     }
 
     @Override
     public int hashCode() {
-        return regionName != null ? regionName.hashCode() : 0;
+        return 31 * id;
     }
 
     @Override

@@ -27,8 +27,7 @@ public class PageAccessFilter implements Filter {
         guestPages = Arrays.asList(
                 INDEX,
                 LOGIN_PAGE,
-                REGISTER_PAGE,
-                FORGOT_PASS_PAGE
+                REGISTER_PAGE
         );
         /*END OF GUEST PAGES*/
 
@@ -37,7 +36,8 @@ public class PageAccessFilter implements Filter {
                 INDEX,
                 ABOUT_USER,
                 BAN_PAGE,
-                SUBMIT_AD_PAGE
+                SUBMIT_AD_PAGE,
+                FORGOT_PASS_PAGE
         );
         /*END OF USER PAGES*/
 

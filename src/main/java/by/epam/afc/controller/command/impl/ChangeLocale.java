@@ -13,14 +13,13 @@ import static by.epam.afc.controller.RequestAttribute.LOCALE;
 import static by.epam.afc.controller.SessionAttribute.LANGUAGE;
 import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
+import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
 public class ChangeLocale implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         String locale = request.getParameter(LOCALE);
-        System.out.println(Arrays.toString(request.getParameterValues(LOCALE)));
-        /*System.out.println(Arrays.toString(request.getParameterValues(LOCALE)));*/
         if (locale == null) {
             locale = "en_US";
         }
@@ -35,6 +34,6 @@ public class ChangeLocale implements Command {
         if(latestPath == null){
             latestPath = INDEX;
         }
-        return new Router(FORWARD, latestPath);
+        return new Router(REDIRECT,request.getContextPath() + latestPath);
     }
 }

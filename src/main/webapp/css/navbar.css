@@ -33,5 +33,7 @@
 
 }
 
-.reqBtn {
+.command, .href{
+    background-color: transparent !important;
+    border:none;
 }

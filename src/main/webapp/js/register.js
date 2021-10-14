@@ -71,8 +71,7 @@
 
             success: function (response){
                 if(response.redirect !== undefined) {
-                    alert("trying to redirect... ");
-                    window.location.href = response.redirect;
+                    location.replace(response.redirect);
                 }else if(response.email !== undefined){
                     insertResponseData(response);
                 }
@@ -80,7 +79,7 @@
 
             error: function (response) {
             if(response.redirect !== undefined){
-                window.location.href = response.redirect;
+                location.replace(response.redirect);
             }
             }
         });

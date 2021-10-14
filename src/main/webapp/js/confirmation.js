@@ -64,34 +64,19 @@
     }
 
     function registerAction(){
-        var xhr = $.ajax({
+        $.ajax({
             url: "/Ads_from_Chest_war_exploded/controller",
             type: "POST",
             data: $('#registrationForm').serialize(),
 
-            success: function (response){
-                /*alert("SLH: " + xhr.getResponseHeader("Location"));
-                if(xhr.getResponseHeader("Location") !== null){
-                    alert("LOCATION HEADER: " + xhr.getResponseHeader("Location"));
-                    window.location.href = xhr.getResponseHeader("Location");
-                }
-
-                var url = response.redirect;
-                alert("СУКЕС: " + url);*/
-                if(response.redirect !== undefined) {
+            /*data,status,xhr*/
+            success: function (data,status,xhr){
+               /* if(response.redirect !== undefined) {
                     alert("trying to redirect... ");
                     window.location.href = response.redirect;
                 }else if(response.email !== undefined){
                     insertResponseData(response);
-                }
-                /*var code = xhr.status;
-                alert("SUCCESS: " + code);
-                if(code === 302){
-                    alert("REDIRECT: " + response.redirect);
-                    alert("LOCATION HEADER: " + xhr.getResponseHeader("Location"));
-                    window.location.href = xhr.getResponseHeader("Location");
                 }*/
-
             },
 
             error: function (response) {

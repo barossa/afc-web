@@ -13,20 +13,17 @@ import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.AnnouncementService;
 import by.epam.afc.service.util.ImageHelper;
 import by.epam.afc.service.util.SearchHelper;
-import by.epam.afc.service.validator.AnnouncementValidator;
-import by.epam.afc.service.validator.SearchRequestValidator;
-import by.epam.afc.service.validator.impl.AnnouncementValidatorImpl;
-import by.epam.afc.service.validator.impl.SearchRequestValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.dao.entity.Announcement.Status.ACTIVE;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
@@ -55,34 +52,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             throw new ServiceException("Can't load all announcements.", e);
         }
     }
-
-    /*@Override
-    public List<Announcement> findByCategory(Category category) throws ServiceException {
-        try {
-            AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
-            List<Announcement> announcements = announcementDao.findByCategory(category);
-            return initializeLazyData(announcements);
-
-        } catch (DaoException e) {
-            logger.error("Can't load announcements by category.", e);
-            throw new ServiceException("Can't load announcements by category.", e);
-        }
-    }*/
-
-    /*@Override
-    public List<Announcement> findByName(String name) throws ServiceException {
-        try {
-            // TODO: 10/10/21 REFACTOR
-            AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
-            List<Announcement> announcements = announcementDao.findByName(name);
-            initializeLazyData(announcements);
-            return announcements;
-
-        } catch (DaoException e) {
-            logger.error("Can't load announcements by name.", e);
-            throw new ServiceException("Can't load announcements by name.", e);
-        }
-    }*/
 
     @Override
     public Optional<Announcement> save(Announcement announcement) throws ServiceException {
@@ -127,47 +96,14 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Optional<AnnouncementPagination> findAnnouncements(Map<String, String[]> requestParameterMap) throws ServiceException {
-        if (!validateParameterMap(requestParameterMap)) {
-            return Optional.empty();
-        }
-        AnnouncementPagination pagination = parseRequestMap(requestParameterMap);
-        pagination.setCurrentPage(0);
-
-
-        return Optional.of(pagination);
-    }
-
-    @Override
-    public Optional<AnnouncementPagination> findAnnouncements(Map<String, String[]> requestParameterMap,
-                                                              AnnouncementPagination pagination) throws ServiceException {
-        if (!validateParameterMap(requestParameterMap)) {
-            return Optional.empty();
-        }
-
-        AnnouncementPagination freshPagination = parseRequestMap(requestParameterMap);
-        if (freshPagination.equals(pagination)) {
-            if (pagination.isNext()) {
-                findAnnouncementsPage(pagination);
-            } else {
-                return Optional.empty();
-            }
-            return Optional.of(pagination);
-        } else {
-            freshPagination.setCurrentPage(0);
-            findAnnouncementsPage(freshPagination);
-            return Optional.of(freshPagination);
-        }
-    }
-
-    private void findAnnouncementsPage(AnnouncementPagination pagination) throws ServiceException {
+    public Optional<AnnouncementPagination> findAnnouncements(AnnouncementPagination pagination) throws ServiceException {
         try {
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Announcement> announcements = announcementDao.findAll();
             List<Announcement> filteredAnnouncements = filterData(announcements, pagination);
 
             int from = pagination.getCurrentPage() * PAGINATED_PAGE_ELEMENTS;
-            int to = from + PAGINATED_PAGE_ELEMENTS;
+            int to = from + PAGINATED_PAGE_ELEMENTS - 1;
             int listSize = filteredAnnouncements.size();
 
             /*Getting actual data of current page*/
@@ -175,8 +111,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 List<Announcement> currentAnnouncements;
                 if (listSize > to) {
                     currentAnnouncements = filteredAnnouncements.subList(from, to);
+                    currentAnnouncements.add(filteredAnnouncements.get(to));
                 } else {
                     currentAnnouncements = filteredAnnouncements.subList(from, listSize - 1);
+                    currentAnnouncements.add(filteredAnnouncements.get(listSize - 1));
                 }
                 initializeLazyData(currentAnnouncements);
                 pagination.setCurrentData(currentAnnouncements);
@@ -193,11 +131,14 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             boolean isNextExists = listSize > to + 1;
             pagination.setNext(isNextExists);
 
+            return Optional.of(pagination);
+
         } catch (DaoException e) {
             logger.error("Can't find paginated page", e);
             throw new ServiceException("Can't find paginated page", e);
         }
     }
+
 
     private List<Announcement> filterData(List<Announcement> announcements, AnnouncementPagination pagination) {
         List<Category> categories = pagination.getCategories();
@@ -207,6 +148,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         String search = pagination.getSearchRequest();
 
         Stream<Announcement> stream = announcements.stream();
+        System.out.println("FILTERING DATA. INPUT: " + announcements.size());
 
         if (!categories.isEmpty()) {
             stream = stream.filter(ad -> categories.contains(ad.getCategory()));
@@ -227,7 +169,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             stream = stream.filter(ad -> searchPattern.matcher(ad.getTitle()).find());
         }
 
-        return stream.collect(Collectors.toList());
+        List<Announcement> collect = stream.collect(Collectors.toList());
+        System.out.println("FILTERING DATA. OUTPUT: " + collect.size());
+        return collect;
     }
 
     private void initializeLazyData(List<Announcement> announcements) throws DaoException {
@@ -248,70 +192,5 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             User owner = ownerOptional.orElseThrow(DaoException::new);
             announcement.setOwner(owner);
         }
-    }
-
-    private boolean validateParameterMap(Map<String, String[]> requestParameterMap) {
-        AnnouncementValidator validator = AnnouncementValidatorImpl.getInstance();
-
-        String[] regions = requestParameterMap.get(REGION);
-        String[] categories = requestParameterMap.get(CATEGORY);
-        regions = initializeParameter(regions);
-        categories = initializeParameter(categories);
-
-        boolean isRegionsCorrect = Arrays.stream(regions).allMatch(validator::validateRegion);
-        boolean isCategoriesCorrect = Arrays.stream(categories).allMatch(validator::validateCategory);
-        if (!isRegionsCorrect || !isCategoriesCorrect) {
-            return false;
-        }
-
-        String[] priceMin = requestParameterMap.get(PRICE_MIN);
-        priceMin = initializeParameter(priceMin);
-        boolean isMinPriceCorrect = priceMin.length == 0 || validator.validatePrice(priceMin[0]);
-
-        String[] priceMax = requestParameterMap.get(PRICE_MAX);
-        priceMax = initializeParameter(priceMax);
-        boolean isMaxPriceCorrect = priceMax.length == 0 || validator.validatePrice(priceMax[0]);
-        if (!isMinPriceCorrect || !isMaxPriceCorrect) {
-            return false;
-        }
-
-
-        String[] searchRequest = requestParameterMap.get(SEARCH);
-        searchRequest = initializeParameter(searchRequest);
-        SearchRequestValidator requestValidator = SearchRequestValidatorImpl.getInstance();
-        return searchRequest.length == 0 || requestValidator.validateRequest(searchRequest[0]);
-
-    }
-
-    private String[] initializeParameter(String[] parameter){
-        if(parameter == null) {
-            return new String[0];
-        }
-        return parameter;
-    }
-
-    private AnnouncementPagination parseRequestMap(Map<String, String[]> requestParameterMap) {
-        String[] regions = requestParameterMap.get(REGION);
-        String[] categories = requestParameterMap.get(CATEGORY);
-        String[] minPrices = requestParameterMap.get(PRICE_MIN);
-        String[] maxPrices = requestParameterMap.get(PRICE_MAX);
-        String[] searchRequests = requestParameterMap.get(SEARCH);
-
-        List<Region> collectedRegions = Arrays.stream(regions)
-                .mapToInt(Integer::parseInt)
-                .mapToObj(Region::new)
-                .collect(Collectors.toList());
-
-        List<Category> collectedCategories = Arrays.stream(categories)
-                .mapToInt(Integer::parseInt)
-                .mapToObj(Category::new)
-                .collect(Collectors.toList());
-
-        int minPrice = (minPrices[0].isEmpty() ? 0 : Integer.parseInt(minPrices[0]));
-        int maxPrice = (maxPrices[0].isEmpty() ? 0 : Integer.parseInt(maxPrices[0]));
-
-        AnnouncementPagination pagination = new AnnouncementPagination(collectedRegions, collectedCategories,
-                minPrice, maxPrice, searchRequests[0], ACTIVE);
-        return pagination;
     }
 }

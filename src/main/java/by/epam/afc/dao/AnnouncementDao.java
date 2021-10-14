@@ -13,7 +13,7 @@ import static by.epam.afc.dao.entity.Announcement.Status;
 
 public interface AnnouncementDao extends BaseDao<Announcement> {
     List<Announcement> findByOwner(User owner) throws DaoException;
-    List<Announcement> findByCategory(Category category) throws DaoException;
+    /*List<Announcement> findByCategory(Category category) throws DaoException;*/
 /*    List<Announcement> findByName(String name) throws DaoException;*/
 /*    List<Announcement> findRange(int from, int to, Status status) throws DaoException;*/
 

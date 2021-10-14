@@ -24,5 +24,8 @@ public class RequestAttribute {
     public static final String PRICE_MIN = "rangeMin";
     public static final String PRICE_MAX = "rangeMax";
     public static final String SEARCH = "search";
+    public static final String ACTION = "action";
+    public static final String ID = "id";
+    public static final String LOAD_ONLY = "load_only";
 
 }

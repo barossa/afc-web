@@ -9,7 +9,9 @@ body {
 }
 #main {
     display: flex;
-    min-height: 100vh;
+    flex-grow: initial;
+    min-height: 88vh;
+    max-height: 155vh;
     background-color: #fff;
     background-image: url("../images/bg-texture.png");
 }
@@ -26,12 +28,13 @@ body {
 }
 
 #advertisements {
-    height: calc(100vh - 12vh);
+    flex-grow: initial;
+
 }
 
 aside {
     flex-grow: 1;
-    min-height: 165vh;
+    min-height: 100vh;
 }
 
 header, footer {
@@ -40,4 +43,16 @@ header, footer {
 
 .validate-input {
     position: relative;
+}
+
+.card{
+    background-color: rgba(255, 255, 255, 0.7) !important; /* 0.0 - полностью прозрачный */
+}
+
+.adCard:hover{
+    background-color: rgba(230, 230, 230, 0.85) !important;
+}
+
+.adCard:after{
+    background-color: rgba(255, 255, 255, 0.7) !important; /* 0.0 - полностью прозрачный */
 }

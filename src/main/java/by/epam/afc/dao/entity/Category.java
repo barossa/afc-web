@@ -31,15 +31,12 @@ public class Category extends BaseEntity {
 
         Category category = (Category) o;
 
-        if (id != category.id) return false;
-        return description != null ? description.equals(category.description) : category.description == null;
+        return id == category.id;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        return result;
+        return 31 * id;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package by.epam.afc.service.validator.impl;
 
 import by.epam.afc.service.validator.AnnouncementValidator;
+import by.epam.afc.service.validator.NumberValidator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,20 +17,18 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
     public static final String CATEGORY = "category";
     public static final String REGION = "region";
 
-    private static final String TITLE_REGEX = "^(?=.*[A-Za-zА-Яа-я0-9]+$)[A-Za-zА-Яа-я0-9_]*$";
-    private static final String NUMBER_REGEX = "^\\d*$";
+    private static final String TITLE_REGEX = "^(?=.*[A-Za-zА-Яа-я0-9\\-]+$)[A-Za-zА-Яа-я0-9\\-_]*$";
+    /*private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";*/
     private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";
 
-    private static final int MAX_TITLE_LENGTH = 20;
+    private static final int MAX_TITLE_LENGTH = 50;
     private static final int MAX_DESCRIPTION_LENGTH = 300;
 
     private static Pattern titlePattern;
-    private static Pattern numberPattern;
     private static Pattern descriptionPattern;
 
     private AnnouncementValidatorImpl() {
         titlePattern = Pattern.compile(TITLE_REGEX);
-        numberPattern = Pattern.compile(NUMBER_REGEX);
         descriptionPattern = Pattern.compile(DESCRIPTION_REGEX);
     }
 
@@ -51,7 +50,8 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
 
     @Override
     public boolean validatePrice(String price) {
-        return validateNumber(price);
+        NumberValidator validator = NumberValidatorImpl.getInstance();
+        return validator.validateNumber(price);
     }
 
     @Override
@@ -67,12 +67,14 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
 
     @Override
     public boolean validateCategory(String category) {
-        return validateNumber(category);
+        NumberValidator validator = NumberValidatorImpl.getInstance();
+        return validator.validateNumber(category);
     }
 
     @Override
     public boolean validateRegion(String region) {
-        return validateNumber(region);
+        NumberValidator validator = NumberValidatorImpl.getInstance();
+        return validator.validateNumber(region);
     }
 
     @Override
@@ -94,20 +96,5 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
             correctData.put(CATEGORY, "");
         }
         return correctData;
-    }
-
-    private boolean validateNumber(String number) {
-        if (number != null) {
-            Matcher matcher = numberPattern.matcher(number);
-            if (matcher.matches()) {
-                try {
-                    Integer.parseInt(number);
-                    return true;
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-            }
-        }
-        return false;
     }
 }

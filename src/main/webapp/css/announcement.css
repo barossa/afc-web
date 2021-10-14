@@ -12,26 +12,37 @@ body {
     min-height: 100vh;
     background-color: #fff;
     background-image: url("../images/bg-texture.png");
+    justify-content: flex-start;
+    flex-grow: 1;
 }
 #main > article {
     flex: 1;
 }
-#main > nav {
-    flex: 0 0 25vw;
+#main > #images {
+    flex: 0 0 55vw;
+    /*max-height: 80vh;*/
     order: -1;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
 }
 
-#search {
-    height: 12vh;
-}
-
-#advertisements {
-    height: calc(100vh - 12vh);
+.carousel-inner {
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
 }
 
 aside {
     flex-grow: 1;
-    min-height: 165vh;
+    min-height: 100vh;
+}
+
+#description {
+    margin-left: 1.5rem !important;
+    margin-top: 2rem !important;
+    margin-right: 2rem !important;
 }
 
 header, footer {

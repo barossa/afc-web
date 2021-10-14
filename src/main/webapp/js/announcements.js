@@ -2,6 +2,10 @@
     "use strict";
 
     $(document).ready(function () {
+        $.getScript("js/navbar.js", function (){
+            init($);
+        })
+
         $('#searchButton').on('click', function () {
             /*let search = $('#searchRequest').attr('value');*/
             let validationResult = validate();
@@ -10,16 +14,27 @@
                 searchAction();
             }
         });
+        $('#resetButton').on('click', function () {
+            $('.custom-control-input').each(function (i, element){
+                $(element).prop("checked", false);
+            })
+            $('#rangeMax,#rangeMin,#searchRequest').val("");
+        });
+        $('.adCard').on('click', function (){
+            location.replace("/Ads_from_Chest_war_exploded/controller?command=load_announcement&id=" + $(this).attr('id'))
+        })
     });
 
     function searchAction() {
-        var xhr = $.ajax({
+        $.ajax({
             url: "/Ads_from_Chest_war_exploded/controller",
             type: "POST",
             data: $('#filtersForm, #searchForm').serialize(),
             /*dataType: "xml/html",*/
 
-            success: function (response) {
+
+            success: function (data,status,xhr) {
+                location.reload();
             },
 
             error: function (response) {
@@ -35,7 +50,7 @@
 
         let searchMaxLength = 30;
 
-        let flag = search.val().match("^(?=.*[A-Za-zА-Яа-я0-9]$)([A-Za-zА-Яа-я0-9]+ ?)+$") != null;
+        let flag = search.val().length == 0 || search.val().match("^(?=.*[A-Za-zА-Яа-я0-9]$)([A-Za-zА-Яа-я0-9]+ ?)+$") != null;
 
         if (flag) {
             if (minVal.length > 0) {
@@ -53,8 +68,7 @@
         }
 
         if (flag) {
-            let length = search.val().length;
-            return length <= searchMaxLength && length > 0;
+            return search.val().length <= searchMaxLength;
         } else {
             return false; // don't meet regex
         }

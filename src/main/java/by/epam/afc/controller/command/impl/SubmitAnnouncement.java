@@ -68,20 +68,19 @@ public class SubmitAnnouncement implements Command {
 
                 if(saved.isPresent()){
                     logger.debug("Announcement saved");
-                    return new Router(REDIRECT, INDEX);
+                    return new Router(REDIRECT,request.getContextPath() + INDEX);
                 }else{
                     return new Router(FORWARD, SUBMIT_AD_PAGE);
                 }
 
             } catch (ServiceException e) {
                 logger.error("Error occurred while submitting announcement", e);
-                return new Router(REDIRECT, request.getContextPath() + ERROR_500);
+                request.setAttribute(EXCEPTION_MESSAGE,"Error occurred while submitting announcement");
+                return new Router(FORWARD, request.getContextPath() + ERROR_500);
             }
 
         }else{
-            //ERROR
-            logger.debug("DATA CONTAINS INVALID DATA");
-            System.out.println(validatedData);
+            logger.warn("Invalid announcements data received!");
             return new Router(FORWARD, SUBMIT_AD_PAGE);
         }
     }

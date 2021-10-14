@@ -12,6 +12,6 @@ import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 public class ToRegisterPage implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        return new Router(REDIRECT, request.getContextPath() + REGISTER_PAGE);
+        return new Router(FORWARD, REGISTER_PAGE);
     }
 }

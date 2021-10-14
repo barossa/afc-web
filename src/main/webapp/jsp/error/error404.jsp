@@ -15,6 +15,7 @@
     <link href="<c:url value="/fonts/titillium/css/titillium.css"/>" rel="stylesheet">
 
     <link type="text/css" rel="stylesheet" href="<c:url value="/css/error-style.css"/>" />
+    <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
 </head>
 
 <body>
@@ -24,11 +25,20 @@
         <div class="notfound-404">
             <h1>404</h1>
         </div>
+        <p></p>
         <h2><fmt:message key="error.404messageHead"/></h2>
+        <p></p>
         <p><fmt:message key="error.404messageBody"/></p>
-        <a href="<c:url value="/index.jsp"/>"><fmt:message key="error.goToHome"/></a>
+        <p></p>
+        <p></p>
+
+        <button class="href btn btn-primary mt-4" value="index.jsp"><fmt:message key="error.goToHome"/></button>
     </div>
 </div>
+
+<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
+<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/js/error.js"/>"></script>
 
 </body>
 </html>

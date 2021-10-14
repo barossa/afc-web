@@ -5,13 +5,12 @@ import by.epam.afc.controller.command.Router;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import static by.epam.afc.controller.PagePath.CONFIRMATION_PAGE;
+import static by.epam.afc.controller.PagePath.SUBMIT_AD_PAGE;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
-import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
-public class ToConfirmPage implements Command {
+public class ToSubmitAdPage implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        return new Router(FORWARD, CONFIRMATION_PAGE);
+        return new Router(FORWARD, SUBMIT_AD_PAGE);
     }
 }

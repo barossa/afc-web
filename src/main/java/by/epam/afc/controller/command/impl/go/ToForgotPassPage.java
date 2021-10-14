@@ -11,6 +11,6 @@ import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 public class ToForgotPassPage implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        return new Router(FORWARD, request.getContextPath() + FORGOT_PASS_PAGE);
+        return new Router(FORWARD, FORGOT_PASS_PAGE);
     }
 }

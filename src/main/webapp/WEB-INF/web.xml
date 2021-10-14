@@ -12,4 +12,14 @@
         <location>/jsp/error/error404.jsp</location>
     </error-page>
 
+    <servlet>
+        <servlet-name>announcements</servlet-name>
+        <jsp-file>/jsp/pages/announcements.jsp</jsp-file>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>announcements</servlet-name>
+        <url-pattern>/announcements</url-pattern>
+    </servlet-mapping>
+    
 </web-app>

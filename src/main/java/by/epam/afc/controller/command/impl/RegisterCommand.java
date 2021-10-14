@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static by.epam.afc.controller.PagePath.*;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
+import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.SessionAttribute.*;
 import static by.epam.afc.controller.command.CommandType.TO_CONFIRM_PAGE;
 import static by.epam.afc.controller.command.Router.DispatchType.*;
@@ -73,9 +74,11 @@ public class RegisterCommand implements Command {
                 }
             } catch (ServiceException e) {
                 logger.error("Can't validate registration credential", e);
+                request.setAttribute(EXCEPTION_MESSAGE,"Can't validate registration credential: " + e.getMessage());
                 return new Router(REDIRECT, request.getContextPath() + ERROR_500);
             } catch (IOException e){
                 logger.error("Error occurred while sending JSON redirect.", e);
+                request.setAttribute(EXCEPTION_MESSAGE, "Error occurred while sending JSON redirect: " + e.getMessage());
                 return new Router(REDIRECT, request.getContextPath() + ERROR_500);
             }
         }
@@ -84,6 +87,7 @@ public class RegisterCommand implements Command {
             sendJsonResponse(validatedCredentials, response);
         } catch (IOException e) {
             logger.error("Error occurred while sending JSON response.", e);
+            request.setAttribute(EXCEPTION_MESSAGE, "Error occurred while sending JSON response: " + e.getMessage());
             return new Router(REDIRECT, ERROR_500);
         }
 

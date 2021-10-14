@@ -11,7 +11,7 @@ import static by.epam.afc.controller.PagePath.CONTROLLER;
 import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
 
-@WebFilter(urlPatterns = {"/jsp/*", "/controller"})
+@WebFilter(urlPatterns = {"/jsp/*"})
 public class LatestPageFilter implements Filter {
     private static final String REFERER = "referer";
 

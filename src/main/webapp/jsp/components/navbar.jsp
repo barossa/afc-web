@@ -16,27 +16,20 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-dark bg-opacity-85"
      style="background-color: #63535B !important;">
-    <%--<a class="navbar-brand ms-3" href="${pageContext.request.contextPath}/index.jsp">
-        <img datatype="png" height="30" width="28" src="<c:url value="/images/navbar-brand.png"/>" alt="AFC"/>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>--%>
 
     <div class="collapse navbar-collapse m-l-10" style="opacity: 1;" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto">
             <li class="nav-item active nav-font-main-ws">
-                <a class="nav-link me-auto" href="${pageContext.request.contextPath}/index.jsp"
-                   style="font-size: 25px; font-weight: bold; color: whitesmoke;">
-                    <fmt:message key="navbar.home"/></a>
+                <button class="nav-link me-auto href" value=""
+                   style="border:none; font-size: 25px; font-weight: bold; color: whitesmoke;">
+                    <fmt:message key="navbar.home"/></button>
             </li>
         </ul>
         <ul class="navbar-nav m-l-auto">
             <li class="nav-item active nav-font-main-ws">
-                <a class="nav-link me-auto" href="${pageContext.request.contextPath}/jsp/pages/submitAd.jsp"
+                <button class="nav-link me-auto command" value="to_submit_ad_page"
                    style="font-size: 25px; font-weight: bold; color: whitesmoke;">
-                    <fmt:message key="announcements.submitAd"/></a>
+                    <fmt:message key="announcements.submitAd"/></button>
             </li>
         </ul>
 
@@ -51,14 +44,13 @@
 
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
-                        <button id="eng_bt" class="dropdown-item nav-font" type="button" name="locale" value="en_US">
+                        <button value="change_locale&locale=en_US"
+                           class="dropdown-item nav-font command" type="button">
                             English(US)
                         </button>
-                        <%--href="${pageContext.request.contextPath}/controller?command=change_locale&locale=en_US">English(US)--%>
                     </li>
                     <li>
-                        <button id="rus_bt" class="dropdown-item nav-font" type="button" name="locale" value="ru_RU">
-                            <%--href="${pageContext.request.contextPath}/controller?command=change_locale&locale=ru_RU">--%>
+                        <button value="change_locale&locale=ru_RU" class="dropdown-item nav-font command" type="button">
                             Русский(RU)
                         </button>
                     </li>
@@ -78,7 +70,8 @@
                          class="rounded-circle"
                          height="30"
                          alt=""
-                         loading="lazy"/>
+                         loading="lazy"
+                    style="max-height: 30px; max-width: 30px;"/>
                 </c:when>
                 <c:otherwise>
                     <img src="data:image/png;Base64,${applicationScope.guestImage.base64}"
@@ -93,7 +86,7 @@
             aria-labelledby="navbarDropdownMenuLink">
             <c:if test="${!sessionScope.isAuthorized}">
                 <li>
-                    <button class="dropdown-item nav-font reqBtn" name="command" value="to_login_page">
+                    <button class="dropdown-item nav-font command" value="to_login_page">
                         <fmt:message key="navbar.login"/>
                     </button>
                 </li>
@@ -101,20 +94,19 @@
 
             <c:if test="${sessionScope.isAuthorized}">
                 <li>
-                    <button class="dropdown-item nav-font reqBtn" name="command" value="to_my_announcements">
+                    <button class="dropdown-item nav-font command" value="to_my_announcements">
                         <fmt:message key="navbar.myAnnouncements"/>
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item nav-font reqBtn" name="command" value="to_profile">
+                    <button class="dropdown-item nav-font command" value="to_profile">
                         <fmt:message key="navbar.profile"/>
                     </button>
                 </li>
                 <li>
-                    <a class="dropdown-item nav-font"
-                       href="${pageContext.request.contextPath}/controller?command=logout_command">
+                    <button class="dropdown-item nav-font command" value="logout_command">
                         <fmt:message key="navbar.logout"/>
-                    </a>
+                    </button>
                 </li>
             </c:if>
 

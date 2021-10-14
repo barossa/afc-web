@@ -38,17 +38,37 @@
                                     <label>
                                         <fmt:message key="filter.rangeMin"/>
                                     </label>
-                                    <input type="number" id="rangeMin" name="rangeMin" class="form-control"
-                                           pattern="[0-9]*" min="0"
-                                           placeholder="BYN 0">
+                                    <c:choose>
+                                        <c:when test="${pagination_data.rangeMin != 0}">
+                                            <input type="number" id="rangeMin" name="rangeMin" class="form-control"
+                                                   value="${pagination_data.rangeMin}"
+                                                   pattern="[0-9]*" min="0"
+                                                   placeholder="BYN 0">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="number" id="rangeMin" name="rangeMin" class="form-control"
+                                                   pattern="[0-9]*" min="0"
+                                                   placeholder="BYN 0">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <div class="form-group col-md-5 text-right">
                                     <label>
                                         <fmt:message key="filter.rangeMax"/>
                                     </label>
-                                    <input type="number" id="rangeMax" name="rangeMax" class="form-control"
-                                           pattern="[0-9]*" min="0"
-                                           placeholder="BYN 100">
+                                    <c:choose>
+                                        <c:when test="${pagination_data.rangeMax != 0}">
+                                            <input type="number" id="rangeMax" name="rangeMax" class="form-control"
+                                                   value="${pagination_data.rangeMax}"
+                                                   pattern="[0-9]*" min="0"
+                                                   placeholder="BYN 100">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="number" id="rangeMax" name="rangeMax" class="form-control"
+                                                   pattern="[0-9]*" min="0"
+                                                   placeholder="BYN 100">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </div>
                         </div> <!-- card-body.// -->
@@ -62,16 +82,27 @@
                     </header>
                     <div class="filter-content flex-c">
                         <div class="card-body left-auto">
+
+                            <%--CATEGORIES--%>
                             <c:forEach var="category" items="${applicationScope.categories}">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="category" class="custom-control-input"
-                                           id="category_${category.id}" value="${category.id}">
+                                    <c:choose>
+                                        <c:when test="${pagination_data.categories.contains(category)}">
+                                            <input type="checkbox" name="category" class="custom-control-input"
+                                                   checked="true"
+                                                   id="category_${category.id}" value="${category.id}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="checkbox" name="category" class="custom-control-input"
+                                                   id="category_${category.id}" value="${category.id}">
+                                        </c:otherwise>
+                                    </c:choose>
                                     <label class="custom-control-label">
                                         <fmt:message key="filter.category_${category.id}"/>
                                     </label>
                                 </div>
-                                <!-- form-check.// -->
                             </c:forEach>
+                            <%--CATEGORIES--%>
                         </div> <!-- card-body.// -->
                     </div>
                 </article> <!-- card-group-item.// -->
@@ -83,21 +114,32 @@
                     </header>
                     <div class="filter-content flex-c">
                         <div class="card-body left-auto">
+                            <%--REGIONS--%>
                             <c:forEach var="region" items="${applicationScope.regions}">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="region" class="custom-control-input"
-                                           id="region_${region.id}" value="${region.id}">
+                                    <c:choose>
+                                        <c:when test="${pagination_data.regions.contains(region)}">
+                                            <input type="checkbox" name="region" class="custom-control-input"
+                                                   checked="true"
+                                                   id="region_${region.id}" value="${region.id}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="checkbox" name="region" class="custom-control-input"
+                                                   id="region_${region.id}" value="${region.id}">
+                                        </c:otherwise>
+                                    </c:choose>
                                     <label class="custom-control-label">
                                         <fmt:message key="filter.region_${region.id}"/>
                                     </label>
                                 </div>
                                 <!-- form-check.// -->
                             </c:forEach>
+                            <%--REGIONS--%>
                         </div> <!-- card-body.// -->
                     </div>
                 </article> <!-- End of region filter -->
                 <article class="flex-c justify-content-center m-b-15">
-                    <button type="button" class="btn btn-outline-secondary">
+                    <button id="resetButton" type="button" class="btn btn-outline-secondary">
                         <fmt:message key="filter.reset"/>
                     </button>
                 </article>
@@ -106,6 +148,7 @@
     </nav>
 
     <aside>
+
         <form id="searchForm" onsubmit="return false;" method="post">
             <div id="search" class="flex-c m-t-20 m-b-26"> <%--Search--%>
 
@@ -123,19 +166,22 @@
 
             </div>
         </form>
+
+
         <div id="advertisements" class="me-3">
 
-
-            <c:if test="${empty pagination.currentData}">
+            <c:if test="${empty pagination_data.currentData}">
                 <div class="card">
                     <fmt:message key="search.nothingFound"/>
                 </div>
             </c:if>
-            <c:forEach var="ad" items="${pagination.currentData}">
-                <div class="card mb-2" style="min-height: 150px;">
+            <c:forEach varStatus="varStatus" var="ad" items="${pagination_data.currentData}">
+                <div id="${varStatus.index}" class="card mb-2 adCard" style="height: 150px;">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 align-items-center"
+                             style="display: flex; max-height: 150px;">
                             <img class="rounded-2 mx-4 my-3"
+                                 style="max-width: 130px; max-height: 130px;"
                                  src="data:image/png;Base64,${ad.getPrimaryImage()}"
                                  width="130" alt="No image"/>
                         </div>
@@ -177,36 +223,56 @@
             </c:forEach>
 
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
-                        <fmt:message key="pagination.previous"/>
-                    </a>
-                </li>
+                <c:choose>
+                    <c:when test="${pagination_data.isPrevious()}">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/controller?command=change_announcements_page&action=previous"
+                               tabindex="-1">
+                                <fmt:message key="pagination.previous"/>
+                            </a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1">
+                                <fmt:message key="pagination.previous"/>
+                            </a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
                 <li class="page-item disabled"><a class="page-link">${pagination_data.currentPage + 1}</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="controller?command=find_announcements">
-                        <fmt:message key="pagination.next"/>
-                    </a>
-                </li>
+                <c:choose>
+                    <c:when test="${pagination_data.isNext()}">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="${pageContext.request.contextPath}/controller?command=change_announcements_page&action=next">
+                                <fmt:message key="pagination.next"/>
+                            </a>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="page-item disabled">
+                            <a class="page-link">
+                                <fmt:message key="pagination.next"/>
+                            </a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
 
         </div>
 
     </aside>
 
-    <%-- </form>--%>
-
 
 </div>
 
 <script src="<c:url value="/js/announcements.js"/>"></script>
-<script src="<c:url value="/vendor/pagination/js/pagination.min.js"/>"></script>
-<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
+<%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
+<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
 
-<footer>
-    <c:import url="/jsp/components/footer.jsp"/>
-</footer>
+<c:import url="/jsp/components/footer.jsp"/>
 
 </body>
 </html>
