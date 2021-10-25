@@ -2,7 +2,7 @@ package by.epam.afc.controller.command.impl;
 
 import by.epam.afc.controller.command.Command;
 import by.epam.afc.controller.command.Router;
-import by.epam.afc.controller.command.pagination.AnnouncementPagination;
+import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.impl.AnnouncementFilterParser;
 import by.epam.afc.service.impl.AnnouncementServiceImpl;
@@ -31,9 +31,13 @@ public class FindAnnouncements implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
-        AnnouncementPagination pagination = (AnnouncementPagination) session.getAttribute(PAGINATION_DATA);
-
+        AnnouncementsPagination pagination = (AnnouncementsPagination) session.getAttribute(PAGINATION_DATA);
         String loadOnly = request.getParameter(LOAD_ONLY);
+
+        if(pagination != null && pagination.getClass() != AnnouncementsPagination.class){
+            pagination = null;
+        }
+
         if(loadOnly != null){
             if(loadOnly.equals(ONLY_LOAD_ANNOUNCEMENTS) && pagination != null){
                 return new Router(FORWARD, ANNOUNCEMENTS_PAGE);
@@ -42,7 +46,7 @@ public class FindAnnouncements implements Command {
 
         try {
             AnnouncementServiceImpl announcementService = AnnouncementServiceImpl.getInstance();
-            Optional<AnnouncementPagination> optionalPagination;
+            Optional<AnnouncementsPagination> optionalPagination;
             if (pagination != null) {
                 Map<String, String[]> requestParameterMap = request.getParameterMap();
                 AnnouncementFilterValidatorImpl filterValidator = AnnouncementFilterValidatorImpl.getInstance();
@@ -50,7 +54,7 @@ public class FindAnnouncements implements Command {
 
                 if (validMap) {
                     AnnouncementFilterParser filterParser = AnnouncementFilterParser.getInstance();
-                    AnnouncementPagination parsedFilter = filterParser.parseFilter(requestParameterMap);
+                    AnnouncementsPagination parsedFilter = filterParser.parseFilter(requestParameterMap);
                     if (!parsedFilter.equals(pagination)) {
 
                         System.out.println("New pagination filter");
@@ -68,7 +72,7 @@ public class FindAnnouncements implements Command {
 
             } else {
                 System.out.println("PAGINATION NULL");
-                AnnouncementPagination emptyPagination = new AnnouncementPagination(ACTIVE);
+                AnnouncementsPagination emptyPagination = new AnnouncementsPagination(ACTIVE);
                 optionalPagination = announcementService.findAnnouncements(emptyPagination);
             }
 

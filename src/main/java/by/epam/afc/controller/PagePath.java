@@ -18,4 +18,7 @@ public class PagePath {
     public static final String ANNOUNCEMENTS_PAGE = "/jsp/pages/announcements.jsp";
     public static final String SUBMIT_AD_PAGE = "/jsp/pages/submitAd.jsp";
     public static final String ANNOUNCEMENT_PAGE = "/jsp/pages/announcement.jsp";
+    public static final String MY_ANNOUNCEMENTS_PAGE = "/jsp/pages/myAnnouncements.jsp";
+    public static final String ADMINISTRATOR_PAGE = "/jsp/pages/adminControlPanel.jsp";
+    public static final String MODERATOR_PAGE = "/jsp/pages/moderatingPage.jsp";
 }

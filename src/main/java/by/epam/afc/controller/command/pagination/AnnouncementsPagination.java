@@ -8,7 +8,7 @@ import by.epam.afc.dao.entity.Region;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnnouncementPagination extends Pagination<Announcement> {
+public class AnnouncementsPagination extends Pagination<Announcement> {
     private List<Region> regions;
     private List<Category> categories;
     private int rangeMin;
@@ -16,7 +16,7 @@ public class AnnouncementPagination extends Pagination<Announcement> {
     private String searchRequest;
     private Status status;
 
-    public AnnouncementPagination(List<Region> regions, List<Category> categories, int rangeMin, int rangeMax, String searchRequest, Status status) {
+    public AnnouncementsPagination(List<Region> regions, List<Category> categories, int rangeMin, int rangeMax, String searchRequest, Status status) {
         this.regions = regions;
         this.categories = categories;
         this.rangeMin = rangeMin;
@@ -25,7 +25,7 @@ public class AnnouncementPagination extends Pagination<Announcement> {
         this.status = status;
     }
 
-    public AnnouncementPagination(Status status) {
+    public AnnouncementsPagination(Status status) {
         regions = new ArrayList<>();
         categories = new ArrayList<>();
         rangeMin = 0;
@@ -105,7 +105,7 @@ public class AnnouncementPagination extends Pagination<Announcement> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AnnouncementPagination that = (AnnouncementPagination) o;
+        AnnouncementsPagination that = (AnnouncementsPagination) o;
 
         if (rangeMin != that.rangeMin) return false;
         if (rangeMax != that.rangeMax) return false;

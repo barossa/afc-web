@@ -2,7 +2,7 @@ package by.epam.afc.controller.command.impl;
 
 import by.epam.afc.controller.command.Command;
 import by.epam.afc.controller.command.Router;
-import by.epam.afc.controller.command.pagination.AnnouncementPagination;
+import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
 import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.service.validator.impl.NumberValidatorImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ public class LoadAnnouncement implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
-        AnnouncementPagination pagination = (AnnouncementPagination) session.getAttribute(PAGINATION_DATA);
+        AnnouncementsPagination pagination = (AnnouncementsPagination) session.getAttribute(PAGINATION_DATA);
 
         if (pagination != null && !pagination.isEmpty()) {
             String idParameter = request.getParameter(ID);

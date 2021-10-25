@@ -112,6 +112,7 @@ public class RegisterCommand implements Command {
 
     private void sendJsonResponse(Map<String, String> data, HttpServletResponse response) throws IOException {
         String jsonResponse = new Gson().toJson(data);
+
         response.setContentType(JSON_CONTENT_TYPE);
         try (PrintWriter writer = response.getWriter()) {
             writer.append(jsonResponse);

@@ -5,6 +5,13 @@
     <title>Index</title>
 </head>
 <body>
-<jsp:forward page="/controller?command=find_announcements&load_only=1"/>
+<c:choose>
+    <c:when test="${latest_forward_path == null}">
+        <jsp:forward page="/controller?command=find_announcements&load_only=1"/>
+    </c:when>
+    <c:otherwise>
+        <jsp:forward page="${latest_forward_path}"/>
+    </c:otherwise>
+</c:choose>
 </body>
 </html>

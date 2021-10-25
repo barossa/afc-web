@@ -16,7 +16,7 @@
 
 <div id="main">
 
-    <div id="images" class="carousel carousel-fade" data-bs-ride="carousel">
+    <div id="images" class="carousel carousel-dar carousel-fade flex-c rounded-3" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <c:if test="${current_announcement.images.size() > 1}">
                 <c:forEach varStatus="status" var="image" items="${current_announcement.images}">
@@ -34,18 +34,18 @@
                 </c:forEach>
             </c:if>
         </div>
-        <div class="carousel-inner rounded-3">
+        <div class="carousel-inner">
             <c:forEach varStatus="status" var="image" items="${current_announcement.images}">
                 <c:choose>
                     <c:when test="${current_announcement.primaryImageNumber == status.index}">
-                        <div class="carousel-item active" data-bs-interval="10000">
-                            <img src="data:image/png;Base64,${image.base64}" class="d-block w-100"
+                        <div class="carousel-item active flex-c" data-bs-interval="10000">
+                            <img src="data:image/png;Base64,${image.base64}" class="d-block w-100 align-self-center rounded-1"
                                  alt="Image ${status.index}">
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <div class="carousel-item" data-bs-interval="5000">
-                            <img src="data:image/png;Base64,${image.base64}" class="d-block w-100"
+                        <div class="carousel-item flex-c" data-bs-interval="5000">
+                            <img src="data:image/png;Base64,${image.base64}" class="d-block w-100 align-self-center rounded-1"
                                  alt="Image ${status.index}">
                         </div>
                     </c:otherwise>
@@ -75,12 +75,12 @@
 
 </div>
 
-<footer>
-    <c:import url="/jsp/components/footer.jsp"/>
-</footer>
 
-<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
+<c:import url="/jsp/components/footer.jsp"/>
+
+
+<%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
+<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
 <script src="<c:url value="/js/announcement.js"/>"></script>
 
 </body>

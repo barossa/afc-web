@@ -2,7 +2,7 @@
     "use strict";
 
     $(document).ready(function () {
-        $.getScript("js/navbar.js", function (){
+        $.getScript("js/navbar.js", function () {
             init($);
         })
 
@@ -15,13 +15,19 @@
             }
         });
         $('#resetButton').on('click', function () {
-            $('.custom-control-input').each(function (i, element){
+            $('.custom-control-input').each(function (i, element) {
                 $(element).prop("checked", false);
             })
             $('#rangeMax,#rangeMin,#searchRequest').val("");
         });
-        $('.adCard').on('click', function (){
+        $('.adCard').on('click', function () {
             location.replace("/Ads_from_Chest_war_exploded/controller?command=load_announcement&id=" + $(this).attr('id'))
+        })
+        $('.pag').on('click', function () {
+            location.href = "/Ads_from_Chest_war_exploded/controller?command=" + $(this).val();
+            $(document).onload(function (){
+                location.replace("/Ads_from_Chest_war_exploded");
+            })
         })
     });
 
@@ -33,7 +39,7 @@
             /*dataType: "xml/html",*/
 
 
-            success: function (data,status,xhr) {
+            success: function (data, status, xhr) {
                 location.reload();
             },
 

@@ -16,9 +16,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Optional;
 
+import static by.epam.afc.controller.PagePath.ERROR_500;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
-import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
-import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
+import static by.epam.afc.controller.SessionAttribute.LATEST_FORWARD_PATH;
+import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
 public class Controller extends HttpServlet {
@@ -42,10 +43,8 @@ public class Controller extends HttpServlet {
             Command command = commandOptional.get();
             router = command.execute(request, response);
         } else {
-            HttpSession session = request.getSession();
-            String latestPath = (String) session.getAttribute(LATEST_CONTEXT_PATH);
             logger.warn("Unknown command: " + (commandName == null ? "null" : commandName));
-            router = new Router(REDIRECT, request.getContextPath() + latestPath);
+            router = new Router(FORWARD, ERROR_500);
         }
         switch (router.getDispatchType()) {
             case FORWARD:

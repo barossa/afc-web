@@ -1,6 +1,6 @@
 package by.epam.afc.service.impl;
 
-import by.epam.afc.controller.command.pagination.AnnouncementPagination;
+import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
 import by.epam.afc.dao.AnnouncementDao;
 import by.epam.afc.dao.ImageDao;
 import by.epam.afc.dao.entity.*;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static by.epam.afc.dao.entity.Announcement.Status.ACTIVE;
+import static by.epam.afc.dao.entity.Announcement.Status.UNDEFINED;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private static final AnnouncementServiceImpl instance = new AnnouncementServiceImpl();
@@ -96,42 +97,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Optional<AnnouncementPagination> findAnnouncements(AnnouncementPagination pagination) throws ServiceException {
+    public Optional<AnnouncementsPagination> findAnnouncements(AnnouncementsPagination pagination) throws ServiceException {
         try {
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Announcement> announcements = announcementDao.findAll();
-            List<Announcement> filteredAnnouncements = filterData(announcements, pagination);
-
-            int from = pagination.getCurrentPage() * PAGINATED_PAGE_ELEMENTS;
-            int to = from + PAGINATED_PAGE_ELEMENTS - 1;
-            int listSize = filteredAnnouncements.size();
-
-            /*Getting actual data of current page*/
-            if (listSize > from) {
-                List<Announcement> currentAnnouncements;
-                if (listSize > to) {
-                    currentAnnouncements = filteredAnnouncements.subList(from, to);
-                    currentAnnouncements.add(filteredAnnouncements.get(to));
-                } else {
-                    currentAnnouncements = filteredAnnouncements.subList(from, listSize - 1);
-                    currentAnnouncements.add(filteredAnnouncements.get(listSize - 1));
-                }
-                initializeLazyData(currentAnnouncements);
-                pagination.setCurrentData(currentAnnouncements);
-
-            } else {
-                pagination.setCurrentData(new ArrayList<>());
-            }
-
-            /*Is previous page available*/
-            boolean isPreviousExists = pagination.getCurrentPage() > 0;
-            pagination.setPrevious(isPreviousExists);
-
-            /*Is at least one record above exists*/
-            boolean isNextExists = listSize > to + 1;
-            pagination.setNext(isNextExists);
-
-            return Optional.of(pagination);
+            return findPagination(announcements, pagination);
 
         } catch (DaoException e) {
             logger.error("Can't find paginated page", e);
@@ -139,8 +109,56 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    @Override
+    public Optional<AnnouncementsPagination> findAnnouncements(AnnouncementsPagination pagination, User user) throws ServiceException {
+        try {
+            AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
+            List<Announcement> announcements = announcementDao.findByOwner(user);
+            return findPagination(announcements, pagination);
 
-    private List<Announcement> filterData(List<Announcement> announcements, AnnouncementPagination pagination) {
+        } catch (DaoException e) {
+            logger.error("Can't find paginated page", e);
+            throw new ServiceException("Can't find paginated page", e);
+        }
+    }
+
+    private Optional<AnnouncementsPagination> findPagination(List<Announcement> announcements, AnnouncementsPagination pagination) throws DaoException{
+        List<Announcement> filteredAnnouncements;
+        filteredAnnouncements = filterData(announcements, pagination);
+        int from = pagination.getCurrentPage() * PAGINATED_PAGE_ELEMENTS;
+        int to = from + PAGINATED_PAGE_ELEMENTS - 1;
+        int listSize = filteredAnnouncements.size();
+
+        /*Getting actual data of current page*/
+        if (listSize > from) {
+            List<Announcement> currentAnnouncements;
+            if (listSize > to) {
+                currentAnnouncements = filteredAnnouncements.subList(from, to);
+                currentAnnouncements.add(filteredAnnouncements.get(to));
+            } else {
+                currentAnnouncements = filteredAnnouncements.subList(from, listSize - 1);
+                currentAnnouncements.add(filteredAnnouncements.get(listSize - 1));
+            }
+            initializeLazyData(currentAnnouncements);
+            pagination.setCurrentData(currentAnnouncements);
+
+        } else {
+            pagination.setCurrentData(new ArrayList<>());
+        }
+
+        /*Is previous page available*/
+        boolean isPreviousExists = pagination.getCurrentPage() > 0;
+        pagination.setPrevious(isPreviousExists);
+
+        /*Is at least one record above exists*/
+        boolean isNextExists = listSize > to + 1;
+        pagination.setNext(isNextExists);
+
+        return Optional.of(pagination);
+    }
+
+
+    private List<Announcement> filterData(List<Announcement> announcements, AnnouncementsPagination pagination) {
         List<Category> categories = pagination.getCategories();
         List<Region> regions = pagination.getRegions();
         int rangeMin = pagination.getRangeMin();
@@ -167,6 +185,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             String searchRegex = searchHelper.completeRegex(search);
             Pattern searchPattern = Pattern.compile(searchRegex);
             stream = stream.filter(ad -> searchPattern.matcher(ad.getTitle()).find());
+        }
+
+        if(pagination.getStatus() != UNDEFINED){
+            stream = stream.filter(ad -> ad.getStatus() == pagination.getStatus());
         }
 
         List<Announcement> collect = stream.collect(Collectors.toList());

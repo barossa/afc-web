@@ -1,9 +1,7 @@
 package by.epam.afc.controller.command;
 
 import by.epam.afc.controller.command.impl.*;
-import by.epam.afc.controller.command.impl.go.ToConfirmPage;
-import by.epam.afc.controller.command.impl.go.ToLoginPage;
-import by.epam.afc.controller.command.impl.go.ToSubmitAdPage;
+import by.epam.afc.controller.command.impl.go.*;
 
 import java.util.EnumMap;
 import java.util.Optional;
@@ -27,6 +25,9 @@ public class CommandProvider {
         commands.put(CHANGE_ANNOUNCEMENTS_PAGE, new ChangeAnnouncementsPage());
         commands.put(LOAD_ANNOUNCEMENT, new LoadAnnouncement());
         commands.put(TO_SUBMIT_AD_PAGE, new ToSubmitAdPage());
+        commands.put(FIND_MY_ANNOUNCEMENTS, new FindMyAnnouncements());
+        commands.put(TO_ADMINISTRATOR_PAGE, new ToAdministratorPage());
+        commands.put(TO_MODERATOR_PAGE, new ToModeratorPage());
         //commands.add(commandType,new Command());
     }
 

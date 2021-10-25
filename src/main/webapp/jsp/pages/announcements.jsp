@@ -154,10 +154,21 @@
 
                 <div class="input-group flex-c rounded align-content-center w-50">
                     <fmt:message var="searchPlaceholder" key="announcements.searchPlaceholder"/>
-                    <input type="text" id="searchRequest" name="search" class="form-control rounded"
-                           placeholder="${searchPlaceholder}"
-                           aria-label="Search"
-                           aria-describedby="search-addon"/>
+                    <c:choose>
+                        <c:when test="${pagination_data.searchRequest != null}">
+                            <input type="text" id="searchRequest" name="search" class="form-control rounded"
+                                   placeholder="${searchPlaceholder}"
+                                   value="${pagination_data.searchRequest}"
+                                   aria-label="Search"
+                                   aria-describedby="search-addon"/>
+                        </c:when>
+                        <c:otherwise>
+                            <input type="text" id="searchRequest" name="search" class="form-control rounded"
+                                   placeholder="${searchPlaceholder}"
+                                   aria-label="Search"
+                                   aria-describedby="search-addon"/>
+                        </c:otherwise>
+                    </c:choose>
                     <button type="button" id="searchButton" class="btn btn-primary rounded"
                             style="margin-left: 20px !important;">
                         <fmt:message key="announcements.search"/>
@@ -177,7 +188,7 @@
             </c:if>
             <c:forEach varStatus="varStatus" var="ad" items="${pagination_data.currentData}">
                 <div id="${varStatus.index}" class="card mb-2 adCard" style="height: 150px;">
-                    <div class="row">
+                    <div class="row h-100">
                         <div class="col-md-2 align-items-center"
                              style="display: flex; max-height: 150px;">
                             <img class="rounded-2 mx-4 my-3"
@@ -226,11 +237,11 @@
                 <c:choose>
                     <c:when test="${pagination_data.isPrevious()}">
                         <li class="page-item">
-                            <a class="page-link"
-                               href="${pageContext.request.contextPath}/controller?command=change_announcements_page&action=previous"
+                            <button class="page-link pag"
+                               value="change_announcements_page&action=previous"
                                tabindex="-1">
                                 <fmt:message key="pagination.previous"/>
-                            </a>
+                            </button>
                         </li>
                     </c:when>
                     <c:otherwise>
@@ -245,10 +256,10 @@
                 <c:choose>
                     <c:when test="${pagination_data.isNext()}">
                         <li class="page-item">
-                            <a class="page-link"
-                               href="${pageContext.request.contextPath}/controller?command=change_announcements_page&action=next">
+                            <button class="page-link pag"
+                               value="change_announcements_page&action=next">
                                 <fmt:message key="pagination.next"/>
-                            </a>
+                            </button>
                         </li>
                     </c:when>
                     <c:otherwise>

@@ -1,6 +1,6 @@
 package by.epam.afc.service.impl;
 
-import by.epam.afc.controller.command.pagination.AnnouncementPagination;
+import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
 import by.epam.afc.dao.entity.Category;
 import by.epam.afc.dao.entity.Region;
 
@@ -22,7 +22,7 @@ public class AnnouncementFilterParser {
         return instance;
     }
 
-    public AnnouncementPagination parseFilter(Map<String, String[]> requestParameterMap) {
+    public AnnouncementsPagination parseFilter(Map<String, String[]> requestParameterMap) {
         String[] regions = requestParameterMap.get(REGION);
         String[] categories = requestParameterMap.get(CATEGORY);
         String[] minPrices = requestParameterMap.get(PRICE_MIN);
@@ -54,7 +54,7 @@ public class AnnouncementFilterParser {
 
         String searchRequest = (searchRequests == null || searchRequests[0].isEmpty() ? "" : searchRequests[0]);
 
-        AnnouncementPagination pagination = new AnnouncementPagination(collectedRegions, collectedCategories,
+        AnnouncementsPagination pagination = new AnnouncementsPagination(collectedRegions, collectedCategories,
                 minPrice, maxPrice, searchRequest, ACTIVE);
         return pagination;
     }

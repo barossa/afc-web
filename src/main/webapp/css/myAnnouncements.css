@@ -7,42 +7,36 @@ body {
     flex-direction: column;
     margin: 0;
 }
-#main {
+
+#filters{
     display: flex;
-    flex-grow: initial;
-    min-height: 88vh;
-    max-height: 165vh;
+    background-color: rgba(255, 255, 255, 0.7);
+    justify-content: space-evenly;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    height: 2.25rem;
+    align-items: center;
+    border-radius: 0.25rem !important;
+}
+
+#main {
+    min-height: 100vh;
     background-color: #fff;
     background-image: url("../images/bg-texture.png");
+    justify-content: flex-start;
+    flex-grow: 1;
 }
 #main > article {
     flex: 1;
 }
-#main > nav {
-    flex: 0 0 25vw;
-    order: -1;
+
+aside{
+    margin-left: 2rem;
+    margin-right: 2rem;
 }
 
-#search {
-    height: 12vh;
-}
-
-#advertisements {
-    flex-grow: initial;
-
-}
-
-aside {
-    flex-grow: 1;
-    min-height: 100vh;
-}
-
-footer {
+header, footer {
     height: 6vh;
-}
-
-.validate-input {
-    position: relative;
 }
 
 .card{
@@ -56,5 +50,5 @@ footer {
 .adCard:after{
     background-color: rgba(255, 255, 255, 0.7) !important; /* 0.0 - полностью прозрачный */
 }
-.pag{
-}
+
+.radio{}

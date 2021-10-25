@@ -27,5 +27,6 @@ public class RequestAttribute {
     public static final String ACTION = "action";
     public static final String ID = "id";
     public static final String LOAD_ONLY = "load_only";
+    public static final String STATUS = "status";
 
 }

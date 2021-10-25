@@ -3,6 +3,7 @@ package by.epam.afc;
 import by.epam.afc.dao.ImageDao;
 import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.dao.entity.Image;
+import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.impl.DaoHolder;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;

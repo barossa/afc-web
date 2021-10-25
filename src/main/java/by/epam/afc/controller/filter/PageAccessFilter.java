@@ -28,6 +28,7 @@ public class PageAccessFilter implements Filter {
                 INDEX,
                 LOGIN_PAGE,
                 REGISTER_PAGE
+
         );
         /*END OF GUEST PAGES*/
 

@@ -35,7 +35,7 @@
 
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle nav-font" href="#" id="navbarDropdown" role="button"
+                <a class="nav-link dropdown-toggle nav-font" id="navbarDropdown" role="button"
                    data-bs-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false"
                    style="font-size: 15px; font-weight: bolder; color: whitesmoke;">
@@ -93,8 +93,26 @@
             </c:if>
 
             <c:if test="${sessionScope.isAuthorized}">
+
+                <c:choose>
+                    <c:when test="${user.role == 'ADMINISTRATOR'}">
+                        <li>
+                            <button class="dropdown-item nav-font command" value="to_administrator_page">
+                                <fmt:message key="admin.controlPanel"/>
+                            </button>
+                        </li>
+                    </c:when>
+                    <c:when test="${user.role == 'MODERATOR'}">
+                        <li>
+                            <button class="dropdown-item nav-font command" value="to_moderator_page">
+                                <fmt:message key="announcements.moderatingPanel"/>
+                            </button>
+                        </li>
+                    </c:when>
+                </c:choose>
+
                 <li>
-                    <button class="dropdown-item nav-font command" value="to_my_announcements">
+                    <button class="dropdown-item nav-font command" value="find_my_announcements">
                         <fmt:message key="navbar.myAnnouncements"/>
                     </button>
                 </li>

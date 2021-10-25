@@ -2,7 +2,7 @@ package by.epam.afc.controller.command.impl;
 
 import by.epam.afc.controller.command.Command;
 import by.epam.afc.controller.command.Router;
-import by.epam.afc.controller.command.pagination.AnnouncementPagination;
+import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.AnnouncementService;
 import by.epam.afc.service.impl.AnnouncementServiceImpl;
@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Optional;
 
 import static by.epam.afc.controller.PagePath.ERROR_500;
+import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.RequestAttribute.ACTION;
 import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.SessionAttribute.PAGINATION_DATA;
@@ -27,7 +28,7 @@ public class ChangeAnnouncementsPage implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
-        AnnouncementPagination pagination = (AnnouncementPagination) session.getAttribute(PAGINATION_DATA);
+        AnnouncementsPagination pagination = (AnnouncementsPagination) session.getAttribute(PAGINATION_DATA);
 
         if (pagination != null) {
             String action = request.getParameter(ACTION);
@@ -53,8 +54,8 @@ public class ChangeAnnouncementsPage implements Command {
 
             try {
                 AnnouncementService announcementService = AnnouncementServiceImpl.getInstance();
-                Optional<AnnouncementPagination> foundedPaginationOptional = announcementService.findAnnouncements(pagination);
-                AnnouncementPagination foundedPagination = foundedPaginationOptional.orElseThrow(ServiceException::new);
+                Optional<AnnouncementsPagination> foundedPaginationOptional = announcementService.findAnnouncements(pagination);
+                AnnouncementsPagination foundedPagination = foundedPaginationOptional.orElseThrow(ServiceException::new);
                 session.setAttribute(PAGINATION_DATA, foundedPagination);
 
             } catch (ServiceException e) {

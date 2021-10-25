@@ -123,18 +123,16 @@
 
 </div>
 
-<footer>
-    <c:import url="/jsp/components/footer.jsp"/>
-</footer>
+<c:import url="/jsp/components/footer.jsp"/>
+
 
 <%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>--%>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
+<%--<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
 
 <script src="<c:url value="/vendor/file-input/js/plugins/piexif.js"/>"></script>
 <script src="<c:url value="/vendor/file-input/js/plugins/sortable.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/vendor/file-input/js/fileinput.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/vendor/file-input/js/locales/ru.js"/>" crossorigin="anonymous"></script>
-<%--<script src="<c:url value="/vendor/file-input/js/locales/LANG.js"/>" crossorigin="anonymous"></script>--%>
 <script src="<c:url value="/vendor/file-input/themes/gly/theme.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/js/submitAd.js"/>" crossorigin="anonymous"></script>
 <%--<script src="<c:url value="/vendor/file-input/themes/fa/theme.js"/>" crossorigin="anonymous"></script>
