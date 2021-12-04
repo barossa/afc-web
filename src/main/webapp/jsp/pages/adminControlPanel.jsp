@@ -28,7 +28,7 @@
     <c:import url="/jsp/components/footer.jsp"/>
 </footer>
 
-<script src="<c:url value="/js/admin-cp.js"/>"></script>
+<script src="<c:url value="/js/mian.js"/>"></script>
 
 </body>
 </html>

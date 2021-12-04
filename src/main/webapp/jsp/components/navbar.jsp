@@ -42,7 +42,7 @@
                     <fmt:message key="language"/>
                 </a>
 
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <ul id="langDropdown" class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
                         <button value="change_locale&locale=en_US"
                            class="dropdown-item nav-font command" type="button">
@@ -83,6 +83,7 @@
             </c:choose>
         </a>
         <ul class="dropdown-menu dropdown-menu-end"
+            id="mainDropdown"
             aria-labelledby="navbarDropdownMenuLink">
             <c:if test="${!sessionScope.isAuthorized}">
                 <li>
@@ -121,6 +122,7 @@
                         <fmt:message key="navbar.profile"/>
                     </button>
                 </li>
+                <li><hr class="dropdown-divider"></li>
                 <li>
                     <button class="dropdown-item nav-font command" value="logout_command">
                         <fmt:message key="navbar.logout"/>
@@ -132,10 +134,11 @@
     </div>
 </nav>
 
+<script src="<c:url value="/js/main.js"/>"></script>
 <script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
 <script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/vendor/popper/popper.js"/>"></script>
-<script src="<c:url value="/js/navbar.js"/>"></script>
+
 
 </body>
 </html>

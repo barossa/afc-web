@@ -279,6 +279,7 @@
 
 </div>
 
+<script src="<c:url value="/js/main.js"/>"></script>
 <script src="<c:url value="/js/announcements.js"/>"></script>
 <%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
 <script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
