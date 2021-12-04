@@ -16,14 +16,14 @@
 
     /*==================================================================
     [ Validate ]*/
-    var input = $('.validate-input .input');
+    let input = $('.validate-input .input');
 
     $('.validate-form').on('submit',function(){
-        var check = true;
+        let check = true;
 
-        for(var i=0; i<input.length; i++) {
+        for(let i=0; i<input.length; i++) {
             if(validate(input[i]) === false){
-                showValidate(input[i]);
+                showAlert(input[i]);
                 check=false;
             }
         }
@@ -34,21 +34,21 @@
 
     $('.validate-form .input').each(function(){
         $(this).focus(function(){
-           hideValidate(this);
+           hideAlert(this);
         });
     });
 
     function validate (input) {
         if($(input).attr('type') === 'text' || $(input).attr('name') === 'authField') {
-            if($(input).val().trim().match(/^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\..*[A-Za-z]$/) != null) { // mail regex
+            if(validateField(input, "/^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$/")) { // mail regex
                 if($(input).val().trim().length <= 100){
                     return true;
                 }
-            }else if($(input).val().trim().match(/^(?=.*[A-Za-z0-9]$)[A-Za-z]\w{0,19}$/) != null){ // login regex
+            }else if(validateField(input, "/^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$/")){ // login regex
                 if($(input).val().trim().length <= 20){
                     return true;
                 }
-            }else return $(input).val().trim().match(/^\+?\d{10,15}$/) != null; // phone regex
+            }else return validateField(input, "/^\\+?\\d{10,15}$/"); // phone regex
         }
         else {
             if($(input).val().trim() === ''){
@@ -57,15 +57,18 @@
         }
     }
 
-    function showValidate(input) {
-        var thisAlert = $(input).parent();
+    function validateField(field, regex){
+        let result = $(input).val().trim().match(regex);
+        return result != null;
+    }
 
+    function showAlert(input) {
+        let thisAlert = $(input).parent();
         $(thisAlert).addClass('alert-validate');
     }
 
-    function hideValidate(input) {
-        var thisAlert = $(input).parent();
-
+    function hideAlert(input) {
+        let thisAlert = $(input).parent();
         $(thisAlert).removeClass('alert-validate');
     }
     

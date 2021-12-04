@@ -2,10 +2,6 @@
     "use strict";
 
     $(document).ready(function () {
-        $.getScript("js/navbar.js", function () {
-            init($);
-        })
-
         $('#searchButton').on('click', function () {
             /*let search = $('#searchRequest').attr('value');*/
             let validationResult = validate();

@@ -25,11 +25,6 @@
         }); /*Regions dropdown*/
 
         $(document).ready(function () {
-
-            $.getScript("js/navbar.js", function (){
-                init($);
-            })
-
             $('#submitAdButton').on('click', function () {
                 let imagesForm = $("#input-images");
                 let validationResult = validate();

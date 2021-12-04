@@ -3,13 +3,13 @@
 
     /*==================================================================
     [ Validate ]*/
-    var input = $('.validate-form .input');
+    let input = $('.validate-form .input');
 
     $(document).ready(function() {
     $('.validate-form').on('submit', function () {
-        var check = true;
-        for (var i = 0; i < input.length; i++) {
-            var result = validate(input[i]);
+        let check = true;
+        for (let i = 0; i < input.length; i++) {
+            let result = validate(input[i]);
             if (result == null || result === false) {
                 showValidate(input[i]);
                 check = false;
@@ -22,9 +22,6 @@
         }else{
             hideValidate(firstPassField);
             hideValidate(secondPassField);
-        }
-        if(!check){
-            alert("CHECK IS FALSE!");
         }
         if(check){
             registerAction();
@@ -39,24 +36,24 @@
         });
     });
 
-    var firstnameField;
-    var lastnameField;
-    var loginField;
-    var emailField;
-    var phoneField;
-    var firstPassField;
-    var secondPassField;
+    let firstnameField;
+    let lastnameField;
+    let loginField;
+    let emailField;
+    let phoneField;
+    let firstPassField;
+    let secondPassField;
 
     function comparePasswords() {
         if (firstPassField == null || secondPassField == null) {
             return false;
         }
-        var firstPass, secondPass;
+        let firstPass, secondPass;
         firstPass = $(firstPassField).val().trim();
         secondPass = $(secondPassField).val().trim();
 
         if (firstPass != null && secondPass != null) {
-            if (firstPass === secondPass) {
+            if (firstPass === secondPass && firstPass !== "") {
                 return true;
             }
         }
@@ -64,7 +61,7 @@
     }
 
     function registerAction(){
-        var xhr = $.ajax({
+        let xhr = $.ajax({
             url: "/Ads_from_Chest_war_exploded/controller",
             type: "POST",
             data: $('#registrationForm').serialize(),
@@ -87,10 +84,10 @@
 
     function validate(input) {
         if ($(input).attr('type') === 'text' || $(input).attr('type') === 'password') {
-            var fieldName = $(input).attr('name');
-            var fieldValue = $(input).val().trim();
-            var fieldRegex;
-            var maxLength;
+            let fieldName = $(input).attr('name');
+            let fieldValue = $(input).val().trim();
+            let fieldRegex;
+            let maxLength;
             switch (fieldName) {
                 case "firstname":
                     maxLength = 20;
@@ -131,9 +128,9 @@
                     alert("UNKNOWN FIELD NAME: " + fieldName);
                     return false;
             }
-            var flag = fieldValue.match(fieldRegex) != null;
+            let flag = fieldValue.match(fieldRegex) != null;
             if (flag) {
-                var length = fieldValue.length;
+                let length = fieldValue.length;
                 return length <= maxLength && length > 0;
             } else {
                 return false; // don't meet regex
@@ -142,14 +139,12 @@
     }
 
     function showValidate(input) {
-        var thisAlert = $(input).parent();
-
+        let thisAlert = $(input).parent();
         $(thisAlert).addClass('alert-validate');
     }
 
     function hideValidate(input) {
-        var thisAlert = $(input).parent();
-
+        let thisAlert = $(input).parent();
         $(thisAlert).removeClass('alert-validate');
     }
 
