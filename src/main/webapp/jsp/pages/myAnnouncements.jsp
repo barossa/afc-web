@@ -109,57 +109,7 @@
             </c:choose><%--INACTIVE RADIO BUTTON--%>
         </div>
 
-        <c:if test="${empty pagination_data.currentData}">
-            <div class="card mb-3">
-                <fmt:message key="search.nothingFound"/>
-            </div>
-        </c:if>
-        <c:forEach varStatus="varStatus" var="ad" items="${pagination_data.currentData}">
-            <div id="${varStatus.index}" class="card mb-2 adCard" style="height: 150px;">
-                <div class="row h-100">
-                    <div class="col-md-2 align-items-center justify-content-end"
-                         style="display: flex; max-height: 150px;">
-                        <img class="rounded-2 mx-4 my-3"
-                             style="max-width: 130px; max-height: 130px;"
-                             src="data:image/png;Base64,${ad.getPrimaryImage()}"
-                             width="130" alt="No image"/>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-body">
-                            <h5 class="card-title">${ad.title}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted"
-                                style="margin-top: -5px;">${ad.category.description}</h6>
-                                ${ad.shortDescription}
-                        </div>
-
-                        <p class="card-text flex-c justify-content-end">
-                            <small class="text-muted">
-                                <i class="fa fa-user">
-                                    <label>${ad.owner.login}</label>
-                                </i>
-                                <i class="fa fa-calendar ms-2">
-                                    <label>${ad.publicationDate}</label>
-                                </i>
-                            </small>
-                        </p>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="flex-c align-content-center align-items-center h-100">
-                            <h3>
-                                <c:choose>
-                                    <c:when test="${ad.price == 0}">
-                                        <fmt:message key="announcements.free"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${ad.price}BYN
-                                    </c:otherwise>
-                                </c:choose>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </c:forEach>
+        <!-- Display announcements -->
 
         <ul class="pagination justify-content-center">
             <c:choose>

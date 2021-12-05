@@ -13,6 +13,8 @@ import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.AnnouncementService;
 import by.epam.afc.service.util.ImageHelper;
 import by.epam.afc.service.util.SearchHelper;
+import by.epam.afc.service.validator.NumberValidator;
+import by.epam.afc.service.validator.impl.NumberValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -122,7 +124,28 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
-    private Optional<AnnouncementsPagination> findPagination(List<Announcement> announcements, AnnouncementsPagination pagination) throws DaoException{
+    @Override
+    public Optional<Announcement> findById(String id) throws ServiceException {
+        try {
+            NumberValidator validator = NumberValidatorImpl.getInstance();
+            if (validator.validateNumber(id)) {
+                AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
+                Optional<Announcement> announcementOptional = announcementDao.findById(Integer.parseInt(id));
+                if (announcementOptional.isPresent()) {
+                    Announcement announcement = announcementOptional.get();
+                    initializeLazyData(announcement);
+                    return Optional.of(announcement);
+                }
+                return Optional.empty();
+            }
+        } catch (DaoException e) {
+            logger.error("Can't find announcement:", e);
+            throw new ServiceException("Can't find announcement:", e);
+        }
+        return Optional.empty();
+    }
+
+    private Optional<AnnouncementsPagination> findPagination(List<Announcement> announcements, AnnouncementsPagination pagination) throws DaoException {
         List<Announcement> filteredAnnouncements;
         filteredAnnouncements = filterData(announcements, pagination);
         int from = pagination.getCurrentPage() * PAGINATED_PAGE_ELEMENTS;
@@ -184,10 +207,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             SearchHelper searchHelper = SearchHelper.getInstance();
             String searchRegex = searchHelper.completeRegex(search);
             Pattern searchPattern = Pattern.compile(searchRegex);
-            stream = stream.filter(ad -> searchPattern.matcher(ad.getTitle()).find());
+            stream = stream.filter(ad -> searchPattern.matcher(ad.getTitle().toUpperCase()).find());
         }
-
-        if(pagination.getStatus() != UNDEFINED){
+        if (pagination.getStatus() != UNDEFINED) {
             stream = stream.filter(ad -> ad.getStatus() == pagination.getStatus());
         }
 
@@ -197,22 +219,25 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     private void initializeLazyData(List<Announcement> announcements) throws DaoException {
+        for (Announcement announcement : announcements) {
+            initializeLazyData(announcement);
+        }
+    }
+
+    private void initializeLazyData(Announcement announcement) throws DaoException {
         ImageDaoImpl imageDao = DaoHolder.getImageDao();
         UserDaoImpl userDao = DaoHolder.getUserDao();
 
-        for (Announcement announcement : announcements) {
-            List<Image> announcementImages = imageDao.findByAnnouncement(announcement);
-            if (announcementImages.isEmpty()) {
-                ImageHelper imageHelper = ImageHelper.getInstance();
-                Image noImagePicture = imageHelper.getNoImagePicture();
-                announcementImages.add(noImagePicture);
-            }
-            announcement.setImages(announcementImages);
-
-            int ownerId = announcement.getOwner().getId();
-            Optional<User> ownerOptional = userDao.findById(ownerId);
-            User owner = ownerOptional.orElseThrow(DaoException::new);
-            announcement.setOwner(owner);
+        List<Image> announcementImages = imageDao.findByAnnouncement(announcement);
+        if (announcementImages.isEmpty()) {
+            ImageHelper imageHelper = ImageHelper.getInstance();
+            Image noImagePicture = imageHelper.getNoImagePicture();
+            announcementImages.add(noImagePicture);
         }
+        announcement.setImages(announcementImages);
+        int ownerId = announcement.getOwner().getId();
+        Optional<User> ownerOptional = userDao.findById(ownerId);
+        User owner = ownerOptional.orElseThrow(DaoException::new);
+        announcement.setOwner(owner);
     }
 }

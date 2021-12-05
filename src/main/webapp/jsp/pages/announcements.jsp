@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="afc" uri="/WEB-INF/tld/taglib.tld" %>
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="prop.pagecontent"/>
 <!DOCTYPE html>
@@ -181,61 +182,11 @@
 
         <div id="advertisements" class="me-3">
 
-            <c:if test="${empty pagination_data.currentData}">
-                <div class="card">
-                    <fmt:message key="search.nothingFound"/>
-                </div>
-            </c:if>
-            <c:forEach varStatus="varStatus" var="ad" items="${pagination_data.currentData}">
-                <div id="${varStatus.index}" class="card mb-2 adCard" style="height: 150px;">
-                    <div class="row h-100">
-                        <div class="col-md-2 align-items-center"
-                             style="display: flex; max-height: 150px;">
-                            <img class="rounded-2 mx-4 my-3"
-                                 style="max-width: 130px; max-height: 130px;"
-                                 src="data:image/png;Base64,${ad.getPrimaryImage()}"
-                                 width="130" alt="No image"/>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="card-body">
-                                <h5 class="card-title">${ad.title}</h5>
-                                <h6 class="card-subtitle mb-2 text-muted"
-                                    style="margin-top: -5px;">${ad.category.description}</h6>
-                                    ${ad.shortDescription}
-                            </div>
-
-                            <p class="card-text flex-c justify-content-end">
-                                <small class="text-muted">
-                                    <i class="fa fa-user">
-                                        <label>${ad.owner.login}</label>
-                                    </i>
-                                    <i class="fa fa-calendar ms-2">
-                                        <label>${ad.publicationDate}</label>
-                                    </i>
-                                </small>
-                            </p>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="flex-c align-content-center align-items-center h-100">
-                                <h3>
-                                    <c:choose>
-                                        <c:when test="${ad.price == 0}">
-                                            <fmt:message key="announcements.free"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            ${ad.price}BYN
-                                        </c:otherwise>
-                                    </c:choose>
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </c:forEach>
+            <afc:displayAnnouncements/>
 
             <ul class="pagination justify-content-center">
                 <c:choose>
-                    <c:when test="${pagination_data.isPrevious()}">
+                    <c:when test="${requestScope.previousPage}">
                         <li class="page-item">
                             <button class="page-link pag"
                                value="change_announcements_page&action=previous"
@@ -252,9 +203,9 @@
                         </li>
                     </c:otherwise>
                 </c:choose>
-                <li class="page-item disabled"><a class="page-link">${pagination_data.currentPage + 1}</a></li>
+                <li class="page-item disabled"><a class="page-link">${requestScope.currentPage}</a></li>
                 <c:choose>
-                    <c:when test="${pagination_data.isNext()}">
+                    <c:when test="${requestScope.nextPage}">
                         <li class="page-item">
                             <button class="page-link pag"
                                value="change_announcements_page&action=next">
@@ -281,8 +232,6 @@
 
 <script src="<c:url value="/js/main.js"/>"></script>
 <script src="<c:url value="/js/announcements.js"/>"></script>
-<%--<script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>--%>
 
 <c:import url="/jsp/components/footer.jsp"/>
 

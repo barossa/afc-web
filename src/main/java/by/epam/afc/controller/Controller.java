@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static by.epam.afc.controller.PagePath.ERROR_500;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
+import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.SessionAttribute.LATEST_FORWARD_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
@@ -43,7 +44,9 @@ public class Controller extends HttpServlet {
             Command command = commandOptional.get();
             router = command.execute(request, response);
         } else {
-            logger.warn("Unknown command: " + (commandName == null ? "null" : commandName));
+            String message = "Unknown command: " + (commandName == null ? "null" : commandName);
+            logger.warn(message);
+            request.setAttribute(EXCEPTION_MESSAGE, message);
             router = new Router(FORWARD, ERROR_500);
         }
         switch (router.getDispatchType()) {

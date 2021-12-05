@@ -23,7 +23,7 @@ public class CommandProvider {
         commands.put(FIND_ANNOUNCEMENTS, new FindAnnouncements());
         commands.put(SUBMIT_ANNOUNCEMENT, new SubmitAnnouncement());
         commands.put(CHANGE_ANNOUNCEMENTS_PAGE, new ChangeAnnouncementsPage());
-        commands.put(LOAD_ANNOUNCEMENT, new LoadAnnouncement());
+        commands.put(SHOW_ANNOUNCEMENT, new ShowAnnouncement());
         commands.put(TO_SUBMIT_AD_PAGE, new ToSubmitAdPage());
         commands.put(FIND_MY_ANNOUNCEMENTS, new FindMyAnnouncements());
         commands.put(TO_ADMINISTRATOR_PAGE, new ToAdministratorPage());
