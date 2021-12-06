@@ -33,6 +33,7 @@ public class SearchRequestValidatorImpl implements SearchRequestValidator {
             }
         }
         System.out.println("INCORRECT SEARCH REQUEST");
+        // FIXME: 12/6/21 DELETE System.out
         return false;
     }
 }

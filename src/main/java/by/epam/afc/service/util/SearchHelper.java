@@ -43,7 +43,7 @@ public class SearchHelper {
 
         for(int i = 0; i < words.length; i++){
             regex.append(OPENING_BRACKET);
-            regex.append(words[i]);
+            regex.append(words[i].toUpperCase());
             regex.append(CLOSING_BRACKET);
             if(i != words.length - 1){
                 regex.append(REGEXP_OR);

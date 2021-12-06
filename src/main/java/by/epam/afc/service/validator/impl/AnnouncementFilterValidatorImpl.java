@@ -1,9 +1,11 @@
 package by.epam.afc.service.validator.impl;
 
+import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.service.validator.AnnouncementFilterValidator;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static by.epam.afc.controller.RequestAttribute.*;
 
@@ -21,7 +23,7 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
     @Override
     public boolean validateRegion(String region) {
         if (region == null || region.isEmpty()) {
-            return true;
+            return false;
         }
         return numberValidator.validateNumber(region);
     }
@@ -29,7 +31,7 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
     @Override
     public boolean validateCategory(String category) {
         if (category == null || category.isEmpty()) {
-            return true;
+            return false;
         }
         return numberValidator.validateNumber(category);
     }
@@ -37,41 +39,40 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
     @Override
     public boolean validatePrice(String price) {
         if (price == null || price.isEmpty()) {
-            return true;
+            return false;
         }
         return numberValidator.validateNumber(price);
     }
 
     @Override
-    public boolean validateParameterMap(Map<String, String[]> parameterMap) {
-        String[] regions = parameterMap.get(REGION);
-        if (regions != null) {
-            boolean valid = Arrays.stream(regions).allMatch(this::validateRegion);
-            if (!valid) {
-                return false;
-            }
+    public boolean validateStatus(String status) {
+        if (status == null || status.isEmpty()) {
+            return false;
         }
+        List<String> statuses = Arrays.stream(Announcement.Status.values())
+                .map(Enum::toString)
+                .collect(Collectors.toList());
+        return statuses.contains(status.toUpperCase());
+    }
 
-        String[] categories = parameterMap.get(CATEGORY);
-        if (categories != null) {
-            boolean valid = Arrays.stream(categories).allMatch(this::validateCategory);
-            if (!valid) {
-                return false;
-            }
-        }
+    @Override
+    public Map<String, List<String>> validateParameterMap(Map<String, List<String>> parameterMap) {
+        Map<String, List<String>> requestParams = new HashMap<>();
+        List<String> regions = parameterMap.get(REGION);
+        List<String> categories = parameterMap.get(CATEGORY);
+        List<String> minPrices = parameterMap.get(PRICE_MIN);
+        List<String> maxPrices = parameterMap.get(PRICE_MAX);
+        requestParams.put(REGION, validateParam(regions, this::validateRegion));
+        requestParams.put(CATEGORY, validateParam(categories, this::validateCategory));
+        requestParams.put(PRICE_MIN, validateParam(minPrices, this::validatePrice));
+        requestParams.put(PRICE_MAX, validateParam(maxPrices, this::validatePrice));
+        return requestParams;
+    }
 
-        String[] minPrices = parameterMap.get(PRICE_MIN);
-        if (minPrices != null && !minPrices[0].isEmpty()) {
-            boolean valid = numberValidator.validateNumber(minPrices[0]);
-            if (!valid) {
-                return false;
-            }
+    private List<String> validateParam(List<String> params, Predicate<String> validator){
+        if(params == null){
+            return new ArrayList<>();
         }
-
-        String[] maxPrices = parameterMap.get(PRICE_MAX);
-        if (maxPrices != null && !maxPrices[0].isEmpty()) {
-            return numberValidator.validateNumber(maxPrices[0]);
-        }
-        return true;
+        return params.stream().filter(validator).collect(Collectors.toList());
     }
 }

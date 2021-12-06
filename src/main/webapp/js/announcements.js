@@ -17,7 +17,7 @@
             $('#rangeMax,#rangeMin,#searchRequest').val("");
         });
         $('.adCard').on('click', function () {
-            location.replace("/Ads_from_Chest_war_exploded/controller?command=load_announcement&id=" + $(this).attr('id'))
+            location.replace("/Ads_from_Chest_war_exploded/controller?command=show_announcement&id=" + $(this).attr('id'))
         })
         $('.pag').on('click', function () {
             location.href = "/Ads_from_Chest_war_exploded/controller?command=" + $(this).val();

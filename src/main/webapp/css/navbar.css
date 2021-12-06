@@ -37,3 +37,12 @@
     background-color: transparent !important;
     border:none;
 }
+
+
+#mainDropdown  > li:hover, #langDropdown > li:hover {
+    background-color: rgba(13, 110, 253, 0.7);
+}
+
+#mainDropdown  > li:after, #langDropdown > li:after {
+    background-color: white;
+}

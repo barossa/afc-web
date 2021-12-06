@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="afc" uri="myCustomTag" %>
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="prop.pagecontent"/>
 <html>
@@ -23,7 +24,7 @@
             <c:choose> <%--ALL RADIO BUTTON--%>
                 <c:when test="${pagination_data.status == 'UNDEFINED'}">
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="all"
+                        <input class="form-check-input radio" name="status" type="radio" value="all"
                                id="flexCheckDefault1"
                                checked>
                         <label class="form-check-label" for="flexCheckDefault1">
@@ -33,7 +34,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="all"
+                        <input class="form-check-input radio" name="status" type="radio" value="all"
                                id="flexCheckDefault2">
                         <label class="form-check-label" for="flexCheckDefault2">
                             <fmt:message key="announcements.all"/>
@@ -45,7 +46,7 @@
             <c:choose> <%--MODERATING RADIO BUTTON--%>
                 <c:when test="${pagination_data.status == 'MODERATING'}">
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="moderating"
+                        <input class="form-check-input radio" name="status" type="radio" value="moderating"
                                id="flexCheckDefault3"
                                checked>
                         <label class="form-check-label" for="flexCheckDefault3">
@@ -55,7 +56,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="moderating"
+                        <input class="form-check-input radio" name="status" type="radio" value="moderating"
                                id="flexCheckDefault4">
                         <label class="form-check-label" for="flexCheckDefault4">
                             <fmt:message key="announcements.moderating"/>
@@ -67,7 +68,7 @@
             <c:choose> <%--ACTIVE RADIO BUTTON--%>
                 <c:when test="${pagination_data.status == 'ACTIVE'}">
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="active"
+                        <input class="form-check-input radio" name="status" type="radio" value="active"
                                id="flexCheckDefault5"
                                checked>
                         <label class="form-check-label" for="flexCheckDefault5">
@@ -77,7 +78,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="active"
+                        <input class="form-check-input radio" name="status" type="radio" value="active"
                                id="flexCheckDefault6">
                         <label class="form-check-label" for="flexCheckDefault6">
                             <fmt:message key="announcements.active"/>
@@ -89,7 +90,7 @@
             <c:choose><%--INACTIVE RADIO BUTTON--%>
                 <c:when test="${pagination_data.status == 'INACTIVE'}">
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="inactive"
+                        <input class="form-check-input radio" name="status" type="radio" value="inactive"
                                id="flexCheckDefault7"
                                checked>
                         <label class="form-check-label" for="flexCheckDefault7">
@@ -99,7 +100,7 @@
                 </c:when>
                 <c:otherwise>
                     <div class="form-check">
-                        <input class="form-check-input radio" name="filter" type="radio" value="inactive"
+                        <input class="form-check-input radio" name="status" type="radio" value="inactive"
                                id="flexCheckDefault8">
                         <label class="form-check-label" for="flexCheckDefault8">
                             <fmt:message key="announcements.inactive"/>
@@ -109,46 +110,9 @@
             </c:choose><%--INACTIVE RADIO BUTTON--%>
         </div>
 
-        <!-- Display announcements -->
+        <afc:displayAnnouncements/>
 
-        <ul class="pagination justify-content-center">
-            <c:choose>
-                <c:when test="${pagination_data.isPrevious()}">
-                    <li class="page-item">
-                        <button class="page-link pag"
-                                value="previous"
-                                tabindex="-1">
-                            <fmt:message key="pagination.previous"/>
-                        </button>
-                    </li>
-                </c:when>
-                <c:otherwise>
-                    <li class="page-item disabled">
-                        <a class="page-link" tabindex="-1">
-                            <fmt:message key="pagination.previous"/>
-                        </a>
-                    </li>
-                </c:otherwise>
-            </c:choose>
-            <li class="page-item disabled"><a class="page-link">${pagination_data.currentPage + 1}</a></li>
-            <c:choose>
-                <c:when test="${pagination_data.isNext()}">
-                    <li class="page-item">
-                        <button class="page-link pag"
-                                value="next">
-                            <fmt:message key="pagination.next"/>
-                        </button>
-                    </li>
-                </c:when>
-                <c:otherwise>
-                    <li class="page-item disabled">
-                        <a class="page-link">
-                            <fmt:message key="pagination.next"/>
-                        </a>
-                    </li>
-                </c:otherwise>
-            </c:choose>
-        </ul>
+        <afc:pagination command="find_my_announcements"/>
 
     </aside>
 

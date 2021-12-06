@@ -15,4 +15,15 @@
         <body-content>empty</body-content>
     </tag>
 
+    <tag>
+        <name>pagination</name>
+        <tag-class>by.epam.afc.tag.PaginationPanelTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>command</name>
+            <required>true</required>
+            <deferred-method>setCommand</deferred-method>
+        </attribute>
+    </tag>
+
 </taglib>

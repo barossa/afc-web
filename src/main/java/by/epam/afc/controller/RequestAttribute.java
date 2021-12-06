@@ -26,12 +26,12 @@ public class RequestAttribute {
     public static final String SEARCH = "search";
     public static final String ACTION = "action";
     public static final String ID = "id";
-    public static final String LOAD_ONLY = "load_only";
     public static final String STATUS = "status";
     public static final String ANNOUNCEMENTS = "announcements";
     public static final String ANNOUNCEMENT = "announcement";
     public static final String NEXT_PAGE = "nextPage";
     public static final String PREVIOUS_PAGE = "previousPage";
-    public static final String CURRENT_PAGE = "currentPage";
+    public static final String PAGE = "page";
+    public static final String PAGINATION = "pagination";
 
 }

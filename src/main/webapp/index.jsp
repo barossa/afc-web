@@ -7,7 +7,7 @@
 <body>
 <c:choose>
     <c:when test="${latest_forward_path == null}">
-        <jsp:forward page="/controller?command=find_announcements&load_only=1"/>
+        <jsp:forward page="/controller?command=find_announcements&page=0"/>
     </c:when>
     <c:otherwise>
         <jsp:forward page="${latest_forward_path}"/>

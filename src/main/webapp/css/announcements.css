@@ -45,8 +45,58 @@ footer {
     position: relative;
 }
 
+.adCard{
+    height: 150px;
+    margin-bottom:.5rem!important
+}
+
+.adCard > .row {
+    height:100%!important;
+}
+
+.adCard-img{
+    display: flex;
+    flex:0 0 auto;
+    width:16.66666667% !important;
+    max-height: 150px;
+    align-items: center !important;
+}
+
+.adCard-img > img {
+    max-width: 130px !important;
+    max-height: 130px !important;
+    border-radius: 0.25rem !important;
+    margin-left:1.5rem!important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
 .card{
     background-color: rgba(255, 255, 255, 0.7) !important; /* 0.0 - полностью прозрачный */
+}
+
+.card-subtitle{
+    margin-bottom:.5rem !important;
+    margin-top: -5px !important;
+    --bs-text-opacity:1;
+    color:#6c757d!important
+}
+
+.card-text {
+    display: flex;
+    justify-content: flex-end !important;
+}
+
+.card-price{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-content: center !important;
+    align-items: center !important;
+    height: 100% !important;
 }
 
 .adCard:hover{

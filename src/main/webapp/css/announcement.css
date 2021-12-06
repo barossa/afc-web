@@ -28,28 +28,24 @@ body {
     margin-right: 3rem;
 }
 
-/*.carousel-inner {
-    display: inline-block;
-    height: auto;
-    max-width: 100%;
-}*/
 .carousel-item{
     display: flex !important;
 }
 
 .carousel-inner > .carousel-item > img {
-    max-height: 75vh;
+    max-height: 65vh;
     width: auto !important;
 }
 .carousel{
-    max-height: 75vh;
+    max-height: 65vh;
     width: auto !important;
 }
 
 #images{
-    max-height: 80vh;
-    max-width: 55vw !important;
-    background: rgba(248,248,248,0.7);
+    max-height: 70vh;
+    max-width: 45vw !important;
+
+    background-color: rgba(177, 182, 149,0.75);
     align-items: center !important;
     padding: 0.5rem;
 }

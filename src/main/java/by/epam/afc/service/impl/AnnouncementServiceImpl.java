@@ -1,6 +1,6 @@
 package by.epam.afc.service.impl;
 
-import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
+import by.epam.afc.controller.command.Pagination;
 import by.epam.afc.dao.AnnouncementDao;
 import by.epam.afc.dao.ImageDao;
 import by.epam.afc.dao.entity.*;
@@ -12,22 +12,27 @@ import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.AnnouncementService;
 import by.epam.afc.service.util.ImageHelper;
+import by.epam.afc.service.util.PaginationHelper;
 import by.epam.afc.service.util.SearchHelper;
+import by.epam.afc.service.validator.AnnouncementFilterValidator;
 import by.epam.afc.service.validator.NumberValidator;
+import by.epam.afc.service.validator.SearchRequestValidator;
+import by.epam.afc.service.validator.impl.AnnouncementFilterValidatorImpl;
 import by.epam.afc.service.validator.impl.NumberValidatorImpl;
+import by.epam.afc.service.validator.impl.SearchRequestValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.dao.entity.Announcement.Status.ACTIVE;
-import static by.epam.afc.dao.entity.Announcement.Status.UNDEFINED;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private static final AnnouncementServiceImpl instance = new AnnouncementServiceImpl();
@@ -99,11 +104,25 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Optional<AnnouncementsPagination> findAnnouncements(AnnouncementsPagination pagination) throws ServiceException {
+    public Pagination<Announcement> findAnnouncements(Map<String, List<String>> parameterMap) throws ServiceException {
         try {
+            AnnouncementFilterValidator filterValidator = AnnouncementFilterValidatorImpl.getInstance();
+            Map<String, List<String>> validatedParameters = filterValidator.validateParameterMap(parameterMap);
+            List<String> searches = validateSearch(parameterMap.get(SEARCH));
+            validatedParameters.put(SEARCH, searches);
+
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Announcement> announcements = announcementDao.findAll();
-            return findPagination(announcements, pagination);
+            List<Announcement> filteredAnnouncements = filterData(announcements, validatedParameters);
+
+            PaginationHelper paginationHelper = PaginationHelper.getInstance();
+            Integer page = toIntList(parameterMap.get(PAGE)).get(0);
+            // FIXME: 12/6/21 ADD PAGINATION VALIDATOR AND NORMAL PAGE PARSING
+            Pagination<Announcement> pagination = paginationHelper.getPage(filteredAnnouncements, page, PAGINATED_PAGE_ELEMENTS);
+            List<Announcement> pageElements = pagination.getData();
+            initializeLazyData(pageElements);
+            pagination.setRequestAttributes(validatedParameters);
+            return pagination;
 
         } catch (DaoException e) {
             logger.error("Can't find paginated page", e);
@@ -112,11 +131,17 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
-    public Optional<AnnouncementsPagination> findAnnouncements(AnnouncementsPagination pagination, User user) throws ServiceException {
+    public Pagination<Announcement> findAnnouncements(Map<String, List<String>> parameterMap, User user) throws ServiceException {
         try {
+            AnnouncementFilterValidator filterValidator = AnnouncementFilterValidatorImpl.getInstance();
+            List<String> statuses = parameterMap.get(STATUS);
+            List<String> validStatuses = statuses.stream()
+                    .filter(filterValidator::validateStatus)
+                    .collect(Collectors.toList());
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Announcement> announcements = announcementDao.findByOwner(user);
-            return findPagination(announcements, pagination);
+            // TODO: 12/6/21 MY ANNOUNCEMENTS PAGINATION
+            return findAnnouncements(parameterMap);
 
         } catch (DaoException e) {
             logger.error("Can't find paginated page", e);
@@ -145,77 +170,46 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         return Optional.empty();
     }
 
-    private Optional<AnnouncementsPagination> findPagination(List<Announcement> announcements, AnnouncementsPagination pagination) throws DaoException {
-        List<Announcement> filteredAnnouncements;
-        filteredAnnouncements = filterData(announcements, pagination);
-        int from = pagination.getCurrentPage() * PAGINATED_PAGE_ELEMENTS;
-        int to = from + PAGINATED_PAGE_ELEMENTS - 1;
-        int listSize = filteredAnnouncements.size();
-
-        /*Getting actual data of current page*/
-        if (listSize > from) {
-            List<Announcement> currentAnnouncements;
-            if (listSize > to) {
-                currentAnnouncements = filteredAnnouncements.subList(from, to);
-                currentAnnouncements.add(filteredAnnouncements.get(to));
-            } else {
-                currentAnnouncements = filteredAnnouncements.subList(from, listSize - 1);
-                currentAnnouncements.add(filteredAnnouncements.get(listSize - 1));
-            }
-            initializeLazyData(currentAnnouncements);
-            pagination.setCurrentData(currentAnnouncements);
-
-        } else {
-            pagination.setCurrentData(new ArrayList<>());
+    private List<String> validateSearch(List<String> searches) {
+        if (searches == null) {
+            return new ArrayList<>();
         }
-
-        /*Is previous page available*/
-        boolean isPreviousExists = pagination.getCurrentPage() > 0;
-        pagination.setPrevious(isPreviousExists);
-
-        /*Is at least one record above exists*/
-        boolean isNextExists = listSize > to + 1;
-        pagination.setNext(isNextExists);
-
-        return Optional.of(pagination);
+        SearchRequestValidator searchValidator = SearchRequestValidatorImpl.getInstance();
+        List<String> validatedSearches = searches.stream().filter(searchValidator::validateRequest).collect(Collectors.toList());
+        return validatedSearches;
     }
 
-
-    private List<Announcement> filterData(List<Announcement> announcements, AnnouncementsPagination pagination) {
-        List<Category> categories = pagination.getCategories();
-        List<Region> regions = pagination.getRegions();
-        int rangeMin = pagination.getRangeMin();
-        int rangeMax = pagination.getRangeMax();
-        String search = pagination.getSearchRequest();
-
-        Stream<Announcement> stream = announcements.stream();
+    private List<Announcement> filterData(List<Announcement> announcements, Map<String, List<String>> parameterMap) {
+        List<Integer> regions = toIntList(parameterMap.get(REGION));
+        List<Integer> categories = toIntList(parameterMap.get(CATEGORY));
+        List<Integer> minPrices = toIntList(parameterMap.get(PRICE_MIN));
+        List<Integer> maxPrices = toIntList(parameterMap.get(PRICE_MAX));
+        List<String> searches = parameterMap.get(SEARCH);
+        Predicate<Announcement> regionPredicate = announcement -> regions.contains(announcement.getRegion().getId());
+        Predicate<Announcement> categoryPredicate = announcement -> categories.contains(announcement.getCategory().getId());
+        Predicate<Announcement> minPricePredicate = announcement -> minPrices.stream().allMatch(price -> announcement.getPrice().intValue() >= price);
+        Predicate<Announcement> maxPricePredicate = announcement -> maxPrices.stream().allMatch(price -> announcement.getPrice().intValue() <= price);
+        SearchHelper searchHelper = SearchHelper.getInstance();
+        Predicate<Announcement> searchPredicate = announcement -> searches.stream()
+                .map(search -> searchHelper.completeRegex(search.toUpperCase()))
+                .map(regex -> announcement.getTitle().toUpperCase().matches(regex))
+                .reduce(true, Boolean::logicalAnd);
         System.out.println("FILTERING DATA. INPUT: " + announcements.size());
 
-        if (!categories.isEmpty()) {
-            stream = stream.filter(ad -> categories.contains(ad.getCategory()));
-        }
-        if (!regions.isEmpty()) {
-            stream = stream.filter(ad -> regions.contains(ad.getRegion()));
-        }
-        if (rangeMin > 0) {
-            stream = stream.filter(ad -> ad.getPrice().intValue() > rangeMin);
-        }
-        if (rangeMax > 0) {
-            stream = stream.filter(ad -> ad.getPrice().intValue() < rangeMax);
-        }
-        if (!search.isEmpty()) {
-            SearchHelper searchHelper = SearchHelper.getInstance();
-            String searchRegex = searchHelper.completeRegex(search);
-            Pattern searchPattern = Pattern.compile(searchRegex);
-            stream = stream.filter(ad -> searchPattern.matcher(ad.getTitle().toUpperCase()).find());
-        }
-        if (pagination.getStatus() != UNDEFINED) {
-            stream = stream.filter(ad -> ad.getStatus() == pagination.getStatus());
-        }
+        List<Announcement> filteredAnnouncements = announcements.stream()
+                .filter(!regions.isEmpty() ? regionPredicate : a -> true)
+                .filter(!categories.isEmpty() ? categoryPredicate : a -> true)
+                .filter(!minPrices.isEmpty() ? minPricePredicate : a -> true)
+                .filter(!maxPrices.isEmpty() ? maxPricePredicate : a -> true)
+                .filter(searchPredicate)
+                .collect(Collectors.toList());
 
-        List<Announcement> collect = stream.collect(Collectors.toList());
-        System.out.println("FILTERING DATA. OUTPUT: " + collect.size());
-        return collect;
+        System.out.println("FILTERING DATA. OUTPUT: " + filteredAnnouncements.size());
+        return filteredAnnouncements;
+    }
+
+    private List<Integer> toIntList(List<String> source) {
+        return source.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
     private void initializeLazyData(List<Announcement> announcements) throws DaoException {

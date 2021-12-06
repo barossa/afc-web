@@ -40,15 +40,15 @@
 
     function validate (input) {
         if($(input).attr('type') === 'text' || $(input).attr('name') === 'authField') {
-            if(validateField(input, "/^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$/")) { // mail regex
+            if(validateField(input, "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$")) { // mail regex
                 if($(input).val().trim().length <= 100){
                     return true;
                 }
-            }else if(validateField(input, "/^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$/")){ // login regex
+            }else if(validateField(input, "^(?=.*[A-Za-z0-9]$)[A-Za-z]\\w{0,19}$")){ // login regex
                 if($(input).val().trim().length <= 20){
                     return true;
                 }
-            }else return validateField(input, "/^\\+?\\d{10,15}$/"); // phone regex
+            }else return validateField(input, "^\\+?\\d{10,15}$"); // phone regex
         }
         else {
             if($(input).val().trim() === ''){

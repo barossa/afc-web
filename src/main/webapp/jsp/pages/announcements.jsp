@@ -14,6 +14,7 @@
     <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/announcements.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/pagination.css"/>">
 
 </head>
 
@@ -184,44 +185,7 @@
 
             <afc:displayAnnouncements/>
 
-            <ul class="pagination justify-content-center">
-                <c:choose>
-                    <c:when test="${requestScope.previousPage}">
-                        <li class="page-item">
-                            <button class="page-link pag"
-                               value="change_announcements_page&action=previous"
-                               tabindex="-1">
-                                <fmt:message key="pagination.previous"/>
-                            </button>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="page-item disabled">
-                            <a class="page-link" tabindex="-1">
-                                <fmt:message key="pagination.previous"/>
-                            </a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-                <li class="page-item disabled"><a class="page-link">${requestScope.currentPage}</a></li>
-                <c:choose>
-                    <c:when test="${requestScope.nextPage}">
-                        <li class="page-item">
-                            <button class="page-link pag"
-                               value="change_announcements_page&action=next">
-                                <fmt:message key="pagination.next"/>
-                            </button>
-                        </li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="page-item disabled">
-                            <a class="page-link">
-                                <fmt:message key="pagination.next"/>
-                            </a>
-                        </li>
-                    </c:otherwise>
-                </c:choose>
-            </ul>
+            <afc:pagination command="find_announcements"/>
 
         </div>
 

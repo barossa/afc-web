@@ -1,6 +1,6 @@
 package by.epam.afc.tag;
 
-import by.epam.afc.controller.command.pagination.AnnouncementsPagination;
+import by.epam.afc.controller.command.Pagination;
 import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.dao.entity.User;
 import jakarta.servlet.ServletRequest;
@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static by.epam.afc.controller.RequestAttribute.LOCALE;
-import static by.epam.afc.controller.SessionAttribute.PAGINATION_DATA;
+import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 import static by.epam.afc.controller.SessionAttribute.USER;
 
 public class AnnouncementTableTag extends TagSupport {
@@ -35,9 +35,8 @@ public class AnnouncementTableTag extends TagSupport {
         try {
             ServletRequest request = pageContext.getRequest();
             ResourceBundle resourceBundle = findCurrentBundle();
-            /*List<Announcement> announcements = (List<Announcement>) request.getAttribute(ANNOUNCEMENTS);*/
-            AnnouncementsPagination pagination = (AnnouncementsPagination) pageContext.getSession().getAttribute(PAGINATION_DATA);
-            List<Announcement> announcements = pagination.getCurrentData();
+            Pagination<Announcement> pagination = (Pagination<Announcement>) request.getAttribute(PAGINATION);
+            List<Announcement> announcements = pagination.getData();
             JspWriter jspWriter = pageContext.getOut();
 
             if (announcements.isEmpty()) {
@@ -53,8 +52,6 @@ public class AnnouncementTableTag extends TagSupport {
             logger.error("Can't display announcements table:", e);
             throw new JspException("Can't display announcements table", e);
         }
-
-
         return EVAL_PAGE;
     }
 
@@ -64,9 +61,9 @@ public class AnnouncementTableTag extends TagSupport {
         User user = (User) session.getAttribute(USER);
         User owner = announcement.getOwner();
         String loginTag;
-        if(user.getRole() != User.Role.GUEST && user.getId() == owner.getId()){
+        if (user.getRole() != User.Role.GUEST && user.getId() == owner.getId()) {
             loginTag = resourceBundle.getString(MY_ANNOUNCEMENT);
-        }else{
+        } else {
             loginTag = owner.getLogin();
         }
         String imgSource = BASE64_PREFIX + announcement.getPrimaryImage();
