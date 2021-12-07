@@ -60,62 +60,72 @@ public class AnnouncementTableTag extends TagSupport {
         HttpSession session = pageContext.getSession();
         User user = (User) session.getAttribute(USER);
         User owner = announcement.getOwner();
-        String loginTag;
-        if (user.getRole() != User.Role.GUEST && user.getId() == owner.getId()) {
-            loginTag = resourceBundle.getString(MY_ANNOUNCEMENT);
-        } else {
-            loginTag = owner.getLogin();
-        }
+        boolean myAnnouncement = user.getRole() != User.Role.GUEST && user.getId() == owner.getId();
         String imgSource = BASE64_PREFIX + announcement.getPrimaryImage();
         float price = announcement.getPrice().floatValue();
         String priceTag = (price > 0F ? price + "BYN" : resourceBundle.getString(FREE_ANNOUNCEMENT));
         String publicationDate = announcement.getPublicationDate().format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"));
 
         StringBuilder builder = new StringBuilder()
-                    .append("<div id=\"")
+                .append("<div id=\"")
                 .append(announcement.getId())
-                    .append("\" class=\"card adCard\">")
-                    .append("<div class=\"row\">")
-                    .append("<div class=\"adCard-img\">")
-                    .append("<img src=\"")
+                .append("\" class=\"card adCard\">")
+                .append("<div class=\"row\">")
+                .append("<div class=\"adCard-img\">")
+                .append("<img src=\"")
                 .append(imgSource)
-                    .append("\" width=\"130\" alt=\"No image\"/>")
-                    .append("</div>")
-                    .append("<div class=\"col-md-7\">")
-                    .append("<div class=\"card-body\">")
-                    .append("<h5 class=\"card-title\">")
+                .append("\" width=\"130\" alt=\"No image\"/>")
+                .append("</div>")
+                .append("<div class=\"col-md-7\">")
+                .append("<div class=\"card-body\">")
+                .append("<h5 class=\"card-title\">")
                 .append(announcement.getTitle())
-                    .append("</h5>")
-                    .append("<h6 class=\"card-subtitle\">")
+                .append("</h5>")
+                .append("<h6 class=\"card-subtitle\">")
                 .append(announcement.getCategory().getDescription())
-                    .append("</h6>")
+                .append("</h6>")
                 .append(announcement.getShortDescription())
-                    .append("</div>")
-                    .append("<p class=\"card-text\">")
-                    .append("<small class=\"text-muted\">")
-                    .append("<i class=\"fa fa-user\">")
-                    .append("<label> ")
-                .append(loginTag)
-                    .append("</label>")
-                    .append("</i>")
-                    .append("<i class=\"fa fa-calendar ms-2\">")
-                    .append("<label> ")
+                .append("</div>")
+                .append("<p class=\"card-text\">")
+                .append("<small class=\"text-muted\">")
+                .append(buildNameTagElement(myAnnouncement, announcement.getOwner().getLogin()))
+                .append("<i><i class=\"fa fa-calendar ms-2\"></i>")
+                .append(" ")
+                .append("<label>")
                 .append(publicationDate)
-                    .append("</label>")
-                    .append("</i>")
-                    .append("</small>")
-                    .append("</p>")
-                    .append("</div>")
-                    .append("<div class=\"col-md-3\">")
-                    .append("<div class=\"card-price\">")
-                    .append("<h3>")
+                .append("</label>")
+                .append("</i>")
+                .append("</small>")
+                .append("</p>")
+                .append("</div>")
+                .append("<div class=\"col-md-3\">")
+                .append("<div class=\"card-price\">")
+                .append("<h3>")
                 .append(priceTag)
-                    .append("</h3>")
-                    .append("</div>")
-                    .append("</div>")
-                    .append("</div>")
-                    .append("</div>");
+                .append("</h3>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>");
         return builder.toString();
+    }
+
+    private String buildNameTagElement(boolean mine, String owner) {
+        ResourceBundle currentBundle = findCurrentBundle();
+        String nameTag = currentBundle.getString(MY_ANNOUNCEMENT);
+        String element;
+        if (mine) {
+            element = "<a><label style=\"font-weight: bold\">" +
+                    nameTag +
+                    "</label></a>";
+        } else {
+            element = "<i>" +
+                    "<i class=\"fa fa-user\"></i>" +
+                    " " +
+                    "<label style=\"font-style:normal\">" + owner + "</label>" +
+                    "</i>";
+        }
+        return element;
     }
 
     private ResourceBundle findCurrentBundle() {

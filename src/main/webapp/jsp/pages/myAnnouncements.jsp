@@ -12,6 +12,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/myAnnouncements.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/pagination.css"/>">
 
 <body>
 
@@ -115,7 +116,6 @@
         <afc:pagination command="find_my_announcements"/>
 
     </aside>
-
 </div>
 
 <footer>
@@ -123,7 +123,6 @@
 </footer>
 
 <script src="<c:url value="/js/main.js"/>"></script>
-<script src="<c:url value="/js/myAnnouncements.js"/>"></script>
 
 </body>
 </html>

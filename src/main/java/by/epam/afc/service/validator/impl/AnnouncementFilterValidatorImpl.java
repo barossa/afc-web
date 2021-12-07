@@ -2,6 +2,8 @@ package by.epam.afc.service.validator.impl;
 
 import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.service.validator.AnnouncementFilterValidator;
+import by.epam.afc.service.validator.NumberValidator;
+import by.epam.afc.service.validator.SearchRequestValidator;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -11,7 +13,8 @@ import static by.epam.afc.controller.RequestAttribute.*;
 
 public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValidator {
     private static final AnnouncementFilterValidatorImpl instance = new AnnouncementFilterValidatorImpl();
-    private static final NumberValidatorImpl numberValidator = NumberValidatorImpl.getInstance();
+    private static final NumberValidator numberValidator = NumberValidatorImpl.getInstance();
+    private static final SearchRequestValidator searchValidator = SearchRequestValidatorImpl.getInstance();
 
     private AnnouncementFilterValidatorImpl() {
     }
@@ -56,21 +59,33 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
     }
 
     @Override
+    public boolean validateSearch(String search) {
+        if(search == null || search.isEmpty()){
+            return false;
+        }
+        return searchValidator.validateRequest(search);
+    }
+
+    @Override
     public Map<String, List<String>> validateParameterMap(Map<String, List<String>> parameterMap) {
         Map<String, List<String>> requestParams = new HashMap<>();
         List<String> regions = parameterMap.get(REGION);
         List<String> categories = parameterMap.get(CATEGORY);
         List<String> minPrices = parameterMap.get(PRICE_MIN);
         List<String> maxPrices = parameterMap.get(PRICE_MAX);
+        List<String> statuses = parameterMap.get(STATUS);
+        List<String> searches = parameterMap.get(SEARCH);
         requestParams.put(REGION, validateParam(regions, this::validateRegion));
         requestParams.put(CATEGORY, validateParam(categories, this::validateCategory));
         requestParams.put(PRICE_MIN, validateParam(minPrices, this::validatePrice));
         requestParams.put(PRICE_MAX, validateParam(maxPrices, this::validatePrice));
+        requestParams.put(STATUS, validateParam(statuses, this::validateStatus));
+        requestParams.put(SEARCH, validateParam(searches, this::validateSearch));
         return requestParams;
     }
 
-    private List<String> validateParam(List<String> params, Predicate<String> validator){
-        if(params == null){
+    private List<String> validateParam(List<String> params, Predicate<String> validator) {
+        if (params == null) {
             return new ArrayList<>();
         }
         return params.stream().filter(validator).collect(Collectors.toList());

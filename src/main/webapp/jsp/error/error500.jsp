@@ -9,7 +9,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><fmt:message key="project.titleTag"/><fmt:message key="error.500title"/></title>
+    <title>
+        <fmt:message key="project.titleTag"/>
+        <fmt:message key="error.500title"/>
+    </title>
 
     <link href="<c:url value="/fonts/montserrat/css/montserrat.css"/>" rel="stylesheet">
     <link href="<c:url value="/fonts/titillium/css/titillium.css"/>" rel="stylesheet">
@@ -27,7 +30,7 @@
         </div>
         <h2><fmt:message key="error.500messageHead"/></h2>
         <p>${requestScope.exception_message}</p>
-        <button class="href btn btn-primary mt-4" value="index.jsp"><fmt:message key="error.goToHome"/></button>
+        <button class="href btn btn-primary mt-4" value="/"><fmt:message key="error.goToHome"/></button>
     </div>
 </div>
 

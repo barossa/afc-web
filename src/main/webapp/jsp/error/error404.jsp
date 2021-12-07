@@ -29,10 +29,9 @@
         <h2><fmt:message key="error.404messageHead"/></h2>
         <p></p>
         <p><fmt:message key="error.404messageBody"/></p>
-        <p></p>
-        <p></p>
+        <br/>
 
-        <button class="href btn btn-primary mt-4" value="index.jsp"><fmt:message key="error.goToHome"/></button>
+        <button class="href btn btn-primary mt-4" value="/"><fmt:message key="error.goToHome"/></button>
     </div>
 </div>
 

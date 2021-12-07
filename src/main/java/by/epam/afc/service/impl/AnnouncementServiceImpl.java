@@ -112,16 +112,17 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             validatedParameters.put(SEARCH, searches);
 
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
-            List<Announcement> announcements = announcementDao.findAll();
-            List<Announcement> filteredAnnouncements = filterData(announcements, validatedParameters);
+            List<Announcement> allAnnouncements = announcementDao.findAll();
+            List<Announcement> filteredAnnouncements = filterData(allAnnouncements, validatedParameters);
 
             PaginationHelper paginationHelper = PaginationHelper.getInstance();
-            Integer page = toIntList(parameterMap.get(PAGE)).get(0);
-            // FIXME: 12/6/21 ADD PAGINATION VALIDATOR AND NORMAL PAGE PARSING
+            List<String> pages = parameterMap.get(PAGE);
+            int page = paginationHelper.findPage(pages);
+
             Pagination<Announcement> pagination = paginationHelper.getPage(filteredAnnouncements, page, PAGINATED_PAGE_ELEMENTS);
-            List<Announcement> pageElements = pagination.getData();
-            initializeLazyData(pageElements);
+            List<Announcement> announcements = pagination.getData();
             pagination.setRequestAttributes(validatedParameters);
+            initializeLazyData(announcements);
             return pagination;
 
         } catch (DaoException e) {
@@ -134,14 +135,21 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public Pagination<Announcement> findAnnouncements(Map<String, List<String>> parameterMap, User user) throws ServiceException {
         try {
             AnnouncementFilterValidator filterValidator = AnnouncementFilterValidatorImpl.getInstance();
-            List<String> statuses = parameterMap.get(STATUS);
-            List<String> validStatuses = statuses.stream()
-                    .filter(filterValidator::validateStatus)
-                    .collect(Collectors.toList());
+            Map<String, List<String>> validatedParameters = filterValidator.validateParameterMap(parameterMap);
+
+            PaginationHelper paginationHelper = PaginationHelper.getInstance();
+            List<String> pages = parameterMap.get(PAGE);
+            int page = paginationHelper.findPage(pages);
+
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
-            List<Announcement> announcements = announcementDao.findByOwner(user);
-            // TODO: 12/6/21 MY ANNOUNCEMENTS PAGINATION
-            return findAnnouncements(parameterMap);
+            List<Announcement> allAnnouncements = announcementDao.findByOwner(user);
+            List<Announcement> filteredAnnouncements = filterData(allAnnouncements, validatedParameters);
+
+            Pagination<Announcement> pagination = paginationHelper.getPage(filteredAnnouncements, page, PAGINATED_PAGE_ELEMENTS);
+            pagination.setRequestAttributes(validatedParameters);
+            List<Announcement> announcements = pagination.getData();
+            initializeLazyData(announcements);
+            return pagination;
 
         } catch (DaoException e) {
             logger.error("Can't find paginated page", e);
@@ -175,7 +183,9 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             return new ArrayList<>();
         }
         SearchRequestValidator searchValidator = SearchRequestValidatorImpl.getInstance();
-        List<String> validatedSearches = searches.stream().filter(searchValidator::validateRequest).collect(Collectors.toList());
+        List<String> validatedSearches = searches.stream()
+                .filter(searchValidator::validateRequest)
+                .collect(Collectors.toList());
         return validatedSearches;
     }
 
@@ -185,15 +195,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         List<Integer> minPrices = toIntList(parameterMap.get(PRICE_MIN));
         List<Integer> maxPrices = toIntList(parameterMap.get(PRICE_MAX));
         List<String> searches = parameterMap.get(SEARCH);
+        List<String> statuses = parameterMap.get(STATUS);
         Predicate<Announcement> regionPredicate = announcement -> regions.contains(announcement.getRegion().getId());
         Predicate<Announcement> categoryPredicate = announcement -> categories.contains(announcement.getCategory().getId());
         Predicate<Announcement> minPricePredicate = announcement -> minPrices.stream().allMatch(price -> announcement.getPrice().intValue() >= price);
         Predicate<Announcement> maxPricePredicate = announcement -> maxPrices.stream().allMatch(price -> announcement.getPrice().intValue() <= price);
+        Predicate<Announcement> statusPredicate = announcement -> statuses.stream()
+                .map(String::toUpperCase)
+                .allMatch(status -> announcement.getStatus().toString().equals(status));
         SearchHelper searchHelper = SearchHelper.getInstance();
         Predicate<Announcement> searchPredicate = announcement -> searches.stream()
                 .map(search -> searchHelper.completeRegex(search.toUpperCase()))
-                .map(regex -> announcement.getTitle().toUpperCase().matches(regex))
-                .reduce(true, Boolean::logicalAnd);
+                .allMatch(regex -> announcement.getTitle().toUpperCase().matches(regex));
         System.out.println("FILTERING DATA. INPUT: " + announcements.size());
 
         List<Announcement> filteredAnnouncements = announcements.stream()
@@ -201,6 +214,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 .filter(!categories.isEmpty() ? categoryPredicate : a -> true)
                 .filter(!minPrices.isEmpty() ? minPricePredicate : a -> true)
                 .filter(!maxPrices.isEmpty() ? maxPricePredicate : a -> true)
+                .filter(!statuses.isEmpty() ? statusPredicate : a -> true)
                 .filter(searchPredicate)
                 .collect(Collectors.toList());
 

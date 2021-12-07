@@ -190,12 +190,9 @@
         </div>
 
     </aside>
-
-
 </div>
 
 <script src="<c:url value="/js/main.js"/>"></script>
-<script src="<c:url value="/js/announcements.js"/>"></script>
 
 <c:import url="/jsp/components/footer.jsp"/>
 

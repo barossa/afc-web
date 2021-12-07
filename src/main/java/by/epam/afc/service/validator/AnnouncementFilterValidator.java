@@ -8,5 +8,6 @@ public interface AnnouncementFilterValidator {
     boolean validateCategory(String category);
     boolean validatePrice(String price);
     boolean validateStatus(String status);
+    boolean validateSearch(String search);
     Map<String, List<String>> validateParameterMap(Map<String, List<String>> parameterMap);
 }

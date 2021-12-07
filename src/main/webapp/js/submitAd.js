@@ -8,7 +8,6 @@
     });
 
     $(function () {
-
         $("#categoriesDropdown li a").on("click", function (li) { /*Categories dropdown*/
             let bt = $("#chooseCtButton");
             bt.text($(this).text());
@@ -64,20 +63,13 @@
                 async: false, /* TEST VALUE */
                 data: data,
 
-
                 success: function (data,status,xhr) {
                     if(xhr.status === 302){
                         let bla = jqXHR;
                         xhr.getAllResponseHeaders();
                         location.replace(jqXHR.getResponseHeader("Location"))
                     }
-                }/*,
-
-                error: function (data,status,xhr) {
-                    if(xhr.status === 302){
-                        location.replace(xhr.getResponseHeader("Location"))
-                    }
-                }*/
+                }
 
             });
         }

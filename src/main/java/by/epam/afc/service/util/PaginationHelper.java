@@ -2,12 +2,17 @@ package by.epam.afc.service.util;
 
 import by.epam.afc.controller.command.Pagination;
 import by.epam.afc.dao.entity.BaseEntity;
+import by.epam.afc.service.validator.NumberValidator;
+import by.epam.afc.service.validator.impl.NumberValidatorImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PaginationHelper {
     private static final PaginationHelper instance = new PaginationHelper();
+
+    private static final int DEFAULT_PAGE = 0;
 
     private PaginationHelper() {
     }
@@ -36,5 +41,17 @@ public class PaginationHelper {
         boolean previous = page > 0;
         boolean next = elementsSize > (to + 1);
         return new Pagination<>(pageElements, next, previous, page);
+    }
+
+    public int findPage(List<String> pages){
+        if(pages == null){
+            return DEFAULT_PAGE;
+        }
+        NumberValidator validator = NumberValidatorImpl.getInstance();
+        Optional<Integer> validPage = pages.stream()
+                .filter(validator::validateNumber)
+                .map(Integer::parseInt)
+                .findFirst();
+        return validPage.orElse(DEFAULT_PAGE);
     }
 }
