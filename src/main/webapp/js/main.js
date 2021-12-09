@@ -22,7 +22,7 @@
         <!--DISABLE BACK BUTTON-->
 
         <!--ANNOUNCEMENTS PAGE -->
-        $('#searchButton').on('click', function () {
+        $('#sb').on('click', function () {
             let validationResult = validateAnnouncementSearch();
             alert(validationResult);
             if (validationResult) {
@@ -40,12 +40,12 @@
 
         <!-- MY ANNOUNCEMENTS RADIO FILTERS -->
         $('.radio').on('click', function (){
-            if(lastRadioFilter === $(this).val()){
-                alert("zashitA")
+            let value = $(this).attr('value');
+            if(lastRadioFilter === value){
                 return;
             }
-            lastRadioFilter = $(this).val();
-            findMyAnnouncements(lastRadioFilter);
+            lastRadioFilter = value;
+            findMyAnnouncements(value);
         });
         <!-- MY ANNOUNCEMENTS RADIO FILTERS -->
 

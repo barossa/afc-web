@@ -21,14 +21,16 @@
 <div id="main">
 
     <aside>
-        <div class="rounded" id="filters">
-            <c:choose> <%--ALL RADIO BUTTON--%>
+        <afc:myAnnouncementsFilter/>
+        <%--<div class="rounded" id="filters">
+
+            <c:choose> &lt;%&ndash;ALL RADIO BUTTON&ndash;%&gt;
                 <c:when test="${pagination_data.status == 'UNDEFINED'}">
                     <div class="form-check">
                         <input class="form-check-input radio" name="status" type="radio" value="all"
-                               id="flexCheckDefault1"
+                               id="f1"
                                checked>
-                        <label class="form-check-label" for="flexCheckDefault1">
+                        <label class="form-check-label" for="f1">
                             <fmt:message key="announcements.all"/>
                         </label>
                     </div>
@@ -36,21 +38,21 @@
                 <c:otherwise>
                     <div class="form-check">
                         <input class="form-check-input radio" name="status" type="radio" value="all"
-                               id="flexCheckDefault2">
-                        <label class="form-check-label" for="flexCheckDefault2">
+                               id="f2">
+                        <label class="form-check-label" for="f2">
                             <fmt:message key="announcements.all"/>
                         </label>
                     </div>
                 </c:otherwise>
-            </c:choose> <%--ALL RADIO BUTTON--%>
+            </c:choose> &lt;%&ndash;ALL RADIO BUTTON&ndash;%&gt;
 
-            <c:choose> <%--MODERATING RADIO BUTTON--%>
+            <c:choose> &lt;%&ndash;MODERATING RADIO BUTTON&ndash;%&gt;
                 <c:when test="${pagination_data.status == 'MODERATING'}">
                     <div class="form-check">
                         <input class="form-check-input radio" name="status" type="radio" value="moderating"
-                               id="flexCheckDefault3"
+                               id="f3"
                                checked>
-                        <label class="form-check-label" for="flexCheckDefault3">
+                        <label class="form-check-label" for="f3">
                             <fmt:message key="announcements.moderating"/>
                         </label>
                     </div>
@@ -64,9 +66,9 @@
                         </label>
                     </div>
                 </c:otherwise>
-            </c:choose><%--MODERATING RADIO BUTTON--%>
+            </c:choose>&lt;%&ndash;MODERATING RADIO BUTTON&ndash;%&gt;
 
-            <c:choose> <%--ACTIVE RADIO BUTTON--%>
+            <c:choose> &lt;%&ndash;ACTIVE RADIO BUTTON&ndash;%&gt;
                 <c:when test="${pagination_data.status == 'ACTIVE'}">
                     <div class="form-check">
                         <input class="form-check-input radio" name="status" type="radio" value="active"
@@ -86,9 +88,9 @@
                         </label>
                     </div>
                 </c:otherwise>
-            </c:choose><%--ACTIVE RADIO BUTTON--%>
+            </c:choose>&lt;%&ndash;ACTIVE RADIO BUTTON&ndash;%&gt;
 
-            <c:choose><%--INACTIVE RADIO BUTTON--%>
+            <c:choose>&lt;%&ndash;INACTIVE RADIO BUTTON&ndash;%&gt;
                 <c:when test="${pagination_data.status == 'INACTIVE'}">
                     <div class="form-check">
                         <input class="form-check-input radio" name="status" type="radio" value="inactive"
@@ -108,8 +110,8 @@
                         </label>
                     </div>
                 </c:otherwise>
-            </c:choose><%--INACTIVE RADIO BUTTON--%>
-        </div>
+            </c:choose>&lt;%&ndash;INACTIVE RADIO BUTTON&ndash;%&gt;
+        </div>--%>
 
         <afc:displayAnnouncements/>
 

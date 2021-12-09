@@ -17,15 +17,18 @@ public class Region extends BaseEntity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Region region = (Region) o;
 
-        return id == region.id;
+        return regionName != null ? regionName.equals(region.regionName) : region.regionName == null;
     }
 
     @Override
     public int hashCode() {
-        return 31 * id;
+        int result = super.hashCode();
+        result = 31 * result + (regionName != null ? regionName.hashCode() : 0);
+        return result;
     }
 
     @Override

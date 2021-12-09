@@ -5,7 +5,6 @@ import by.epam.afc.dao.entity.BaseEntity;
 import jakarta.el.MethodExpression;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.TagSupport;
@@ -14,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -24,7 +22,6 @@ import static by.epam.afc.controller.RequestAttribute.*;
 public class PaginationPanelTag extends TagSupport {
     private static Logger logger = LogManager.getLogger(PaginationPanelTag.class);
 
-    private static final String BUNDLE_BASENAME = "prop.pagecontent";
     private static final String ATTRIBUTE_AND = "&";
     private static final String ATTRIBUTES_START = "?";
     private static final String EQUALS = "=";
@@ -54,7 +51,7 @@ public class PaginationPanelTag extends TagSupport {
             Pagination<? extends BaseEntity> pagination = (Pagination<? extends BaseEntity>) request.getAttribute(PAGINATION);
             JspWriter jspWriter = pageContext.getOut();
             jspWriter.write(PAGINATION_OPEN);
-            ResourceBundle resourceBundle = findCurrentBundle();
+            ResourceBundle resourceBundle = TagUtils.findBundle(pageContext.getSession());
             String previousPlaceholder = resourceBundle.getString(PREVIOUS_KEY);
             String nextPlaceholder = resourceBundle.getString(NEXT_KEY);
             if (pagination.isPrevious()) {
@@ -129,12 +126,5 @@ public class PaginationPanelTag extends TagSupport {
         href.append(EQUALS);
         href.append(pagination.getCurrentPage() + addition);
         return href.toString();
-    }
-
-    private ResourceBundle findCurrentBundle() {
-        HttpSession session = pageContext.getSession();
-        String locale = (String) session.getAttribute(LOCALE);
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_BASENAME, Locale.forLanguageTag(locale));
-        return resourceBundle;
     }
 }

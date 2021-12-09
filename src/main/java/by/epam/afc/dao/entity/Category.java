@@ -28,15 +28,18 @@ public class Category extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Category category = (Category) o;
 
-        return id == category.id;
+        return description != null ? description.equals(category.description) : category.description == null;
     }
 
     @Override
     public int hashCode() {
-        return 31 * id;
+        int result = super.hashCode();
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
     }
 
     @Override

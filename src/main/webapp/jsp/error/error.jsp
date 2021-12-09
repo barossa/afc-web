@@ -33,7 +33,7 @@
         <p><fmt:message key="exception.message"/>: ${requestScope.exception_message}</p>
         <p></p>
         <p></p>
-        <button class="href btn btn-primary mt-4" value="/" type="button"><fmt:message key="error.goToHome"/></button>
+        <button class="href btn btn-primary mt-4" value="" type="button"><fmt:message key="error.goToHome"/></button>
     </div>
 </div>
 

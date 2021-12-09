@@ -26,4 +26,22 @@
         </attribute>
     </tag>
 
+    <tag>
+        <name>myAnnouncementsFilter</name>
+        <tag-class>by.epam.afc.tag.MyAnnouncementsFilterTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
+        <name>announcementsSearch</name>
+        <tag-class>by.epam.afc.tag.AnnouncementsSearchTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
+        <name>announcementsFilter</name>
+        <tag-class>by.epam.afc.tag.AnnouncementsFilterTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
 </taglib>

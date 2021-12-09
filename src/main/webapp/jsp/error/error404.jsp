@@ -31,7 +31,7 @@
         <p><fmt:message key="error.404messageBody"/></p>
         <br/>
 
-        <button class="href btn btn-primary mt-4" value="/"><fmt:message key="error.goToHome"/></button>
+        <button class="href btn btn-primary mt-4" value=""><fmt:message key="error.goToHome"/></button>
     </div>
 </div>
 
