@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 import static by.epam.afc.controller.RequestAttribute.STATUS;
 
 public class MyAnnouncementsFilterTag extends TagSupport {
-    private static Logger logger = LogManager.getLogger(MyAnnouncementsFilterTag.class);
+    private static final Logger logger = LogManager.getLogger(MyAnnouncementsFilterTag.class);
 
     @Override
     public int doStartTag() throws JspException {

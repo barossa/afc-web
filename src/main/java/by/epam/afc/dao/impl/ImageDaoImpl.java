@@ -44,7 +44,7 @@ public final class ImageDaoImpl implements ImageDao {
             + " INNER JOIN " + ANNOUNCEMENT_IMAGES + " ON " + IMAGES + "." + IMAGE_ID + "=" + ANNOUNCEMENT_IMAGES + "." + IMAGE_ID
             + " WHERE " + ANNOUNCEMENT_ID + "=?;";
 
-    static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
+    private static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
     ImageDaoImpl() {

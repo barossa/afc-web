@@ -22,7 +22,7 @@ import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
 public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD USERS PROFILE IMAGES 
     private static final UserServiceImpl instance = new UserServiceImpl();
-    private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private UserServiceImpl() {
     }
@@ -106,7 +106,6 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
             User savedUser = optionalSaved.get();
             char[] password = validatedCredentials.get(PASSWORD).toCharArray();
             updatePassword(savedUser, password);
-            System.out.println("SAVED USER: " + savedUser);
             return Optional.of(savedUser);
 
         } catch (DaoException e) {

@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 import static by.epam.afc.controller.RequestAttribute.SEARCH;
 
 public class AnnouncementsSearchTag extends TagSupport {
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final String SEARCH_PLACEHOLDER = "announcements.searchPlaceholder";
     private static final String SEARCH_BUTTON = "announcements.search";

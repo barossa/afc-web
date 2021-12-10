@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
-    private static Logger logger = LogManager.getLogger(ConnectionPool.class);
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 
     private static final AtomicBoolean instanceCreated = new AtomicBoolean(false);
     private static final Lock lock = new ReentrantLock(true);

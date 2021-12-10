@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.Base64;
 
 public class ImageHelper {
-    private static Logger logger = LogManager.getLogger(ImageHelper.class);
+    private static final Logger logger = LogManager.getLogger(ImageHelper.class);
 
     private static final ImageHelper instance = new ImageHelper();
 

@@ -21,7 +21,7 @@ import static by.epam.afc.controller.ContextAttribute.REGIONS;
 import static by.epam.afc.controller.RequestAttribute.*;
 
 public class AnnouncementsFilterTag extends TagSupport {
-    private static Logger logger = LogManager.getLogger(AnnouncementTableTag.class);
+    private static final Logger logger = LogManager.getLogger(AnnouncementTableTag.class);
 
     private static final String PRICE_RANGE_LABEL = "filter.priceRange";
     private static final String RANGE_MIN_LABEL = "filter.rangeMin";

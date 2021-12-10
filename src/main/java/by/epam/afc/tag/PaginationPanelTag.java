@@ -20,7 +20,7 @@ import static by.epam.afc.controller.PagePath.CONTROLLER;
 import static by.epam.afc.controller.RequestAttribute.*;
 
 public class PaginationPanelTag extends TagSupport {
-    private static Logger logger = LogManager.getLogger(PaginationPanelTag.class);
+    private static final Logger logger = LogManager.getLogger(PaginationPanelTag.class);
 
     private static final String ATTRIBUTE_AND = "&";
     private static final String ATTRIBUTES_START = "?";

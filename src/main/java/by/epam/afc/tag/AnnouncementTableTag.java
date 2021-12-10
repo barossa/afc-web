@@ -21,7 +21,7 @@ import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 import static by.epam.afc.controller.SessionAttribute.USER;
 
 public class AnnouncementTableTag extends TagSupport {
-    private static Logger logger = LogManager.getLogger(AnnouncementTableTag.class);
+    private static final Logger logger = LogManager.getLogger(AnnouncementTableTag.class);
 
     private static final String NOTHING_FOUND = "search.nothingFound";
     private static final String FREE_ANNOUNCEMENT = "announcements.free";

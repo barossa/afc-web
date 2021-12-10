@@ -19,7 +19,7 @@ import static by.epam.afc.dao.ColumnName.*;
 public class ImageRowMapper implements RowMapper<Image> {
     private static final ImageRowMapper instance = new ImageRowMapper();
 
-    static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
+    private static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
 
     private ImageRowMapper(){}
 

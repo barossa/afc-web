@@ -22,7 +22,7 @@ import static by.epam.afc.controller.SessionAttribute.UPLOADED_IMAGES;
         maxRequestSize = 1024 * 1024 * 5 * 5)
 @WebServlet(urlPatterns = {"/upload"})
 public class UploadController extends HttpServlet {
-    private static Logger logger = LogManager.getLogger(UploadController.class);
+    private static final Logger logger = LogManager.getLogger(UploadController.class);
 
     private static final String TMP_PREFIX = "tmp";
     private static final int MAX_UPLOAD_FILES = 5;

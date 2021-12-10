@@ -23,7 +23,7 @@ import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
 public class FindAnnouncements implements Command {
-    private static Logger logger = LogManager.getLogger(FindAnnouncements.class);
+    private static final Logger logger = LogManager.getLogger(FindAnnouncements.class);
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

@@ -22,7 +22,7 @@ import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
 
 public final class AnnouncementDaoImpl implements AnnouncementDao {
-    static final Logger logger = LogManager.getLogger(AnnouncementDaoImpl.class);
+    private static final Logger logger = LogManager.getLogger(AnnouncementDaoImpl.class);
 
     private static final String SELECT_ALL_ANNOUNCEMENTS = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
             + PRIMARY_IMAGE_NUMBER + "," + DESCRIPTION + "," + PUBLICATION_DATE + "," + ANNOUNCEMENTS + "." + STATUS_ID + "," + STATUS_DESCRIPTION + ","

@@ -26,7 +26,7 @@ import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
 public class FindMyAnnouncements implements Command {
-    private static Logger logger = LogManager.getLogger(FindMyAnnouncements.class);
+    private static final Logger logger = LogManager.getLogger(FindMyAnnouncements.class);
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

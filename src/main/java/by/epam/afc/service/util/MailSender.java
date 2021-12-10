@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MailSender extends Thread {
     private static final MailSender instance = new MailSender();
 
-    private static Logger logger = LogManager.getLogger(MailSender.class);
+    private static final Logger logger = LogManager.getLogger(MailSender.class);
 
     private static final String USERNAME = "mail.username";
     private static final String PASSWORD = "mail.password";

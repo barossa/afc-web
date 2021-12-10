@@ -25,8 +25,7 @@ import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.*;
 
 public class SubmitAnnouncement implements Command {
-    private static Logger logger = LogManager.getLogger(SubmitAnnouncement.class);
-// TODO: 10/6/21 PERMISSION RULES ON COMMANDS
+    private static final Logger logger = LogManager.getLogger(SubmitAnnouncement.class);
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {

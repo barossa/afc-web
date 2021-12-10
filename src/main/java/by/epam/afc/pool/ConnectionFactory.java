@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 class ConnectionFactory{
-    private static  Logger logger = LogManager.getLogger(ConnectionFactory.class);
+    private static final Logger logger = LogManager.getLogger(ConnectionFactory.class);
 
     private static final String PROPERTIES_PATH = "/prop/db.properties";
     private static final String URL_PROPERTY_NAME = "url";

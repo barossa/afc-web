@@ -36,7 +36,7 @@ import static by.epam.afc.dao.entity.Announcement.Status.ACTIVE;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private static final AnnouncementServiceImpl instance = new AnnouncementServiceImpl();
-    private final Logger logger = LogManager.getLogger(AnnouncementServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(AnnouncementServiceImpl.class);
 
     private static final int PAGINATED_PAGE_ELEMENTS = 5;
 
@@ -207,7 +207,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         Predicate<Announcement> searchPredicate = announcement -> searches.stream()
                 .map(search -> searchHelper.completeRegex(search.toUpperCase()))
                 .allMatch(regex -> announcement.getTitle().toUpperCase().matches(regex));
-        System.out.println("FILTERING DATA. INPUT: " + announcements.size());
 
         List<Announcement> filteredAnnouncements = announcements.stream()
                 .filter(!regions.isEmpty() ? regionPredicate : a -> true)
@@ -218,7 +217,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 .filter(searchPredicate)
                 .collect(Collectors.toList());
 
-        System.out.println("FILTERING DATA. OUTPUT: " + filteredAnnouncements.size());
         return filteredAnnouncements;
     }
 
