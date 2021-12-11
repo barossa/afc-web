@@ -6,11 +6,11 @@
 </head>
 <body>
 <c:choose>
-    <c:when test="${latest_forward_path == null}">
-        <jsp:forward page="/controller?command=find_announcements&page=0"/>
+    <c:when test="${sessionScope.user.role != 'GUEST' && sessionScope.user.status == 'DELAYED_REG'}">
+        <jsp:forward page="/controller?command=to_confirm_page"/>
     </c:when>
     <c:otherwise>
-        <jsp:forward page="${latest_forward_path}"/>
+        <jsp:forward page="/controller?command=find_announcements"/>
     </c:otherwise>
 </c:choose>
 </body>

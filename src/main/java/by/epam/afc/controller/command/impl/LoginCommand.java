@@ -11,9 +11,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.Optional;
 
-import static by.epam.afc.controller.PagePath.*;
+import static by.epam.afc.controller.PagePath.ERROR_500;
+import static by.epam.afc.controller.PagePath.LOGIN_PAGE;
 import static by.epam.afc.controller.RequestAttribute.*;
-import static by.epam.afc.controller.SessionAttribute.AUTHORIZED;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
@@ -31,19 +31,7 @@ public class LoginCommand implements Command {
                 HttpSession session = request.getSession();
                 User user = optionalUser.get();
                 session.setAttribute(USER, user);
-                session.setAttribute(AUTHORIZED, true);
-
-                switch (user.getStatus()) {
-                    case DELAYED_REG:
-                        router = new Router(REDIRECT, request.getContextPath() + CONFIRMATION_PAGE);
-                        break;
-                    case BANNED:
-                        router = new Router(REDIRECT, request.getContextPath() + BAN_PAGE);
-                        break;
-                    default:
-                        router = new Router(REDIRECT, request.getContextPath() + INDEX);
-                }
-
+                router = new Router(REDIRECT, request.getContextPath());
             } else {
                 router = new Router(FORWARD, LOGIN_PAGE);
             }

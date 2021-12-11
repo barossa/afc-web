@@ -19,7 +19,7 @@ import java.util.Optional;
 import static by.epam.afc.controller.PagePath.ERROR_500;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
 import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
-import static by.epam.afc.controller.SessionAttribute.LATEST_FORWARD_PATH;
+import static by.epam.afc.controller.SessionAttribute.LATEST_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
@@ -36,28 +36,26 @@ public class Controller extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CommandProvider commandProvider = CommandProvider.getInstance();
         String commandName = request.getParameter(COMMAND);
+        CommandProvider commandProvider = CommandProvider.getInstance();
         Optional<Command> commandOptional = commandProvider.defineCommand(commandName);
         Router router;
         if (commandOptional.isPresent()) {
             Command command = commandOptional.get();
             router = command.execute(request, response);
         } else {
-            String message = "Unknown command: " + (commandName == null ? "null" : commandName);
-            logger.warn(message);
-            request.setAttribute(EXCEPTION_MESSAGE, message);
+            request.setAttribute(EXCEPTION_MESSAGE, "Command is not presented");
             router = new Router(FORWARD, ERROR_500);
         }
         switch (router.getDispatchType()) {
             case FORWARD:
+                HttpSession session = request.getSession();
+                session.setAttribute(LATEST_PATH, router.getTargetPath());
                 RequestDispatcher dispatcher = request.getRequestDispatcher(router.getTargetPath());
                 dispatcher.forward(request, response);
                 break;
             case REDIRECT:
                 response.sendRedirect(router.getTargetPath());
-                break;
-            case NOT_REQUIRED:
                 break;
             default:
                 logger.error("Invalid router type!");

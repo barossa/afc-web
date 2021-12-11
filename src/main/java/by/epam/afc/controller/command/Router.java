@@ -19,8 +19,7 @@ public class Router {
 
     public enum DispatchType {
         FORWARD,
-        REDIRECT,
-        NOT_REQUIRED
+        REDIRECT
     }
 
     @Override

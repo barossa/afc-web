@@ -14,8 +14,7 @@ import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 
 public final class TagUtils {
     private static final String BUNDLE_BASENAME = "prop.pagecontent";
-    private static final String LOCALE_SPLITTER = "_";
-    private static final int INDEX_DIFFERENCE = 1;
+    private static final String LOCALE_SPLITTER = "_";;
     private static final int LANG_KEY = 0;
     private static final int COUNTRY_KEY = 1;
 

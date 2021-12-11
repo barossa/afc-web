@@ -5,12 +5,12 @@ import by.epam.afc.controller.command.Router;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import static by.epam.afc.controller.PagePath.INDEX;
-import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
+import static by.epam.afc.controller.PagePath.MY_ANNOUNCEMENTS_PAGE;
+import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
-public class ToHomePage implements Command {
+public class ToMyAnnouncementsPage implements Command {
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        return new Router(REDIRECT, request.getContextPath() + INDEX);
+        return new Router(FORWARD, MY_ANNOUNCEMENTS_PAGE);
     }
 }

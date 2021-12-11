@@ -14,7 +14,8 @@
     <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/iconic/css/material-design-iconic-font.min.css"/>">
+    <link rel="stylesheet" type="text/css"
+          href="<c:url value="/fonts/iconic/css/material-design-iconic-font.min.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/util.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/auth/register.css"/>">
 
@@ -36,9 +37,37 @@
         <div class="login-wrap p-l-55 p-r-55 p-t-50 p-b-54"
              style="opacity: 0.85;">
 
-             <span class="login-form-title p-b-45">
+             <span class="login-form-title p-b-10">
 						<fmt:message key="auth.confirmationTitle"/>
              </span>
+            <p class="ms-sm-3">
+                <fmt:message key="confirmation.text"/>
+                ${requestScope.email}
+            </p>
+            <form class="form-inline" method="POST" action="${pageContext.request.contextPath}/controller">
+                <input type="hidden" name="command" value="confirm_account">
+                <div class="form-group mx-sm-3 mt-2 mb-1">
+                    <fmt:message key="confirmation.fieldPlaceholder" var="fieldPlaceholder"/>
+                    <fmt:message key="confirmation.buttonPlaceholder" var="buttonPlaceholder"/>
+                    <input type="number" min="100000" max="999999" name="code" placeholder="${fieldPlaceholder}"
+                           class="form-control">
+                </div>
+                <div class="flex-c justify-content-around">
+                    <button type="submit" class="btn btn-primary my-3">${buttonPlaceholder}</button>
+                    <button id="resendCode" type="button" class="btn my-3">
+                        <fmt:message key="confirmation.resendCode"/>
+                    </button>
+                </div>
+            </form>
+            <div class="flex-c justify-content-lg-start mx-sm-4">
+                <form method="post" action="${pageContext.request.contextPath}/controller">
+                    <input type="hidden" name="command" value="logout_command">
+                    <button class="btn-outline-primary" type="submit">
+                        <fmt:message key="navbar.logout"/>
+                    </button>
+                </form>
+            </div>
+
 
             <%--container--%>
 

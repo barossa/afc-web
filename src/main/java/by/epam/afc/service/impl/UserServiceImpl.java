@@ -17,10 +17,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import static by.epam.afc.dao.entity.User.Role.USER;
+import static by.epam.afc.dao.entity.User.Status.ACTIVE;
 import static by.epam.afc.dao.entity.User.Status.DELAYED_REG;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
-public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD USERS PROFILE IMAGES 
+public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD USERS PROFILE IMAGES
     private static final UserServiceImpl instance = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
     }
 
     @Override
-    public Optional<User> authenticate(String authField, char[] password) throws ServiceException { //// TODO: 9/2/21 Add validation log/pass
+    public Optional<User> authenticate(String authField, char[] password) throws ServiceException {
         CredentialsValidatorImpl validator = CredentialsValidatorImpl.getInstance();
 
         User user;
@@ -111,6 +112,21 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
         } catch (DaoException e) {
             logger.error("Can't register user", e);
             throw new ServiceException("Can't register user", e);
+        }
+    }
+
+    @Override
+    public Optional<User> activate(User user) throws ServiceException {
+        try{
+            UserDaoImpl userDao = DaoHolder.getUserDao();
+            Optional<User> optionalUser = userDao.findById(user.getId());
+            User oldUser = optionalUser.orElseThrow(DaoException::new);
+            oldUser.setStatus(ACTIVE);
+            Optional<User> activatedUser = userDao.update(oldUser);
+            return activatedUser;
+        }catch (DaoException e){
+            logger.error("Can't activate user account:", e);
+            throw new ServiceException("Can't activate user account", e);
         }
     }
 

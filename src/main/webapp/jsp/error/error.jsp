@@ -5,6 +5,7 @@
 <fmt:setBundle basename="prop.pagecontent"/>
 <html>
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,6 +15,7 @@
     <link href="<c:url value="/fonts/montserrat/css/montserrat.css"/>" rel="stylesheet">
     <link href="<c:url value="/fonts/titillium/css/titillium.css"/>" rel="stylesheet">
 
+    <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/css/error-style.css"/>" />
     <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
 </head>

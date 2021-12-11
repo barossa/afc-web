@@ -14,7 +14,11 @@
     <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/announcements.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/pagination.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">
+
+    <c:if test="${requestScope.pagination == null}">
+        <jsp:forward page="/controller?command=find_announcements"/>
+    </c:if>
 
 </head>
 

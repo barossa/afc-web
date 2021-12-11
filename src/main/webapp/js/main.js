@@ -21,6 +21,17 @@
         };
         <!--DISABLE BACK BUTTON-->
 
+        /*<!-- BLOCK F5 -->
+        $(document).ready(function() {
+            $(window).keydown(function(event){
+                if(event.keyCode === 116) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+        <!-- BLOCK F5 -->*/
+
         <!--ANNOUNCEMENTS PAGE -->
         $('#sb').on('click', function () {
             let validationResult = validateAnnouncementSearch();
@@ -48,6 +59,11 @@
             findMyAnnouncements(value);
         });
         <!-- MY ANNOUNCEMENTS RADIO FILTERS -->
+
+        /*$('#activate').on('click', function (){
+            let code = $('#activationCode').val;
+            alert(code)
+        })*/
 
     });
 

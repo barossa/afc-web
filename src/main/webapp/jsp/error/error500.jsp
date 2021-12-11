@@ -14,6 +14,7 @@
         <fmt:message key="error.500title"/>
     </title>
 
+    <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link href="<c:url value="/fonts/montserrat/css/montserrat.css"/>" rel="stylesheet">
     <link href="<c:url value="/fonts/titillium/css/titillium.css"/>" rel="stylesheet">
 

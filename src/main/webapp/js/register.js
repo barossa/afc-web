@@ -6,7 +6,7 @@
     let input = $('.validate-form .input');
 
     $(document).ready(function() {
-    $('.validate-form').on('submit', function () {
+    $('#registrationForm').on('submit', function () {
         let check = true;
         for (let i = 0; i < input.length; i++) {
             let result = validate(input[i]);

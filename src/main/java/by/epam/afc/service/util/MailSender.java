@@ -1,6 +1,8 @@
 package by.epam.afc.service.util;
 
 import jakarta.mail.*;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,64 +10,58 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class MailSender extends Thread {
-    private static final MailSender instance = new MailSender();
+public class MailSender {
+    private static final Logger logger = LogManager.getLogger();
+    private static final String PROPERTY_PATH = "prop/mail.properties";
+    private static final String USERNAME_KEY = "mail.username";
+    private static final String PASSWORD_KEY = "mail.password";
+    private static final String CONTENT_TYPE = "text/html";
 
-    private static final Logger logger = LogManager.getLogger(MailSender.class);
+    private static final Properties properties = new Properties();
 
-    private static final String USERNAME = "mail.username";
-    private static final String PASSWORD = "mail.password";
-
-    private final LinkedBlockingQueue<Message> messagesToSent;
-
-    private static Session session;
-
-    private MailSender() {
+    static {
         try {
-            messagesToSent = new LinkedBlockingQueue<>();
-            InputStream propsAsStream = getClass().getResourceAsStream("prop/mail.properties");
-            Properties mailProps = new Properties();
-            mailProps.load(propsAsStream);
-            session = Session.getInstance(mailProps, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(mailProps.getProperty(USERNAME), mailProps.getProperty(PASSWORD));
-                }
-            });
-            start();
+            InputStream inputStream = MailSender.class.getClassLoader().getResourceAsStream(PROPERTY_PATH);
+            properties.load(inputStream);
         } catch (IOException e) {
-            logger.error("Can't load MailSender util", e);
-            throw new ExceptionInInitializerError("Can't load MailSender util: " + e.getMessage());
+            logger.fatal("Unable to load MailSender properties:", e);
         }
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                Message message = messagesToSent.take();
-                Transport.send(message);
-            } catch (InterruptedException ex) {
-                logger.debug("Shutting down MailSender util");
-            } catch (MessagingException e) {
-                logger.error("Can't send message", e);
+    public void send(String userMail, String messageText, String subject) {
+        try {
+            MimeMessage message = initMessage(userMail, messageText, subject);
+            Transport.send(message);
+        } catch (AddressException e) {
+            logger.warn("Invalid address: {} {}", userMail, e);
+        } catch (MessagingException e) {
+            logger.warn("Error generating or sending message: ", e);
+        }
+    }
+
+
+    private MimeMessage initMessage(String userMail, String messageText, String subject) throws MessagingException {
+        Session mailSession = createSession(properties);
+        MimeMessage message = new MimeMessage(mailSession);
+        message.setSubject(subject);
+        message.setContent(messageText, CONTENT_TYPE);
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(userMail));
+        return message;
+    }
+
+
+    private Session createSession(Properties configProperties) {
+        String username = configProperties.getProperty(USERNAME_KEY);
+        String password = configProperties.getProperty(PASSWORD_KEY);
+        return Session.getDefaultInstance(configProperties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
             }
-        }
+        });
     }
-
-    public static MailSender getInstance() {
-        return instance;
-    }
-
-    public boolean sendEmail(Message message) {
-        return messagesToSent.offer(message);
-    }
-
-    public MimeMessage createEmptyMessage() {
-        return new MimeMessage(session);
-    }
-
 }
+
+
 

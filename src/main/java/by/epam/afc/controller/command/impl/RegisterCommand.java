@@ -65,11 +65,10 @@ public class RegisterCommand implements Command {
                     User user = registeredUser.orElseThrow(ServiceException::new);
                     HttpSession session = request.getSession();
                     session.setAttribute(USER, user);
-                    session.setAttribute(AUTHORIZED, true);
                     logger.debug("Registered new User[id=" + user.getId() + "]");
 
                     Map<String, String> redirectResponse = new HashMap<>();
-                    redirectResponse.put(REDIRECT_KEY, request.getContextPath() + CONFIRMATION_REDIRECT);
+                    redirectResponse.put(REDIRECT_KEY, request.getContextPath());
                     sendJsonResponse(redirectResponse, response);
                 }
             } catch (ServiceException e) {
@@ -112,7 +111,6 @@ public class RegisterCommand implements Command {
 
     private void sendJsonResponse(Map<String, String> data, HttpServletResponse response) throws IOException {
         String jsonResponse = new Gson().toJson(data);
-
         response.setContentType(JSON_CONTENT_TYPE);
         try (PrintWriter writer = response.getWriter()) {
             writer.append(jsonResponse);

@@ -19,7 +19,6 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
                 .role(GUEST)
                 .build();
         session.setAttribute(USER, guest);
-        session.setAttribute(AUTHORIZED, false);
         session.setAttribute(LOCALE, "en_US");
     }
 }

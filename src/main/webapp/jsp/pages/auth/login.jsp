@@ -49,13 +49,7 @@
                     <span class="focus-input" data-symbol="&#xf190;"></span>
                 </div>
 
-                <div class="text-right p-t-8 p-b-31">
-                    <a href="${pageContext.request.contextPath}/jsp/pages/auth/forgotPassword.jsp">
-                        <fmt:message key="auth.forgotPassword"/>
-                    </a>
-                </div>
-
-                <div class="container-login-form-btn">
+                <div class="container-login-form-btn p-t-35">
                     <div class="wrap-login-form-btn">
                         <div class="login-form-bg-btn"></div>
                         <button class="login-form-btn">
@@ -65,14 +59,14 @@
                 </div>
 
                 <div class="text-center p-t-8 p-b-31">
-                    <a href="${pageContext.request.contextPath}/index.jsp">
+                    <a href="${pageContext.request.contextPath}/">
                         <fmt:message key="auth.continueAsGuest"/>
                     </a>
                 </div>
 
                 <p class="text-center m-t-30"><fmt:message key="auth.dontHaveAnAccount"/></p>
                 <div class="text-center">
-                    <a href="${pageContext.request.contextPath}/jsp/pages/auth/register.jsp"><fmt:message key="auth.signUp"/></a>
+                    <a href="${pageContext.request.contextPath}/controller?command=to_register_page"><fmt:message key="auth.signUp"/></a>
                 </div>
             </form>
         </div>

@@ -96,7 +96,7 @@
                 </div> <!-- form-group// -->
                 <p class="text-center m-t-30"><fmt:message key="auth.alreadyHaveAccount"/></p>
                 <div class="text-center">
-                    <a href="${pageContext.request.contextPath}/jsp/pages/auth/login.jsp"><fmt:message
+                    <a href="${pageContext.request.contextPath}/controller?command=to_login_page"><fmt:message
                             key="auth.login"/></a>
                 </div>
             </form>

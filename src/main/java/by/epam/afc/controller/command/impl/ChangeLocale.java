@@ -6,14 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import java.util.Arrays;
-
-import static by.epam.afc.controller.PagePath.INDEX;
 import static by.epam.afc.controller.RequestAttribute.LOCALE;
-import static by.epam.afc.controller.SessionAttribute.LANGUAGE;
-import static by.epam.afc.controller.SessionAttribute.LATEST_CONTEXT_PATH;
+import static by.epam.afc.controller.SessionAttribute.LATEST_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
-import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
 public class ChangeLocale implements Command {
     @Override
@@ -30,10 +25,7 @@ public class ChangeLocale implements Command {
             default:
                 session.setAttribute(LOCALE, "en_US");
         }
-        String latestPath = (String) session.getAttribute(LATEST_CONTEXT_PATH);
-        if(latestPath == null){
-            latestPath = INDEX;
-        }
-        return new Router(REDIRECT,request.getContextPath() + latestPath);
+        String latestPath = (String) session.getAttribute(LATEST_PATH);
+        return new Router(FORWARD, latestPath);
     }
 }
