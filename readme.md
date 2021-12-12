@@ -1,5 +1,4 @@
 # Ads from Chest marketplace
-___
 The application allows you to submit advertisements for the sale of unnecessary things.
 There are 4 user roles: *guest*, *user*, *moderator* and *admin*.
 There are also 2 language locales: *english* and *russian*.
