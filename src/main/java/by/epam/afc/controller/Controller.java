@@ -9,7 +9,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 import static by.epam.afc.controller.PagePath.ERROR_500;
 import static by.epam.afc.controller.RequestAttribute.COMMAND;
 import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
-import static by.epam.afc.controller.SessionAttribute.LATEST_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
@@ -49,8 +47,6 @@ public class Controller extends HttpServlet {
         }
         switch (router.getDispatchType()) {
             case FORWARD:
-                HttpSession session = request.getSession();
-                session.setAttribute(LATEST_PATH, router.getTargetPath());
                 RequestDispatcher dispatcher = request.getRequestDispatcher(router.getTargetPath());
                 dispatcher.forward(request, response);
                 break;

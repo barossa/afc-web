@@ -1,9 +1,7 @@
 package by.epam.afc.dao.impl;
 
 import by.epam.afc.dao.UserDao;
-import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.User;
-import by.epam.afc.dao.mapper.impl.ImageRowMapper;
 import by.epam.afc.dao.mapper.impl.UserRowMapper;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
@@ -80,11 +78,8 @@ public final class UserDaoImpl implements UserDao {
 
             List<User> users = new ArrayList<>();
             UserRowMapper userMapper = UserRowMapper.getInstance();
-            ImageRowMapper imageMapper = ImageRowMapper.getInstance();
             while (resultSet.next()) {
                 User user = userMapper.mapRows(resultSet);
-                Image profileImage = imageMapper.mapRows(resultSet);
-                user.setProfileImage(profileImage);
                 users.add(user);
             }
             return users;
@@ -258,11 +253,11 @@ public final class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUserPassword(User user, String hash) throws DaoException {
+    public boolean updateUserPassword(User user, String hash) throws DaoException {
         Optional<User> toUpdate = findById(user.getId());
         if (!toUpdate.isPresent()) {
             logger.warn("User id=" + user.getId() + " is not exist!");
-            return;
+            return false;
         }
 
         try (
@@ -271,7 +266,7 @@ public final class UserDaoImpl implements UserDao {
         ) {
             statement.setString(1, hash);
             statement.setInt(2, user.getId());
-            statement.execute();
+            return statement.execute();
         } catch (SQLException e) {
             logger.error("Can't update password for user id=" + user.getId() + "!", e);
             throw new DaoException("Can't update user password!", e);

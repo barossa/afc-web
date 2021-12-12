@@ -1,6 +1,7 @@
 package by.epam.afc.tag;
 
 import by.epam.afc.controller.command.Pagination;
+import by.epam.afc.dao.entity.Announcement;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -14,9 +15,12 @@ import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 
 public final class TagUtils {
     private static final String BUNDLE_BASENAME = "prop.pagecontent";
-    private static final String LOCALE_SPLITTER = "_";;
+    private static final String LOCALE_SPLITTER = "_";
+    ;
+    private static final String TO_BE_CONTINUED = "...";
     private static final int LANG_KEY = 0;
     private static final int COUNTRY_KEY = 1;
+    private static final int SHORT_DESCRIPTION_LENGTH = 50;
 
     private TagUtils() {
     }
@@ -33,5 +37,20 @@ public final class TagUtils {
         Pagination pagination = (Pagination) request.getAttribute(PAGINATION);
         Map<String, List<String>> requestAttributes = pagination.getRequestAttributes();
         return requestAttributes;
+    }
+
+
+    public static String getShortDescription(Announcement announcement) {
+        String description = announcement.getDescription();
+        if (description == null || description.isEmpty()) {
+            return "";
+        }
+        String shortDescription;
+        if (description.length() <= SHORT_DESCRIPTION_LENGTH) {
+            shortDescription = description;
+        } else {
+            shortDescription = description.substring(0, SHORT_DESCRIPTION_LENGTH) + TO_BE_CONTINUED;
+        }
+        return shortDescription;
     }
 }

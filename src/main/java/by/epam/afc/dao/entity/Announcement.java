@@ -7,15 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Announcement extends BaseEntity {
-    private static final int SHORT_DESCRIPTION_LENGTH = 50;
-    private static final String TO_BE_CONTINUED = "...";
-
     private User owner;
     private String title;
     private BigDecimal price;
     private int primaryImageNumber;
     private String description;
-    private String shortDescription;
     private LocalDateTime publicationDate;
     private Status status;
     private Category category;
@@ -36,7 +32,6 @@ public class Announcement extends BaseEntity {
         this.category = category;
         this.region = region;
         this.images = new LinkedList<>(images);
-        initializeShortDescription();
     }
 
     public User getOwner() {
@@ -72,7 +67,7 @@ public class Announcement extends BaseEntity {
     }
 
     public String getPrimaryImage() {
-        if(images.size() > primaryImageNumber){
+        if (images.size() > primaryImageNumber) {
             Image primaryImage = images.get(primaryImageNumber);
             return primaryImage.getBase64();
         }
@@ -85,10 +80,6 @@ public class Announcement extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
     }
 
     public LocalDateTime getPublicationDate() {
@@ -190,20 +181,6 @@ public class Announcement extends BaseEntity {
                 ", images=" + images +
                 ", id=" + id +
                 '}';
-    }
-
-    private void initializeShortDescription() {
-        if (description != null) {
-            if (!description.isEmpty()) {
-                if (description.length() <= SHORT_DESCRIPTION_LENGTH) {
-                    shortDescription = description;
-                } else {
-                    shortDescription = description.substring(0, SHORT_DESCRIPTION_LENGTH) + TO_BE_CONTINUED;
-                }
-            } else {
-                shortDescription = "";
-            }
-        }
     }
 
     public static AnnouncementBuilder getBuilder() {

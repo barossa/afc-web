@@ -13,5 +13,7 @@ public interface CredentialsValidator {
 
     boolean validatePassword(String password);
 
+    boolean validateAbout(String about);
+
     Map<String, String> validateCredentials(Map<String, String> credentialsMap);
 }

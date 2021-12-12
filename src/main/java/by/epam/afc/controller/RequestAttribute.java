@@ -34,5 +34,6 @@ public class RequestAttribute {
     public static final String PAGE = "page";
     public static final String PAGINATION = "pagination";
     public static final String CODE = "code";
+    public static final String REASON = "reason";
 
 }

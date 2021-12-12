@@ -83,7 +83,7 @@ public class AnnouncementTableTag extends TagSupport {
                 .append("<h6 class=\"card-subtitle\">")
                 .append(categoryTag)
                 .append("</h6>")
-                .append(announcement.getShortDescription())
+                .append(TagUtils.getShortDescription(announcement))
                 .append("</div>")
                 .append("<p class=\"card-text\">")
                 .append("<small class=\"text-muted\">")

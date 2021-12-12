@@ -1,5 +1,6 @@
 package by.epam.afc.service.impl;
 
+import by.epam.afc.controller.command.Pagination;
 import by.epam.afc.dao.ImageDao;
 import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.User;
@@ -8,28 +9,44 @@ import by.epam.afc.dao.impl.UserDaoImpl;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.UserService;
+import by.epam.afc.service.util.PaginationHelper;
 import by.epam.afc.service.util.PasswordCryptor;
+import by.epam.afc.service.validator.CredentialsValidator;
 import by.epam.afc.service.validator.impl.CredentialsValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static by.epam.afc.controller.RequestAttribute.PAGE;
 import static by.epam.afc.dao.entity.User.Role.USER;
-import static by.epam.afc.dao.entity.User.Status.ACTIVE;
-import static by.epam.afc.dao.entity.User.Status.DELAYED_REG;
+import static by.epam.afc.dao.entity.User.Status.*;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
 
-public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD USERS PROFILE IMAGES
+public class UserServiceImpl implements UserService {
     private static final UserServiceImpl instance = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
+    private static final int USERS_ON_PAGE = 15;
 
     private UserServiceImpl() {
     }
 
     public static UserServiceImpl getInstance() {
         return instance;
+    }
+
+    @Override
+    public Optional<User> findById(int id) throws ServiceException {
+        try {
+            UserDaoImpl userDao = DaoHolder.getUserDao();
+            return userDao.findById(id);
+        } catch (DaoException e) {
+            logger.error("Can't find user by id:", e);
+            throw new ServiceException("Can't find user by id", e);
+        }
     }
 
     @Override
@@ -117,26 +134,48 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
 
     @Override
     public Optional<User> activate(User user) throws ServiceException {
-        try{
+        try {
             UserDaoImpl userDao = DaoHolder.getUserDao();
             Optional<User> optionalUser = userDao.findById(user.getId());
             User oldUser = optionalUser.orElseThrow(DaoException::new);
             oldUser.setStatus(ACTIVE);
             Optional<User> activatedUser = userDao.update(oldUser);
             return activatedUser;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             logger.error("Can't activate user account:", e);
             throw new ServiceException("Can't activate user account", e);
         }
     }
 
     @Override
-    public void updatePassword(User user, char[] newPassword) throws ServiceException {
+    public boolean banUser(int id, String reason) throws ServiceException {
+        try {
+            CredentialsValidator credentialsValidator = CredentialsValidatorImpl.getInstance();
+            boolean validAbout = credentialsValidator.validateAbout(reason);
+            UserDaoImpl userDao = DaoHolder.getUserDao();
+            Optional<User> optionalUser = userDao.findById(id);
+            if (!validAbout || !optionalUser.isPresent()) {
+                return false;
+            }
+            User user = optionalUser.get();
+            user.setStatus(BANNED);
+            user.setAbout(reason);
+            Optional<User> bannedUser = userDao.update(user);
+            return bannedUser.isPresent();
+
+        } catch (DaoException e) {
+            logger.error("Can't ban user by id:", e);
+            throw new ServiceException("Can't ban user by id", e);
+        }
+    }
+
+    @Override
+    public boolean updatePassword(User user, char[] newPassword) throws ServiceException {
         try {
             UserDaoImpl userDao = DaoHolder.getUserDao();
             PasswordCryptor cryptor = PasswordCryptor.getInstance();
             String encrypted = cryptor.encrypt(newPassword);
-            userDao.updateUserPassword(user, encrypted);
+            return userDao.updateUserPassword(user, encrypted);
         } catch (DaoException e) {
             logger.error("can't update user id= " + user.getId() + " password: ", e);
             throw new ServiceException("Can't update user password: ", e);
@@ -176,6 +215,24 @@ public class UserServiceImpl implements UserService { //// TODO: 9/28/21 LOAD US
         } catch (DaoException e) {
             logger.error("Can't determine phone existing: ", e);
             throw new ServiceException("Can't determine phone existing", e);
+        }
+    }
+
+    @Override
+    public Pagination<User> findUsers(Map<String, List<String>> parameterMap) throws ServiceException {
+        try {
+            PaginationHelper paginationHelper = PaginationHelper.getInstance();
+            List<String> pages = parameterMap.get(PAGE);
+            int page = paginationHelper.findPage(pages);
+            UserDaoImpl userDao = DaoHolder.getUserDao();
+            List<User> users = userDao.findAll();
+            Pagination<User> pagination = paginationHelper.getPage(users, page, USERS_ON_PAGE);
+            List<User> paginatedUsers = pagination.getData();
+            paginatedUsers.forEach(this::initializeProfileImage);
+            return pagination;
+        } catch (DaoException e) {
+            logger.error("Can't find paginated user's page:", e);
+            throw new ServiceException("Can't find paginated user's page", e);
         }
     }
 

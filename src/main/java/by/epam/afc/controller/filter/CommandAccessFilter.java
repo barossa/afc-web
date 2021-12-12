@@ -53,21 +53,28 @@ public class CommandAccessFilter implements Filter {
                 TO_LOGIN_PAGE,
                 TO_REGISTER_PAGE,
                 LOGIN_COMMAND,
-                CHANGE_LOCALE
+                CHANGE_LOCALE,
+                SHOW_ANNOUNCEMENT
         );
         userCommands = Arrays.asList(
                 FIND_ANNOUNCEMENTS,
                 TO_MY_ANNOUNCEMENTS_PAGE,
+                FIND_MY_ANNOUNCEMENTS,
                 TO_SUBMIT_AD_PAGE,
                 SUBMIT_ANNOUNCEMENT,
                 CHANGE_LOCALE,
-                LOGOUT_COMMAND
+                LOGOUT_COMMAND,
+                SHOW_ANNOUNCEMENT,
+                TO_MY_PROFILE
         );
         moderatorCommands = Arrays.asList(
                 TO_MODERATOR_PAGE
         );
         administratorCommands = Arrays.asList(
-                TO_ADMINISTRATOR_PAGE
+                TO_ADMINISTRATOR_PAGE,
+                FIND_USERS,
+                BAN_USER,
+                TO_EDIT_USER_MODAL
         );
         moderatorCommands = new ArrayList<>(moderatorCommands);
         administratorCommands = new ArrayList<>(administratorCommands);

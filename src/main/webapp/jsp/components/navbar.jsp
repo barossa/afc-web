@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/iconic/css/material-design-iconic-font.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/montserrat/css/montserrat.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/navbar.css"/>">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">
+    <%--<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">--%>
 
 </head>
 <body>
@@ -81,7 +81,7 @@
                              height="35"
                              alt=""
                              loading="lazy"
-                             style="max-height: 30px; max-width: 30px;"/>
+                             style="max-height: 35px; max-width: 35px;"/>
                     </c:when>
                     <c:otherwise>
                         <img src="data:image/png;Base64,${applicationScope.guestImage.base64}"
@@ -129,7 +129,7 @@
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item nav-font command" value="to_profile">
+                    <button class="dropdown-item nav-font command" value="to_my_profile">
                         <fmt:message key="navbar.profile"/>
                     </button>
                 </li>
@@ -147,8 +147,9 @@
     </div>
 </nav>
 
-<script src="<c:url value="/js/main.js"/>"></script>
 <script src="<c:url value="/vendor/jquery/jquery-3.2.1.min.js"/>"></script>
 <script src="<c:url value="/vendor/bootstrap/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/vendor/popper/popper.min.js"/>"></script>
+<script src="<c:url value="/js/main.js"/>"></script>
 </body>
 </html>

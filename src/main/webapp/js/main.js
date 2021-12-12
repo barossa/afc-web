@@ -60,10 +60,26 @@
         });
         <!-- MY ANNOUNCEMENTS RADIO FILTERS -->
 
-        /*$('#activate').on('click', function (){
-            let code = $('#activationCode').val;
-            alert(code)
-        })*/
+        $('.ban').on('click', function (){
+            let id = $(this).val();
+            $.ajax({
+                url: contextPath + "/controller",
+                data: "command=ban_user&id=" + id +"&reason=" + $('#reason' + id).val(),
+                method: "POST"
+            })
+        })
+        $('.edit').on('click', function(){
+            let id = $(this).val();
+            $.ajax({
+                url: contextPath + "/controller",
+                data: "command=to_edit_user_modal&id=" + id,
+                method: "POST",
+                success:function (response){
+                    let editModal = $(response).find(".modal-content").html();
+                    $('#modalContent' + id).html(editModal);
+                }
+            })
+        })
 
     });
 

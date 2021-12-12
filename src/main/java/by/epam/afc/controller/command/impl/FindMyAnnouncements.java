@@ -8,7 +8,7 @@ import by.epam.afc.dao.entity.User;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.AnnouncementService;
 import by.epam.afc.service.impl.AnnouncementServiceImpl;
-import by.epam.afc.service.util.RequestParameterUtils;
+import by.epam.afc.service.util.RequestParameterConverter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -34,7 +34,8 @@ public class FindMyAnnouncements implements Command {
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute(USER);
             AnnouncementService announcementService = AnnouncementServiceImpl.getInstance();
-            Map<String, List<String>> parameterMap = RequestParameterUtils.transform(request.getParameterMap());
+            RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();
+            Map<String, List<String>> parameterMap = parameterConverter.transform(request.getParameterMap());
             Pagination<Announcement> pagination = announcementService.findAnnouncements(parameterMap, user);
             request.setAttribute(PAGINATION, pagination);
             return new Router(FORWARD, MY_ANNOUNCEMENTS_PAGE);

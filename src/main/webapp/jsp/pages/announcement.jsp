@@ -10,6 +10,7 @@
 <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/announcement.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">
 <body>
 
 <c:import url="/jsp/components/navbar.jsp"/>

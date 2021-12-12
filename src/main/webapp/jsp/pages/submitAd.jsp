@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
     <link rel="stylesheet" href="<c:url value="/vendor/file-input/themes/explorer-fas/theme.css"/>"/>
     <link rel="stylesheet" href="<c:url value="/css/submitAnnouncement.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/style.css"/>">
 
 </head>
 
@@ -133,7 +134,5 @@
 <script src="<c:url value="/vendor/file-input/js/locales/ru.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/vendor/file-input/themes/gly/theme.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/js/submitAd.js"/>" crossorigin="anonymous"></script>
-<%--<script src="<c:url value="/vendor/file-input/themes/fa/theme.js"/>" crossorigin="anonymous"></script>
-<script src="<c:url value="/vendor/file-input/themes/explorer-fas/theme.js"/>" crossorigin="anonymous"></script>--%>
 
 </body>

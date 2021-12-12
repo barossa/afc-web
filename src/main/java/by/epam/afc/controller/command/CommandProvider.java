@@ -1,6 +1,7 @@
 package by.epam.afc.controller.command;
 
 import by.epam.afc.controller.command.impl.*;
+import by.epam.afc.controller.command.impl.FindUsers;
 import by.epam.afc.controller.command.impl.go.*;
 
 import java.util.EnumMap;
@@ -24,13 +25,17 @@ public class CommandProvider {
         commands.put(SHOW_ANNOUNCEMENT, new ShowAnnouncement());
         commands.put(TO_SUBMIT_AD_PAGE, new ToSubmitAdPage());
         commands.put(FIND_MY_ANNOUNCEMENTS, new FindMyAnnouncements());
-        commands.put(TO_ADMINISTRATOR_PAGE, new ToAdministratorPage());
+        commands.put(TO_ADMINISTRATOR_PAGE, new FindUsers());
         commands.put(TO_MODERATOR_PAGE, new ToModeratorPage());
         commands.put(TO_REGISTER_PAGE, new ToRegisterPage());
         commands.put(TO_MY_ANNOUNCEMENTS_PAGE, new ToMyAnnouncementsPage());
         commands.put(TO_CONFIRM_PAGE, new ToConfirmPage());
         commands.put(TO_BAN_PAGE, new ToBanPage());
         commands.put(CONFIRM_ACCOUNT, new ConfirmAccount());
+        commands.put(TO_MY_PROFILE, new ToMyProfile());
+        commands.put(FIND_USERS, new FindUsers());
+        commands.put(BAN_USER, new BanUser());
+        commands.put(TO_EDIT_USER_MODAL, new ToEditUserModal());
         //commands.add(commandType,new Command());
     }
 

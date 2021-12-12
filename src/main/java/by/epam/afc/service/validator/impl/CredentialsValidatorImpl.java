@@ -15,10 +15,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final String EMAIL_REGEX = "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$";
     private static final String PHONE_REGEX = "^\\+?\\d{10,15}$";
     private static final String PASSWORD_REGEX = "^[^ ]{5,30}$";
+    private static final String ABOUT_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";
 
     private static final int MAX_NAME_LENGTH = 20;
     private static final int MAX_LOGIN_LENGTH = 20;
     private static final int MAX_EMAIL_LENGTH = 100;
+    private static final int MAX_ABOUT_LENGTH = 200;
 
     public static final String FIRSTNAME = "firstname";
     public static final String LASTNAME = "lastname";
@@ -27,12 +29,14 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     public static final String PHONE = "phone";
     public static final String PASSWORD = "password";
     public static final String PASSWORD_REPEAT = "passwordRepeat";
+    public static final String ABOUT = "about";
 
     private final Pattern namePattern;
     private final Pattern loginPattern;
     private final Pattern emailPattern;
     private final Pattern phonePattern;
     private final Pattern passPattern;
+    private final Pattern aboutPattern;
 
     private CredentialsValidatorImpl() {
         namePattern = Pattern.compile(NAME_REGEX);
@@ -40,6 +44,7 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         emailPattern = Pattern.compile(EMAIL_REGEX);
         phonePattern = Pattern.compile(PHONE_REGEX);
         passPattern = Pattern.compile(PASSWORD_REGEX);
+        aboutPattern = Pattern.compile(ABOUT_REGEX);
     }
 
     public static CredentialsValidatorImpl getInstance() {
@@ -95,6 +100,17 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         if (password != null && password.length() > 0) {
             Matcher matcher = passPattern.matcher(password);
             return matcher.matches();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean validateAbout(String about) {
+        if (about != null) {
+            if (about.length() > 0 && about.length() <= MAX_ABOUT_LENGTH) {
+                Matcher matcher = aboutPattern.matcher(about);
+                return matcher.matches();
+            }
         }
         return false;
     }
