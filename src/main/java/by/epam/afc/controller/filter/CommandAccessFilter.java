@@ -42,11 +42,13 @@ public class CommandAccessFilter implements Filter {
         inactiveUserCommands = Arrays.asList(
                 TO_CONFIRM_PAGE,
                 CONFIRM_ACCOUNT,
-                CHANGE_LOCALE
+                CHANGE_LOCALE,
+                LOGOUT_COMMAND
         );
         bannedUserCommands = Arrays.asList(
                 TO_BAN_PAGE,
-                CHANGE_LOCALE
+                CHANGE_LOCALE,
+                LOGOUT_COMMAND
         );
         guestCommands = Arrays.asList(
                 FIND_ANNOUNCEMENTS,
@@ -65,7 +67,8 @@ public class CommandAccessFilter implements Filter {
                 CHANGE_LOCALE,
                 LOGOUT_COMMAND,
                 SHOW_ANNOUNCEMENT,
-                TO_MY_PROFILE
+                TO_MY_PROFILE,
+                UPDATE_MY_PROFILE
         );
         moderatorCommands = Arrays.asList(
                 TO_MODERATOR_PAGE
@@ -74,7 +77,8 @@ public class CommandAccessFilter implements Filter {
                 TO_ADMINISTRATOR_PAGE,
                 FIND_USERS,
                 BAN_USER,
-                TO_EDIT_USER_MODAL
+                TO_EDIT_USER_MODAL,
+                UPDATE_USER
         );
         moderatorCommands = new ArrayList<>(moderatorCommands);
         administratorCommands = new ArrayList<>(administratorCommands);

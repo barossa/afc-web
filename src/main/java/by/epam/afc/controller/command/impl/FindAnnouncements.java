@@ -13,17 +13,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static by.epam.afc.controller.PagePath.ANNOUNCEMENTS_PAGE;
 import static by.epam.afc.controller.PagePath.ERROR_500;
-import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
-import static by.epam.afc.controller.RequestAttribute.PAGINATION;
+import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
 public class FindAnnouncements implements Command {
     private static final Logger logger = LogManager.getLogger(FindAnnouncements.class);
+    private static final String ACTIVE_STATUS = "active";
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
@@ -31,6 +32,9 @@ public class FindAnnouncements implements Command {
             AnnouncementService announcementService = AnnouncementServiceImpl.getInstance();
             RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();
             Map<String, List<String>> parameterMap = parameterConverter.transform(request.getParameterMap());
+            List<String> status = new ArrayList<>();
+            status.add(ACTIVE_STATUS);
+            parameterMap.put(STATUS, status);
             Pagination<Announcement> pagination = announcementService.findAnnouncements(parameterMap);
             request.setAttribute(PAGINATION, pagination);
             return new Router(FORWARD, ANNOUNCEMENTS_PAGE);

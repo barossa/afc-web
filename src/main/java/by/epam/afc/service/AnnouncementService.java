@@ -19,4 +19,6 @@ public interface AnnouncementService {
     Pagination<Announcement> findAnnouncements(Map<String, List<String>> parameterMap, User user) throws ServiceException;
 
     Optional<Announcement> findById(String id) throws ServiceException;
+
+    boolean confirmAnnouncement(int id) throws ServiceException;
 }

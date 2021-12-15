@@ -12,6 +12,7 @@ public class RequestAttribute {
     public static final String LOGIN = "login";
     public static final String EMAIL = "email";
     public static final String PHONE = "phone";
+    public static final String ABOUT = "about";
     public static final String LOCALE = "locale";
     public static final String ERROR_CODE = "error_code";
     public static final String EXCEPTION_MESSAGE = "exception_message";
@@ -27,6 +28,8 @@ public class RequestAttribute {
     public static final String ACTION = "action";
     public static final String ID = "id";
     public static final String STATUS = "status";
+    public static final String ROLE = "role";
+    public static final String IMAGE = "image";
     public static final String ANNOUNCEMENTS = "announcements";
     public static final String ANNOUNCEMENT = "announcement";
     public static final String NEXT_PAGE = "nextPage";

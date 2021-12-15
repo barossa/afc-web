@@ -36,6 +36,8 @@ public class CommandProvider {
         commands.put(FIND_USERS, new FindUsers());
         commands.put(BAN_USER, new BanUser());
         commands.put(TO_EDIT_USER_MODAL, new ToEditUserModal());
+        commands.put(UPDATE_MY_PROFILE, new UpdateMyProfile());
+        commands.put(UPDATE_USER, new UpdateUser());
         //commands.add(commandType,new Command());
     }
 

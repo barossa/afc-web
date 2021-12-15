@@ -41,7 +41,7 @@ public class ColumnName {
     /*IMAGES*/
     public static final String UPLOAD_DATA = "upload_data";
     public static final String UPLOADED_BY = "uploaded_by";
-    public static final String BIN_IMAGE = "bin_image";
+    public static final String BASE_64 = "base64";
 
     /*ANNOUNCEMENTS*/
     public static final String OWNER_ID = "owner_id";

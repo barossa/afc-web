@@ -22,5 +22,7 @@ public enum CommandType {
     CONFIRM_ACCOUNT,
     FIND_USERS,
     BAN_USER,
-    TO_EDIT_USER_MODAL
+    TO_EDIT_USER_MODAL,
+    UPDATE_MY_PROFILE,
+    UPDATE_USER
 }

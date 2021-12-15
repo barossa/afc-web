@@ -17,7 +17,6 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/usersTable.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">
-
 <body>
 
 <c:import url="/jsp/components/navbar.jsp"/>
@@ -33,10 +32,6 @@
                 <div class="row">
                     <div class="col-sm-5">
                         <h2><fmt:message key="admin.users"/></h2>
-                    </div>
-                    <div class="col-sm-7">
-                        <a href="#" class="btn btn-secondary"><i class="fa fa-plus-circle"></i>
-                            <span><fmt:message key="admin.addUser"/></span></a>
                     </div>
                 </div>
             </div>
@@ -55,19 +50,19 @@
                 <c:forEach var="user" items="${requestScope.pagination.data}">
                     <tr>
                         <td>${user.id}</td>
-                        <td><a href="#"><img src="data:image/png;Base64,${user.profileImage.base64}" class="avatar"
+                        <td><a><img src="${user.profileImage.base64}" class="avatar"
                                              alt="Avatar">${user.firstname} ${user.lastname}</a></td>
                         <td>${user.login}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${user.role == 'ADMINISTRATOR'}">
-                                    <span class="text-danger">${user.role}</span>
+                                    <span class="text-danger"><fmt:message key="role.admin"/></span>
                                 </c:when>
                                 <c:when test="${user.role == 'MODERATOR'}">
-                                    <span class="text-warning">${user.role}</span>
+                                    <span class="text-warning"><fmt:message key="role.moder"/></span>
                                 </c:when>
                                 <c:otherwise>
-                                    <span class="text-info">${user.role}</span>
+                                    <span class="text-info"><fmt:message key="role.user"/></span>
                                 </c:otherwise>
                             </c:choose>
                         </td>

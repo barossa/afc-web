@@ -17,6 +17,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">
+
 <body>
 <c:import url="/jsp/components/navbar.jsp"/>
 <div id="main">

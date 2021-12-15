@@ -22,7 +22,8 @@ body {
     flex: 0 0 55vw;
     /*max-height: 80vh;*/
     order: -1;
-    margin: 1.5rem 3rem;
+    margin: 1.5rem 1rem 1.5rem 1.5rem;
+
 }
 
 .carousel-item{
@@ -54,8 +55,10 @@ aside {
 
 #description {
     margin-left: 1.5rem !important;
-    margin-top: 2rem !important;
+    margin-top: 1.5rem !important;
     margin-right: 2rem !important;
+    margin-bottom: 1.5rem;
+    max-height: 70vh;
 }
 
 header, footer {

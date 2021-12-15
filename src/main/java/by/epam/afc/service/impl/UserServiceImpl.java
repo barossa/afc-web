@@ -2,28 +2,36 @@ package by.epam.afc.service.impl;
 
 import by.epam.afc.controller.command.Pagination;
 import by.epam.afc.dao.ImageDao;
+import by.epam.afc.dao.UserDao;
 import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.User;
 import by.epam.afc.dao.impl.DaoHolder;
+import by.epam.afc.dao.impl.ImageDaoImpl;
 import by.epam.afc.dao.impl.UserDaoImpl;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.UserService;
+import by.epam.afc.service.util.ImageHelper;
 import by.epam.afc.service.util.PaginationHelper;
 import by.epam.afc.service.util.PasswordCryptor;
 import by.epam.afc.service.validator.CredentialsValidator;
+import by.epam.afc.service.validator.ImageValidator;
+import by.epam.afc.service.validator.NumberValidator;
 import by.epam.afc.service.validator.impl.CredentialsValidatorImpl;
+import by.epam.afc.service.validator.impl.ImageValidatorImpl;
+import by.epam.afc.service.validator.impl.NumberValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static by.epam.afc.controller.RequestAttribute.PAGE;
+import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.dao.entity.User.Role.USER;
 import static by.epam.afc.dao.entity.User.Status.*;
-import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.*;
+import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
 public class UserServiceImpl implements UserService {
     private static final UserServiceImpl instance = new UserServiceImpl();
@@ -148,6 +156,83 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> updateMyCredentials(Map<String, String> credentials) throws ServiceException {
+        try {
+            String idParam = credentials.get(ID);
+            int id = Integer.parseInt(idParam);
+            UserDao userDao = DaoHolder.getUserDao();
+            Optional<User> userOptional = userDao.findById(id);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                CredentialsValidator credentialsValidator = CredentialsValidatorImpl.getInstance();
+                ImageValidator imageValidator = ImageValidatorImpl.getInstance();
+                Map<String, String> validatedCredentials = credentialsValidator.validateCredentials(credentials);
+                renewBaseCredentials(user, validatedCredentials, true);
+                String about = credentials.get(ABOUT);
+                String image = credentials.get(IMAGE);
+                if (credentialsValidator.validateAbout(about)) {
+                    user.setAbout(about);
+                }
+                if (imageValidator.validateImage(image)) {
+                    updateUserImage(user, image);
+                }
+                Optional<User> updatedOptional = userDao.update(user);
+                if (updatedOptional.isPresent()) {
+                    User updatedUser = updatedOptional.get();
+                    initializeProfileImage(updatedUser);
+                    return Optional.of(updatedUser);
+                }
+            }
+            return Optional.empty();
+        } catch (DaoException e) {
+            logger.error("Can't update user credentials:", e);
+            throw new ServiceException("Can't update user credentials:", e);
+        }
+    }
+
+    @Override
+    public Optional<User> updateCredentials(Map<String, String> credentials) throws ServiceException {
+        try {
+            String idParam = credentials.get(ID);
+            NumberValidator numberValidator = NumberValidatorImpl.getInstance();
+            CredentialsValidator credentialsValidator = CredentialsValidatorImpl.getInstance();
+            boolean idValid = numberValidator.validateNumber(idParam);
+            UserDaoImpl userDao = DaoHolder.getUserDao();
+            if (idValid) {
+                int id = Integer.parseInt(idParam);
+                Optional<User> userOptional = userDao.findById(id);
+                if (userOptional.isPresent()) {
+                    User user = userOptional.get();
+                    Map<String, String> validatedCredentials = credentialsValidator.validateCredentials(credentials);
+                    renewBaseCredentials(user, validatedCredentials, false);
+                    String login = credentials.get(LOGIN);
+                    String role = credentials.get(ROLE);
+                    String status = credentials.get(STATUS);
+                    if (credentialsValidator.validateLogin(login) && !findLogin(login)) {
+                        user.setLogin(login);
+                    }
+                    if (credentialsValidator.validateRole(role)) {
+                        user.setRole(User.Role.valueOf(role.toUpperCase()));
+                    }
+                    if (credentialsValidator.validateStatus(status)) {
+                        user.setStatus(User.Status.valueOf(status.toUpperCase()));
+                    }
+                    Optional<User> updatedOptional = userDao.update(user);
+                    if (updatedOptional.isPresent()) {
+                        User updatedUser = updatedOptional.get();
+                        initializeProfileImage(updatedUser);
+                        return Optional.of(updatedUser);
+                    }
+                }
+            }
+            return Optional.empty();
+        } catch (DaoException e) {
+            logger.error("Can't update user credentials:", e);
+            throw new ServiceException("Can't update user credentials", e);
+        }
+    }
+
+    @Override
     public boolean banUser(int id, String reason) throws ServiceException {
         try {
             CredentialsValidator credentialsValidator = CredentialsValidatorImpl.getInstance();
@@ -177,7 +262,7 @@ public class UserServiceImpl implements UserService {
             String encrypted = cryptor.encrypt(newPassword);
             return userDao.updateUserPassword(user, encrypted);
         } catch (DaoException e) {
-            logger.error("can't update user id= " + user.getId() + " password: ", e);
+            logger.error("Can't update user id= " + user.getId() + " password: ", e);
             throw new ServiceException("Can't update user password: ", e);
         }
     }
@@ -245,6 +330,47 @@ public class UserServiceImpl implements UserService {
             user.setProfileImage(image);
         } catch (DaoException e) {
             logger.error("Can't initialize user profile image", e);
+        }
+    }
+
+    private void renewBaseCredentials(User user, Map<String, String> credentials, boolean verifyEmail) {
+        String firstname = credentials.get(FIRSTNAME);
+        String lastname = credentials.get(LASTNAME);
+        String phone = credentials.get(PHONE);
+        String email = credentials.get(EMAIL);
+        if (!firstname.equals(NOT_VALID)) {
+            user.setFirstname(firstname);
+        }
+        if (!lastname.equals(NOT_VALID)) {
+            user.setLastname(lastname);
+        }
+        if (!phone.equals(NOT_VALID)) {
+            user.setPhone(phone);
+        }
+        if (!email.equals(NOT_VALID)) {
+            String oldEmail = user.getEmail();
+            if (!oldEmail.equals(email) && verifyEmail) {
+                user.setStatus(DELAYED_REG);
+            }
+            user.setEmail(email);
+        }
+    }
+
+    private void updateUserImage(User user, String base64) throws DaoException {
+        ImageDaoImpl imageDao = DaoHolder.getImageDao();
+        ImageHelper imageHelper = ImageHelper.getInstance();
+        String fixedImage = imageHelper.fixImage(base64);
+        Image image = Image.getBuilder()
+                .base64(fixedImage)
+                .uploadedByUser(user)
+                .uploadData(LocalDateTime.now())
+                .build();
+        Optional<Image> imageOptional = imageDao.save(image);
+        if (imageOptional.isPresent()) {
+            Image profileImage = imageOptional.get();
+            user.setProfileImage(profileImage);
+        } else {
+            logger.error("Can't update user profile image: optional is not presented");
         }
     }
 }

@@ -103,6 +103,7 @@ table.table .avatar {
     margin-right: 10px;
 }
 .avatar{
+    height: 40px;
     max-width: 40px;
     max-height: 40px;
 }

@@ -19,7 +19,7 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
 
     private static final String TITLE_REGEX = "^(?=.*[A-Za-zА-Яа-я0-9\\-]+$)[A-Za-zА-Яа-я0-9\\-_]*$";
     /*private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";*/
-    private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";
+    private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
 
     private static final int MAX_TITLE_LENGTH = 50;
     private static final int MAX_DESCRIPTION_LENGTH = 300;

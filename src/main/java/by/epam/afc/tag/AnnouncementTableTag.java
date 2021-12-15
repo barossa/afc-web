@@ -25,7 +25,6 @@ public class AnnouncementTableTag extends TagSupport {
 
     private static final String NOTHING_FOUND = "search.nothingFound";
     private static final String FREE_ANNOUNCEMENT = "announcements.free";
-    private static final String BASE64_PREFIX = "data:image/png;Base64,";
     private static final String MY_ANNOUNCEMENT = "announcements.myAnnouncement";
 
     @Override
@@ -58,7 +57,7 @@ public class AnnouncementTableTag extends TagSupport {
         ResourceBundle resourceBundle = TagUtils.findBundle(session);
         User user = (User) session.getAttribute(USER);
         User owner = announcement.getOwner();
-        String imgSource = BASE64_PREFIX + announcement.getPrimaryImage();
+        String imgSource = announcement.getPrimaryImage();
         float price = announcement.getPrice().floatValue();
         boolean myAnnouncement = user.getRole() != User.Role.GUEST && user.getId() == owner.getId();
         String priceTag = (price > 0F ? price + "BYN" : resourceBundle.getString(FREE_ANNOUNCEMENT));

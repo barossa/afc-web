@@ -13,6 +13,8 @@ public interface UserService {
     Optional<User> authenticate(String authField, char[] password) throws ServiceException;
     Optional<User> register(Map<String, String> credentialsMap) throws ServiceException;
     Optional<User> activate(User user) throws ServiceException;
+    Optional<User> updateCredentials(Map<String, String> credentials) throws ServiceException;
+    Optional<User> updateMyCredentials(Map<String, String> credentials) throws ServiceException;
     boolean banUser(int id, String reason) throws ServiceException;
     boolean updatePassword(User user, char[] newPassword) throws ServiceException;
     boolean findLogin(String login) throws ServiceException;

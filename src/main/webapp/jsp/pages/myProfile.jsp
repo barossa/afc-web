@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/usersTable.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/style.css"/>">
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/myProfile.css"/>"/>
-
+<link rel="stylesheet" type="text/css" href="<c:url value="/css/auth/register.css"/>"/>
 <body>
 
 <c:import url="/jsp/components/navbar.jsp"/>
@@ -29,7 +29,7 @@
                         <div class="account-settings">
                             <div class="user-profile">
                                 <div class="user-avatar">
-                                    <img src="data:image/png;Base64,${user.profileImage.base64}" alt="NoImage">
+                                    <img src="${user.profileImage.base64}" alt="NoImage">
                                 </div>
                                 <h5 class="user-name">${user.firstname} ${user.lastname}</h5>
                                 <h6 class="role">${user.role}</h6>
@@ -46,69 +46,77 @@
             <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
                 <div class="card h-100">
                     <div class="card-body">
-                        <div class="row gutters">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <h6 class="mb-2 text-primary"><fmt:message key="edit.personalInfo"/></h6>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <fmt:message key="edit.firstnamePlaceholder" var="firstnamePlaceholder"/>
-                                    <label for="firstname"><fmt:message key="auth.firstnamePlaceholder"/></label>
-                                    <input type="text" class="form-control" id="firstname"
-                                           placeholder="${firstnamePlaceholder}"
-                                           value="${user.firstname}">
+                        <form id="updateForm">
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6 class="mb-2 text-primary"><fmt:message key="edit.personalInfo"/></h6>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <fmt:message key="edit.firstnamePlaceholder" var="firstnamePlaceholder"/>
+                                        <label for="firstname"><fmt:message key="auth.firstnamePlaceholder"/></label>
+                                        <input type="text" class="form-control" name="firstname" id="firstname"
+                                               placeholder="${firstnamePlaceholder}"
+                                               value="${user.firstname}">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <fmt:message key="edit.lastnamePlaceholder" var="lastnamePlaceholder"/>
+                                        <label for="lastname"><fmt:message key="auth.lastnamePlaceholder"/></label>
+                                        <input type="text" class="form-control" name="lastname" id="lastname"
+                                               placeholder="${lastnamePlaceholder}"
+                                               value="${user.lastname}">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <fmt:message key="edit.emailPlaceholder" var="emailPlaceholder"/>
+                                    <div class="form-group">
+                                        <label for="email"><fmt:message key="auth.emailPlaceholder"/></label>
+                                        <input type="email" class="form-control" id="email" name="email" name="email"
+                                               placeholder="${emailPlaceholder}"
+                                               value="${user.email}"/>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <fmt:message key="edit.phonePlaceholder" var="phonePlaceholder"/>
+                                    <div class="form-group">
+                                        <label for="phone"><fmt:message key="auth.phonePlaceholder"/></label>
+                                        <input type="text" class="form-control" id="phone" name="phone"
+                                               placeholder="${phonePlaceholder}"
+                                               value="${user.phone}">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <fmt:message key="edit.lastnamePlaceholder" var="lastnamePlaceholder"/>
-                                    <label for="lastname"><fmt:message key="auth.lastnamePlaceholder"/></label>
-                                    <input type="text" class="form-control" id="lastname"
-                                           placeholder="${lastnamePlaceholder}"
-                                           value="${user.lastname}">
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6 class="mt-3 mb-2 text-primary"><fmt:message key="edit.aboutTitle"/></h6>
                                 </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <fmt:message key="edit.emailPlaceholder" var="emailPlaceholder"/>
-                                <div class="form-group">
-                                    <label for="email"><fmt:message key="auth.emailPlaceholder"/></label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                           placeholder="${emailPlaceholder}"
-                                           value="${user.email}"/>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <fmt:message key="edit.phonePlaceholder" var="phonePlaceholder"/>
-                                <div class="form-group">
-                                    <label for="phone"><fmt:message key="auth.phonePlaceholder"/></label>
-                                    <input type="text" class="form-control" id="phone"
-                                           placeholder="${phonePlaceholder}"
-                                           value="${user.phone}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row gutters">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <h6 class="mt-3 mb-2 text-primary"><fmt:message key="edit.aboutTitle"/></h6>
-                            </div>
-                            <div class="input-group">
-                                <fmt:message key="edit.aboutPlaceholder" var="aboutPlaceholder"/>
-                                <span class="input-group-text">
+                                <div class="input-group">
+                                    <fmt:message key="edit.aboutPlaceholder" var="aboutPlaceholder"/>
+                                    <span class="input-group-text">
                                     <fmt:message key="edit.aboutTitle"/>
                                 </span>
-                                <textarea id="about" class="form-control">${user.about}</textarea>
-                            </div>
+                                    <textarea id="about" class="form-control">${user.about}</textarea>
+                                </div>
 
-                        </div>
-                        <div class="row gutters">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="text-right mt-3">
-                                    <button type="button" id="saveInfo" name="submit" class="btn btn-primary">
-                                        <fmt:message key="edit.update"/>
-                                    </button>
+                            </div>
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="text-left mt-3"
+                                         style="width: max-content;">
+                                        <label class="text-primary" for="image"><fmt:message key="edit.image"/></label><br/>
+                                        <input type="file" name="image" id="image"/>
+                                    </div>
+                                    <div class="text-right mt-3">
+                                        <button type="button" id="saveInfo" name="submit" class="btn btn-primary"
+                                                style="width: max-content;">
+                                            <fmt:message key="edit.update"/>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

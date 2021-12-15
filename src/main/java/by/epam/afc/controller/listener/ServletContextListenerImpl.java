@@ -44,6 +44,9 @@ public class ServletContextListenerImpl implements ServletContextListener {
         //Loading guest profile image
         Image guestImage = loadGuestImage();
         servletContext.setAttribute(GUEST_IMAGE, guestImage);
+
+        //Users to be updated
+        servletContext.setAttribute(USERS_TO_UPDATE, new ArrayList<Integer>());
     }
 
     @Override

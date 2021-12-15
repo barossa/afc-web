@@ -31,7 +31,6 @@
         return check;
     });
 
-
     $('.validate-form .input').each(function(){
         $(this).focus(function(){
            hideAlert(this);

@@ -4,7 +4,6 @@ import by.epam.afc.dao.entity.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +16,8 @@ public class ImageHelper {
 
     private static final String NO_IMAGE_PIC_PATH = "images/no-image.jpg";
     private static final int EOF = -1;
+    private static final String FIX_TARGET = " ";
+    private static final String FIX_CONTENT = "+";
 
     private Image noImage;
 
@@ -26,7 +27,6 @@ public class ImageHelper {
         } catch (IOException e) {
             logger.error("Error occurred while initializing default pictures", e);
         }
-
     }
 
     public static ImageHelper getInstance() {
@@ -63,8 +63,7 @@ public class ImageHelper {
         return outputStream.toByteArray();
     }
 
-    public InputStream getImageStream(String base64) {
-        byte[] imageBytes = Base64.getDecoder().decode(base64);
-        return new ByteArrayInputStream(imageBytes);
+    public String fixImage(String base64){
+        return base64.replaceAll(FIX_TARGET, FIX_CONTENT);
     }
 }

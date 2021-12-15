@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.dao.entity.Announcement.Status.ACTIVE;
+import static by.epam.afc.dao.entity.Announcement.Status.MODERATING;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private static final AnnouncementServiceImpl instance = new AnnouncementServiceImpl();
@@ -178,6 +179,28 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         return Optional.empty();
     }
 
+    @Override
+    public boolean confirmAnnouncement(int id) throws ServiceException {
+        try{
+            AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
+            Optional<Announcement> announcementOptional = announcementDao.findById(id);
+            if(!announcementOptional.isPresent()){
+                return false;
+            }
+            Announcement announcement = announcementOptional.get();
+            if(announcement.getStatus() == MODERATING){
+                announcement.setStatus(ACTIVE);
+                Optional<Announcement> optionalAnnouncement = announcementDao.update(announcement);
+                return optionalAnnouncement.isPresent();
+            }else{
+                return false;
+            }
+        }catch (DaoException e){
+            logger.error("Can't confirm announcement:", e);
+            throw new ServiceException("Can't confirm announcement", e);
+        }
+    }
+
     private List<String> validateSearch(List<String> searches) {
         if (searches == null) {
             return new ArrayList<>();
@@ -233,7 +256,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private void initializeLazyData(Announcement announcement) throws DaoException {
         ImageDaoImpl imageDao = DaoHolder.getImageDao();
         UserDaoImpl userDao = DaoHolder.getUserDao();
-
         List<Image> announcementImages = imageDao.findByAnnouncement(announcement);
         if (announcementImages.isEmpty()) {
             ImageHelper imageHelper = ImageHelper.getInstance();
@@ -244,6 +266,10 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         int ownerId = announcement.getOwner().getId();
         Optional<User> ownerOptional = userDao.findById(ownerId);
         User owner = ownerOptional.orElseThrow(DaoException::new);
+        int profileImageId = owner.getProfileImage().getId();
+        Optional<Image> imageOptional = imageDao.findById(profileImageId);
+        Image profileImage = imageOptional.orElseThrow(DaoException::new);
+        owner.setProfileImage(profileImage);
         announcement.setOwner(owner);
     }
 }

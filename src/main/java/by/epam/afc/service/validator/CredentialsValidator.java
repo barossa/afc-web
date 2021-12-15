@@ -15,5 +15,9 @@ public interface CredentialsValidator {
 
     boolean validateAbout(String about);
 
+    boolean validateStatus(String status);
+
+    boolean validateRole(String role);
+
     Map<String, String> validateCredentials(Map<String, String> credentialsMap);
 }

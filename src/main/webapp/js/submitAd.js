@@ -86,7 +86,7 @@
 
             let titleRegex = "^(?=.*[A-Za-zА-Яа-я0-9-]+$)[A-Za-zА-Яа-я0-9- ]*$";
             let priceRegex = "^\\d*$";
-            let descriptionRegex = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";
+            let descriptionRegex = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
 
             let titleMaxLength = 50;
             let descriptionMaxLength = 300;

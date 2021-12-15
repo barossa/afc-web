@@ -1,11 +1,14 @@
 package by.epam.afc.service.validator.impl;
 
+import by.epam.afc.dao.entity.User;
 import by.epam.afc.service.validator.CredentialsValidator;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static by.epam.afc.controller.RequestAttribute.*;
 
 public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final CredentialsValidatorImpl instance = new CredentialsValidatorImpl();
@@ -15,21 +18,14 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final String EMAIL_REGEX = "^[A-Za-z][._]{0,19}.+@[A-Za-z]+.*\\..*[A-Za-z]$";
     private static final String PHONE_REGEX = "^\\+?\\d{10,15}$";
     private static final String PASSWORD_REGEX = "^[^ ]{5,30}$";
-    private static final String ABOUT_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";
+    private static final String ABOUT_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
 
     private static final int MAX_NAME_LENGTH = 20;
     private static final int MAX_LOGIN_LENGTH = 20;
     private static final int MAX_EMAIL_LENGTH = 100;
     private static final int MAX_ABOUT_LENGTH = 200;
 
-    public static final String FIRSTNAME = "firstname";
-    public static final String LASTNAME = "lastname";
-    public static final String LOGIN = "login";
-    public static final String EMAIL = "email";
-    public static final String PHONE = "phone";
-    public static final String PASSWORD = "password";
-    public static final String PASSWORD_REPEAT = "passwordRepeat";
-    public static final String ABOUT = "about";
+    public static final String NOT_VALID = "";
 
     private final Pattern namePattern;
     private final Pattern loginPattern;
@@ -116,30 +112,56 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     }
 
     @Override
+    public boolean validateStatus(String status) {
+        if (status == null) {
+            return false;
+        }
+        try {
+            User.Status.valueOf(status);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean validateRole(String role) {
+        if (role == null) {
+            return false;
+        }
+        try {
+            User.Role.valueOf(role);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    @Override
     public Map<String, String> validateCredentials(Map<String, String> credentialsMap) {
         Map<String, String> correctCredentials = new HashMap<>(credentialsMap);
 
         if (!validateName(correctCredentials.get(FIRSTNAME))) {
-            correctCredentials.put(FIRSTNAME, "");
+            correctCredentials.put(FIRSTNAME, NOT_VALID);
         }
         if (!validateName(correctCredentials.get(LASTNAME))) {
-            correctCredentials.put(LASTNAME, "");
+            correctCredentials.put(LASTNAME, NOT_VALID);
         }
         if (!validateLogin(correctCredentials.get(LOGIN))) {
-            correctCredentials.put(LOGIN, "");
+            correctCredentials.put(LOGIN, NOT_VALID);
         }
         if (!validateEmail(correctCredentials.get(EMAIL))) {
-            correctCredentials.put(EMAIL, "");
+            correctCredentials.put(EMAIL, NOT_VALID);
         }
         if (!validatePhone(correctCredentials.get(PHONE))) {
-            correctCredentials.put(PHONE, "");
+            correctCredentials.put(PHONE, NOT_VALID);
         }
 
         String password = correctCredentials.get(PASSWORD);
         String passwordRepeat = correctCredentials.get(PASSWORD_REPEAT);
         if (!password.equals(passwordRepeat)) {
-            correctCredentials.put(PASSWORD, "");
-            correctCredentials.put(PASSWORD_REPEAT, "");
+            correctCredentials.put(PASSWORD, NOT_VALID);
+            correctCredentials.put(PASSWORD_REPEAT, NOT_VALID);
         }
 
         return correctCredentials;

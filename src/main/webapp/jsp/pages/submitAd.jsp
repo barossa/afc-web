@@ -10,7 +10,6 @@
         <fmt:message key="project.titleTag"/>
         <fmt:message key="announcements.submitAd"/>
     </title>
-
     <link rel="stylesheet" href="<c:url value="/vendor/bootstrap/css/bootstrap-icons.css"/>">
     <link rel="stylesheet" href="<c:url value="/vendor/bootstrap/fonts/bootstrap-icons-stylesheet.css"/>">
     <link rel="stylesheet" href="<c:url value="/vendor/file-input/css/fileinput.css"/>"/>
@@ -18,7 +17,6 @@
     <link rel="stylesheet" href="<c:url value="/vendor/file-input/themes/explorer-fas/theme.css"/>"/>
     <link rel="stylesheet" href="<c:url value="/css/submitAnnouncement.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/style.css"/>">
-
 </head>
 
 <body>
@@ -48,7 +46,8 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text"> <i class="fa fa-money m-t-6 m-b-6"></i> </span>
                 </div>
-                <input id="priceField" name="price" min="0" max="999999999" class="input form-control" placeholder="${pricePlaceholder}"
+                <input id="priceField" name="price" min="0" max="999999999" class="input form-control"
+                       placeholder="${pricePlaceholder}"
                        type="number">
             </div>
 
@@ -77,8 +76,8 @@
                 <div class="dropdown flex-c justify-content-center p-2">
                     <input type="hidden" name="region" value="-1" id="regionField">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="chooseRgButton"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false">
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
                         <fmt:message key="announcements.chooseRegion"/>
                     </button>
                     <ul id="regionsDropdown" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -126,7 +125,6 @@
 
 <c:import url="/jsp/components/footer.jsp"/>
 
-
 <script src="<c:url value="/js/main.js"/>"></script>
 <script src="<c:url value="/vendor/file-input/js/plugins/piexif.js"/>"></script>
 <script src="<c:url value="/vendor/file-input/js/plugins/sortable.js"/>" crossorigin="anonymous"></script>
@@ -134,5 +132,5 @@
 <script src="<c:url value="/vendor/file-input/js/locales/ru.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/vendor/file-input/themes/gly/theme.js"/>" crossorigin="anonymous"></script>
 <script src="<c:url value="/js/submitAd.js"/>" crossorigin="anonymous"></script>
-
 </body>
+</html>

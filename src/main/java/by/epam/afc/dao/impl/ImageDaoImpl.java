@@ -7,11 +7,9 @@ import by.epam.afc.dao.mapper.impl.ImageRowMapper;
 import by.epam.afc.exception.DaoException;
 import by.epam.afc.pool.ConnectionPool;
 import by.epam.afc.service.util.DaoTransactionHelper;
-import by.epam.afc.service.util.ImageHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,27 +17,28 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.epam.afc.dao.ColumnName.*;
-import static by.epam.afc.dao.TableName.*;
+import static by.epam.afc.dao.TableName.ANNOUNCEMENT_IMAGES;
+import static by.epam.afc.dao.TableName.IMAGES;
 
 public final class ImageDaoImpl implements ImageDao {
 
-    private static final String SELECT_ALL_IMAGES = "SELECT " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BIN_IMAGE
+    private static final String SELECT_ALL_IMAGES = "SELECT " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BASE_64
             + " FROM " + IMAGES + ";";
 
-    private static final String SELECT_BY_IMAGE_ID = "SELECT " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BIN_IMAGE
+    private static final String SELECT_BY_IMAGE_ID = "SELECT " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BASE_64
             + " FROM " + IMAGES
             + " WHERE " + IMAGE_ID + "=?;";
 
-    private static final String UPDATE_BY_IMAGE_ID = "UPDATE " + IMAGES + " SET " + UPLOAD_DATA + "=?, " + UPLOADED_BY + "=?, " + BIN_IMAGE + "=?"
+    private static final String UPDATE_BY_IMAGE_ID = "UPDATE " + IMAGES + " SET " + UPLOAD_DATA + "=?, " + UPLOADED_BY + "=?, " + BASE_64 + "=?"
             + " WHERE " + IMAGE_ID + "=?;";
 
-    private static final String INSERT_IMAGE = "INSERT INTO " + IMAGES + "(" + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BIN_IMAGE + ")"
+    private static final String INSERT_IMAGE = "INSERT INTO " + IMAGES + "(" + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BASE_64 + ")"
             + "VALUES (?, ?, ?);";
 
     private static final String INSERT_ANNOUNCEMENT_IMAGE_DATA = "INSERT INTO " + ANNOUNCEMENT_IMAGES + "(" + ANNOUNCEMENT_ID + "," + IMAGE_ID + ")"
             + "VALUES (?,?);";
 
-    private static final String SELECT_BY_ANNOUNCEMENT_ID = "SELECT " + ANNOUNCEMENT_IMAGES + "." + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BIN_IMAGE + ", " + ANNOUNCEMENT_ID
+    private static final String SELECT_BY_ANNOUNCEMENT_ID = "SELECT " + ANNOUNCEMENT_IMAGES + "." + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BASE_64 + ", " + ANNOUNCEMENT_ID
             + " FROM " + IMAGES
             + " INNER JOIN " + ANNOUNCEMENT_IMAGES + " ON " + IMAGES + "." + IMAGE_ID + "=" + ANNOUNCEMENT_IMAGES + "." + IMAGE_ID
             + " WHERE " + ANNOUNCEMENT_ID + "=?;";
@@ -99,14 +98,11 @@ public final class ImageDaoImpl implements ImageDao {
             logger.error("Can't update image with id=" + image.getId() + " which is not presented!");
             return Optional.empty();
         }
-
-        ImageHelper imageHelper = ImageHelper.getInstance();
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_BY_IMAGE_ID)) {
             statement.setTimestamp(1, Timestamp.valueOf(image.getUploadData()));
             statement.setInt(2, image.getUploadedBy().getId());
-            InputStream imageInputStream = imageHelper.getImageStream(image.getBase64());
-            statement.setBinaryStream(3, imageInputStream);
+            statement.setString(3, image.getBase64());
             statement.setInt(4, image.getId());
             statement.execute();
             return Optional.of(image);
@@ -208,11 +204,9 @@ public final class ImageDaoImpl implements ImageDao {
     }
 
     private void fillInsertStatement(PreparedStatement statement, Image image) throws SQLException {
-        ImageHelper imageHelper = ImageHelper.getInstance();
         statement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
         statement.setInt(2, image.getUploadedBy().getId());
-        InputStream imageInputStream = imageHelper.getImageStream(image.getBase64());
-        statement.setBinaryStream(3, imageInputStream);
+        statement.setString(3, image.getBase64());
     }
 
     private void applyGeneratedKey(ResultSet generatedKeys, Image image) throws SQLException {
