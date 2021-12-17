@@ -10,6 +10,7 @@
         <fmt:message key="project.titleTag"/>
         <fmt:message key="auth.loginTitle"/>
     </title>
+    <meta name="contextPath" content="${pageContext.request.contextPath}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">

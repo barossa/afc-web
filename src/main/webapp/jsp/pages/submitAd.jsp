@@ -48,7 +48,7 @@
                 </div>
                 <input id="priceField" name="price" min="0" max="999999999" class="input form-control"
                        placeholder="${pricePlaceholder}"
-                       type="number">
+                       type="number" step="1">
             </div>
 
 

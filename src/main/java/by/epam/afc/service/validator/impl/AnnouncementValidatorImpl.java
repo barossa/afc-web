@@ -1,5 +1,6 @@
 package by.epam.afc.service.validator.impl;
 
+import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.service.validator.AnnouncementValidator;
 import by.epam.afc.service.validator.NumberValidator;
 
@@ -18,11 +19,10 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
     public static final String REGION = "region";
 
     private static final String TITLE_REGEX = "^(?=.*[A-Za-zА-Яа-я0-9\\-]+$)[A-Za-zА-Яа-я0-9\\-_]*$";
-    /*private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*[A-Za-zА-Яа-я]+$";*/
     private static final String DESCRIPTION_REGEX = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
 
     private static final int MAX_TITLE_LENGTH = 50;
-    private static final int MAX_DESCRIPTION_LENGTH = 300;
+    private static final int MAX_DESCRIPTION_LENGTH = 500;
 
     private static Pattern titlePattern;
     private static Pattern descriptionPattern;
@@ -75,6 +75,19 @@ public class AnnouncementValidatorImpl implements AnnouncementValidator {
     public boolean validateRegion(String region) {
         NumberValidator validator = NumberValidatorImpl.getInstance();
         return validator.validateNumber(region);
+    }
+
+    @Override
+    public boolean validateStatus(String status) {
+        if(status != null){
+            try{
+                Announcement.Status.valueOf(status.toUpperCase());
+                return true;
+            }catch (IllegalArgumentException e){
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override

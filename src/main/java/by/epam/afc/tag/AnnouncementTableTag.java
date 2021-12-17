@@ -3,6 +3,7 @@ package by.epam.afc.tag;
 import by.epam.afc.controller.command.Pagination;
 import by.epam.afc.dao.entity.Announcement;
 import by.epam.afc.dao.entity.Category;
+import by.epam.afc.dao.entity.Image;
 import by.epam.afc.dao.entity.User;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -57,7 +58,8 @@ public class AnnouncementTableTag extends TagSupport {
         ResourceBundle resourceBundle = TagUtils.findBundle(session);
         User user = (User) session.getAttribute(USER);
         User owner = announcement.getOwner();
-        String imgSource = announcement.getPrimaryImage();
+        List<Image> images = announcement.getImages();
+        Image primaryImage = images.get(announcement.getPrimaryImageNumber());
         float price = announcement.getPrice().floatValue();
         boolean myAnnouncement = user.getRole() != User.Role.GUEST && user.getId() == owner.getId();
         String priceTag = (price > 0F ? price + "BYN" : resourceBundle.getString(FREE_ANNOUNCEMENT));
@@ -71,7 +73,7 @@ public class AnnouncementTableTag extends TagSupport {
                 .append("<div class=\"row\">")
                 .append("<div class=\"adCard-img\">")
                 .append("<img src=\"")
-                .append(imgSource)
+                .append(primaryImage.getBase64())
                 .append("\" width=\"130\" alt=\"No image\"/>")
                 .append("</div>")
                 .append("<div class=\"col-md-7\">")

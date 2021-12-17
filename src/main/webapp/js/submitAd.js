@@ -1,5 +1,7 @@
 (function ($) {
 
+    let contextPath = $("meta[name='contextPath']").attr("content");
+
     $("#input-images").fileinput({
         maxFileSize: "5120",
         maxTotalFileCount: "5",
@@ -25,50 +27,47 @@
 
         $(document).ready(function () {
             $('#submitAdButton').on('click', function () {
-                let imagesForm = $("#input-images");
-                let validationResult = validate();
+                let images = $("#input-images").prop('files');
+                let validationResult = validateAnnouncementData();
                 if (validationResult) {
-                    uploadImages();
+                    readMultipleFiles(images, function (){
+                        submitAnnouncement()
+                    })
                 }else{
+                    console.log("Invalid announcement data!")
                 }
             });
         });
 
-        function uploadImages() {
-            let data = new FormData($('#imagesForm')[0]);
-            var xhr = $.ajax({
-                url: "/Ads_from_Chest_war_exploded/upload",
-                type: "POST",
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: data,
+        let imagesData;
+        function readMultipleFiles(files, callback) {
+            let reader = new FileReader();
 
-                success: function (response) {
-                    submitAnnouncement();
-                },
-
-                error: function (response) {
-                    let data = grabData();
-                    alert(data);
+            function readFile(index) {
+                if (index >= files.length){
+                    callback()
                 }
-            });
+                var file = files[index];
+                reader.onload = function (e) {
+                    imagesData = imagesData + "&image=" + e.target.result;
+                    console.log(imagesData)
+                    readFile(index + 1)
+                }
+                reader.readAsDataURL(file);
+            }
+
+            readFile(0);
         }
 
         function submitAnnouncement() {
             let data = grabData();
             $.ajax({
-                url: "/Ads_from_Chest_war_exploded/controller?command=submit_announcement",
+                url: "/Ads_from_Chest_war_exploded/controller",
                 type: "POST",
-                async: false, /* TEST VALUE */
-                data: data,
+                data: imagesData + "&command=submit_announcement" + "&" + data,
 
-                success: function (data,status,xhr) {
-                    if(xhr.status === 302){
-                        let bla = jqXHR;
-                        xhr.getAllResponseHeaders();
-                        location.replace(jqXHR.getResponseHeader("Location"))
-                    }
+                success: function () {
+                    location.replace(contextPath + "/controller?command=find_my_announcements&status=MODERATING");
                 }
 
             });
@@ -81,7 +80,7 @@
             return data;
         }
 
-        function validate() {
+        function validateAnnouncementData() {
             let UNDEFINED_ID = -1;
 
             let titleRegex = "^(?=.*[A-Za-zА-Яа-я0-9-]+$)[A-Za-zА-Яа-я0-9- ]*$";
@@ -89,7 +88,7 @@
             let descriptionRegex = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
 
             let titleMaxLength = 50;
-            let descriptionMaxLength = 300;
+            let descriptionMaxLength = 500;
             let minFileCount = 1;
 
             let title = $("#titleField").val();
@@ -102,10 +101,10 @@
                 return false;
             }
 
-            if (title.length <= 0 && title.length > titleMaxLength) {
+            if (title.length <= 0 || title.length > titleMaxLength) {
                 return false;
             }
-            if (description.length <= 0 && description.length > descriptionMaxLength) {
+            if (description.length <= 0 || description.length > descriptionMaxLength) {
                 return false;
             }
             if (category === UNDEFINED_ID || region === UNDEFINED_ID) {

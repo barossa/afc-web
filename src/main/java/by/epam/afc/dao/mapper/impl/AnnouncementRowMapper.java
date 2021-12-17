@@ -36,7 +36,7 @@ public class AnnouncementRowMapper implements RowMapper<Announcement> {
                 .primaryImageNumber(rs.getInt(PRIMARY_IMAGE_NUMBER))
                 .description(rs.getString(DESCRIPTION))
                 .publicationDate(rs.getTimestamp(PUBLICATION_DATE).toLocalDateTime())
-                .announcementStatus(Announcement.Status.valueOf(statusKey))
+                .status(Announcement.Status.valueOf(statusKey))
                 .category(category)
                 .region(region)
                 .build();

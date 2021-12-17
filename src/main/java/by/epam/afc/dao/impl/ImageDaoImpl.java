@@ -43,6 +43,8 @@ public final class ImageDaoImpl implements ImageDao {
             + " INNER JOIN " + ANNOUNCEMENT_IMAGES + " ON " + IMAGES + "." + IMAGE_ID + "=" + ANNOUNCEMENT_IMAGES + "." + IMAGE_ID
             + " WHERE " + ANNOUNCEMENT_ID + "=?;";
 
+    private static final String DELETE_IMAGE_BY_ID = "DELETE FROM " + IMAGES + " WHERE " + IMAGE_ID + "=?;";
+
     private static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
@@ -169,10 +171,20 @@ public final class ImageDaoImpl implements ImageDao {
         DaoTransactionHelper transactionHelper = DaoTransactionHelper.getInstance();
         Connection connection = pool.getConnection();
 
-        try (PreparedStatement insertImage = connection.prepareStatement(INSERT_IMAGE,
-                PreparedStatement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement selectOldImages = connection.prepareStatement(SELECT_BY_ANNOUNCEMENT_ID);
+             PreparedStatement dropOldImage = connection.prepareStatement(DELETE_IMAGE_BY_ID);
+             PreparedStatement insertImage = connection.prepareStatement(INSERT_IMAGE,
+                     PreparedStatement.RETURN_GENERATED_KEYS);
              PreparedStatement insertData = connection.prepareStatement(INSERT_ANNOUNCEMENT_IMAGE_DATA)) {
             connection.setAutoCommit(false);
+
+            selectOldImages.setInt(1, announcement.getId());
+            ResultSet resultSet = selectOldImages.executeQuery();
+            while(resultSet.next()){
+                int imageId = resultSet.getInt(IMAGE_ID);
+                dropOldImage.setInt(1, imageId);
+                dropOldImage.execute();
+            }
 
             List<Image> savedImages = new ArrayList<>();
             for (Image image : imagesToSave) {

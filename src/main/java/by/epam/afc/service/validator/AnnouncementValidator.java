@@ -8,5 +8,6 @@ public interface AnnouncementValidator {
     boolean validateDescription(String description);
     boolean validateCategory(String category);
     boolean validateRegion(String region);
+    boolean validateStatus(String status);
     Map<String, String> validateData(Map<String, String> data);
 }

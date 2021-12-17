@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><fmt:message key="project.titleTag"/>${pageContext.errorData.statusCode} fmt:message key="error.error"/></title>
+    <title><fmt:message key="project.titleTag"/>${pageContext.errorData.statusCode} <fmt:message key="error.error"/></title>
 
     <link href="<c:url value="/fonts/montserrat/css/montserrat.css"/>" rel="stylesheet">
     <link href="<c:url value="/fonts/titillium/css/titillium.css"/>" rel="stylesheet">
@@ -21,7 +21,6 @@
 </head>
 
 <body>
-
 <div id="notfound">
     <div class="notfound">
         <div class="notfound-404">

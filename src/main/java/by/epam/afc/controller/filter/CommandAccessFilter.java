@@ -56,7 +56,8 @@ public class CommandAccessFilter implements Filter {
                 TO_REGISTER_PAGE,
                 LOGIN_COMMAND,
                 CHANGE_LOCALE,
-                SHOW_ANNOUNCEMENT
+                SHOW_ANNOUNCEMENT,
+                REGISTER_COMMAND
         );
         userCommands = Arrays.asList(
                 FIND_ANNOUNCEMENTS,
@@ -68,10 +69,15 @@ public class CommandAccessFilter implements Filter {
                 LOGOUT_COMMAND,
                 SHOW_ANNOUNCEMENT,
                 TO_MY_PROFILE,
-                UPDATE_MY_PROFILE
+                UPDATE_MY_PROFILE,
+                CHANGE_ANNOUNCEMENT_STATUS,
+                TO_EDIT_ANNOUNCEMENT,
+                UPDATE_ANNOUNCEMENT
         );
         moderatorCommands = Arrays.asList(
-                TO_MODERATOR_PAGE
+                TO_MODERATOR_PAGE,
+                CONFIRM_ANNOUNCEMENT,
+                DEACTIVATE_ANNOUNCEMENT
         );
         administratorCommands = Arrays.asList(
                 TO_ADMINISTRATOR_PAGE,

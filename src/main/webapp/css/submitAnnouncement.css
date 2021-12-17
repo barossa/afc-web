@@ -29,4 +29,5 @@ header, footer {
 #description,  #images {
     padding: 1em;
     flex-direction: column;
+    min-width: 35vw;
 }

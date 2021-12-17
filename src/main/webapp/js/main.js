@@ -10,15 +10,8 @@
         $('.adCard').on('click', function () {
             location.replace(contextPath + "/controller?command=show_announcement&id=" + $(this).attr('id'))
         })
-        $('#backButton').on('click', function (){
-           /* let referer = $('#referer').val();
-            alert(referer)
-            if(referer != null){
-                location.replace(referer)
-            }else{*/
-                location.replace(contextPath + "/controller?command=show_announcements")
-           /* }*/
-
+        $('#backButton').on('click', function () {
+            location.replace(contextPath + "/controller?command=find_announcements")
         })
         $('.command').on('click', function () {
             location.replace(contextPath + "/controller?command=" + $(this).val())
@@ -47,7 +40,7 @@
         <!--ANNOUNCEMENTS PAGE -->
         $('#sb').on('click', function () {
             let validationResult = validateAnnouncementSearch();
-            alert(validationResult);
+            console.log("Search request:" + (validationResult ? 'valid' : 'invalid'))
             if (validationResult) {
                 location.replace(contextPath + "/controller?" + $('#filtersForm, #searchForm').serialize());
             }
@@ -72,7 +65,7 @@
         });
         <!-- MY ANNOUNCEMENTS RADIO FILTERS -->
 
-        body.on('click','.ban', function () {
+        body.on('click', '.ban', function () {
             let id = $(this).val();
             $.ajax({
                 url: contextPath + "/controller",
@@ -84,7 +77,7 @@
             })
         })
 
-        body.on('click','.edit', function () {
+        body.on('click', '.edit', function () {
             let id = $(this).val();
             $.ajax({
                 url: contextPath + "/controller",
@@ -96,13 +89,13 @@
                 }
             })
         });
-        body.on('click', '.updateButton', function (event){
+        body.on('click', '.updateButton', function (event) {
             let id = $(this).val();
             let input = $("#updateForm" + id).find('.edit-fd');
             for (let i = 0; i < input.length; i++) {
                 let result = validateCredential(input[i]);
                 if (result == null || result === false) {
-                    if($(input[i]).attr('type') !== 'hidden'){
+                    if ($(input[i]).attr('type') !== 'hidden') {
                         console.log("Incorrect value:", input[i]);
                         return;
                     }
@@ -115,7 +108,7 @@
                 url: contextPath + "/controller",
                 method: 'POST',
                 data: formData,
-                success:function (response){
+                success: function (response) {
                     updateTable(response)
                 }
             })
@@ -124,12 +117,13 @@
         <!-- REGISTRATION -->
 
         $('#registrationForm').on('submit', function () {
+            refreshInput()
             let check = true;
             for (let i = 0; i < input.length; i++) {
                 let result = validateCredential(input[i]);
                 if (result == null || result === false) {
                     showValidate(input[i]);
-                    console.log("Incorrect value:", input[i]);
+                    console.log("Incorrect value:" + $(input[i]).val());
                     check = false;
                 }
             }
@@ -153,7 +147,7 @@
 
     <!-- ADMIN PANEL -->
 
-    function updateTable(response){
+    function updateTable(response) {
         let html = $(response).find('table').html();
         $('table').html(html);
     }
@@ -210,13 +204,16 @@
 
     <!-- REGISTRATION -->
 
-    let input = $('.validateCredential-form .input');
+    let input;
 
-    input.each(function () {
-        $(this).focus(function () {
-            hideValidate(this);
+    function refreshInput(){
+        input = $('.input');
+        input.each(function () {
+            $(this).focus(function () {
+                hideValidate(this);
+            });
         });
-    });
+    }
 
     let firstnameField;
     let lastnameField;
@@ -244,7 +241,7 @@
 
     function registerAction() {
         let xhr = $.ajax({
-            url: "/Ads_from_Chest_war_exploded/controller",
+            url: contextPath + "/controller",
             type: "POST",
             data: $('#registrationForm').serialize(),
 
@@ -350,12 +347,12 @@
     <!-- REGISTRATION -->
 
     <!-- UPDATE MY PROFILE -->
-    body.on('click','#saveInfo', function (){
+    body.on('click', '#saveInfo', function () {
         let input = $('input');
         for (let i = 0; i < input.length; i++) {
             let result = validateCredential(input[i]);
             if (result == null || result === false) {
-                if($(input[i]).attr('type') !== 'file'){
+                if ($(input[i]).attr('type') !== 'file') {
                     console.log("Incorrect value:" + input[i])
                     return;
                 }
@@ -363,8 +360,8 @@
         }
         let file = $('#image').prop('files')[0];
         let reader = new FileReader();
-        if(file !== null && file !== undefined){
-            reader.onload = function (){
+        if (file !== null && file !== undefined) {
+            reader.onload = function () {
                 let image = "&image=" + reader.result;
                 updateProfile(image)
             }
@@ -377,18 +374,18 @@
         updateProfile("");
     });
 
-    body.on('click','.dropdown-toggle',function (){
+    body.on('click', '.dropdown-toggle', function () {
         console.log("Dropdown triggered");
         new bootstrap.Dropdown($(this));
     })
 
-    function updateProfile(imageData){
-        let data = $('#updateForm').serialize()+ "&about=" + $('#about').val() + "&command=update_my_profile" + imageData;
+    function updateProfile(imageData) {
+        let data = $('#updateForm').serialize() + "&about=" + $('#about').val() + "&command=update_my_profile" + imageData;
         $.ajax({
             url: contextPath + "/controller",
             method: 'POST',
             data: data,
-            success:function (response) {
+            success: function (response) {
                 $("input[type='file']").val('');
                 location.reload();
             }
@@ -399,7 +396,7 @@
 
     <!-- ADMIN PANEL -->
 
-    body.on('click', ".dropdown-menu[name='role']  li a", function (){
+    body.on('click', ".dropdown-menu[name='role']  li a", function () {
         let id = $(this).attr('id');
         let form = $('#updateForm' + id);
         let role = form.find("input[name='role']");
@@ -408,7 +405,7 @@
         role.val($(this).attr('value'));
     });
 
-    body.on('click', ".dropdown-menu[name='status'] li a", function (){
+    body.on('click', ".dropdown-menu[name='status'] li a", function () {
         let id = $(this).attr('id');
         let form = $('#updateForm' + id);
         let status = form.find("input[name='status']");
@@ -419,5 +416,125 @@
     });
 
     <!-- ADMIN PANEL -->
+
+    <!-- CONFIRMATION -->
+    $(document).ready(function () {
+        let text = $('#resetSeconds').text();
+        if (text !== null && text !== undefined) {
+            //START TIMER ??
+            //CAN'T DEAL WITH IT
+        }
+    })
+    $('#resendCode').on('click', function () {
+        if ($(this).hasClass('text-muted')) {
+            return;
+        }
+        $.ajax({
+            url: contextPath + "/controller",
+            method: 'POST',
+            data: 'command=to_confirm_page'
+        })
+    });
+    <!-- CONFIRMATION -->
+
+    <!-- ANNOUNCEMENT EDIT -->
+    let data;
+    let imagesData = "";
+    $('#updateAd').on('click', function () {
+        imagesData = "";
+        if(!validateAdUpdate()){
+            console.log("Invalid data")
+            return;
+        }
+        console.log(data)
+        let images = $('#newImages').prop('files');
+        if (images[0] !== undefined && images.length > 0) {
+            console.log('Reading images...')
+            readMultipleFiles(images, function () {
+                sendUpdate()
+            });
+            return;
+        }
+        sendUpdate()
+    });
+
+    function parseUpdateData(){
+        let title = 'title=' + $('#titleField').val() + "&";
+        let description = 'description=' + $('#descriptionArea').val() + '&';
+        let formData = $('#updateAdForm').serialize();
+        return title + description + formData;
+    }
+
+    function validateAdUpdate(){
+        let titleRegex = "^(?=.*[A-Za-zА-Яа-я0-9-]+$)[A-Za-zА-Яа-я0-9- ]*$";
+        let descriptionRegex = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
+
+        let description = $('#descriptionArea').text();
+        let title = $('#titleField').val();
+
+        if(description !== undefined || title !== undefined){
+            if(description.match(descriptionRegex) !== null && title.match(titleRegex) !== null){
+                if(description.length <= 500 && title.length <= 50){
+                    return true;
+                }
+
+            }
+        }
+        return false;
+
+    }
+
+    function readMultipleFiles(files, callback) {
+        var reader = new FileReader();
+
+        function readFile(index) {
+            if (index >= files.length){
+             callback()
+            }
+            var file = files[index];
+            reader.onload = function (e) {
+                imagesData = imagesData + "&image=" + e.target.result;
+                console.log(imagesData)
+                readFile(index + 1)
+            }
+            reader.readAsDataURL(file);
+        }
+
+        readFile(0);
+    }
+
+    function sendUpdate() {
+        let data = parseUpdateData()
+        console.log("Data:" + data + "\n" + "ImagesData: " + imagesData + "\n")
+        $.ajax({
+            url: contextPath + "/controller",
+            method: 'POST',
+            data: data + imagesData,
+            success: function () {
+                location.replace(contextPath + "/controller?command=find_my_announcements&status=MODERATING");
+            }
+        })
+    }
+
+    <!-- ANNOUNCEMENT EDIT -->
+
+    body.on('click','#toModerPanel',function (){
+        location.replace(contextPath + "/controller?command=to_moderator_page");
+    })
+
+    body.on('click', '#declineButton', function (){
+        let reasonRegex = "^(?!.*[<>;]+.*$)[A-Za-zА-Яа-я]+.*$";
+        let reason = $('#reason').val();
+        if(reason.match(reasonRegex) == null && reason.length <= 100){
+            console.log('Invalid reason!');
+            return;
+        }
+
+        $.ajax({
+            url: contextPath + "/controller",
+            data: "command=deactivate_announcement&id=" + $(this).attr('value') + "&reason=" + reason,
+            method: 'POST'
+        })
+    })
 
 })(jQuery)

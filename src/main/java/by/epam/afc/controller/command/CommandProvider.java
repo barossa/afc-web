@@ -38,6 +38,11 @@ public class CommandProvider {
         commands.put(TO_EDIT_USER_MODAL, new ToEditUserModal());
         commands.put(UPDATE_MY_PROFILE, new UpdateMyProfile());
         commands.put(UPDATE_USER, new UpdateUser());
+        commands.put(CONFIRM_ANNOUNCEMENT, new ConfirmAnnouncement());
+        commands.put(DEACTIVATE_ANNOUNCEMENT, new DeactivateAnnouncement());
+        commands.put(CHANGE_ANNOUNCEMENT_STATUS, new ChangeAnnouncementStatus());
+        commands.put(TO_EDIT_ANNOUNCEMENT, new ToEditAnnouncement());
+        commands.put(UPDATE_ANNOUNCEMENT, new UpdateAnnouncement());
         //commands.add(commandType,new Command());
     }
 

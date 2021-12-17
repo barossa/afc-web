@@ -1,11 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="afc" uri="myCustomTag" %>
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="prop.pagecontent"/>
 <html>
 <head>
     <title><fmt:message key="project.titleTag"/><fmt:message key="announcements.my"/></title>
+
+    <c:if test="${requestScope.pagination == null}">
+        <jsp:forward page="/controller?command=to_moderator_page"/>
+    </c:if>
+
 </head>
 <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
 <link rel="stylesheet" type="text/css" href="<c:url value="/css/myAnnouncements.css"/>">
@@ -18,9 +24,11 @@
 
 <div id="main">
 
-    <aside>
+    <div style="margin: 2rem 3rem">
+        <afc:displayAnnouncements/>
+    </div>
 
-    </aside>
+    <afc:pagination command="to_moderator_page"/>
 
 </div>
 

@@ -8,7 +8,7 @@
 <head>
     <title>
         <fmt:message key="project.titleTag"/>
-        <fmt:message key="auth.confirmationTitle"/>
+        <fmt:message key="status.banned"/>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>

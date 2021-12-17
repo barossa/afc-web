@@ -19,7 +19,7 @@ public class Announcement extends BaseEntity {
     private List<Image> images;
 
     public Announcement(int id, User owner, String title, BigDecimal price, int primaryImageNumber,
-                        String description, LocalDateTime publicationDate, Status announcementStatus,
+                        String description, LocalDateTime publicationDate, Status status,
                         Category category, Region region, List<Image> images) {
         super(id);
         this.owner = owner;
@@ -28,7 +28,7 @@ public class Announcement extends BaseEntity {
         this.primaryImageNumber = primaryImageNumber;
         this.description = description;
         this.publicationDate = publicationDate;
-        this.status = announcementStatus;
+        this.status = status;
         this.category = category;
         this.region = region;
         this.images = new LinkedList<>(images);
@@ -64,14 +64,6 @@ public class Announcement extends BaseEntity {
 
     public int getPrimaryImageNumber() {
         return primaryImageNumber;
-    }
-
-    public String getPrimaryImage() {
-        if (images.size() > primaryImageNumber) {
-            Image primaryImage = images.get(primaryImageNumber);
-            return primaryImage.getBase64();
-        }
-        return "";
     }
 
     public String getDescription() {
@@ -195,7 +187,7 @@ public class Announcement extends BaseEntity {
         private int nestedPrimaryImageNumber;
         private String nestedDescription;
         private LocalDateTime nestedPublicationDate;
-        private Status nestedAnnouncementStatus;
+        private Status nestedStatus;
         private Category nestedCategory;
         private Region nestedRegion;
         private List<Image> nestedImages = new LinkedList<>();
@@ -235,8 +227,8 @@ public class Announcement extends BaseEntity {
             return this;
         }
 
-        public AnnouncementBuilder announcementStatus(Status announcementStatus) {
-            nestedAnnouncementStatus = announcementStatus;
+        public AnnouncementBuilder status(Status status) {
+            nestedStatus = status;
             return this;
         }
 
@@ -257,7 +249,7 @@ public class Announcement extends BaseEntity {
 
         public Announcement build() {
             return new Announcement(nestedId, nestedOwner, nestedTitle, nestedPrice, nestedPrimaryImageNumber,
-                    nestedDescription, nestedPublicationDate, nestedAnnouncementStatus, nestedCategory, nestedRegion, nestedImages);
+                    nestedDescription, nestedPublicationDate, nestedStatus, nestedCategory, nestedRegion, nestedImages);
         }
     }
 }

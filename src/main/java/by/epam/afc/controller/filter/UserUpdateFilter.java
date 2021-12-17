@@ -21,7 +21,7 @@ import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.dao.entity.User.Role.GUEST;
 
-@WebFilter(urlPatterns = {"/controller"})
+@WebFilter(urlPatterns = {"/controller", "/"})
 public class UserUpdateFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(UserUpdateFilter.class);
 

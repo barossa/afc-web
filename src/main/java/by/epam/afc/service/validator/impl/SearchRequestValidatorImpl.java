@@ -32,8 +32,6 @@ public class SearchRequestValidatorImpl implements SearchRequestValidator {
                 return matcher.matches();
             }
         }
-        System.out.println("INCORRECT SEARCH REQUEST");
-        // FIXME: 12/6/21 DELETE System.out
         return false;
     }
 }

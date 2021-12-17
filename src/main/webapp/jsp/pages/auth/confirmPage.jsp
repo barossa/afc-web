@@ -10,6 +10,7 @@
         <fmt:message key="project.titleTag"/>
         <fmt:message key="auth.confirmationTitle"/>
     </title>
+    <meta name="contextPath" content="${pageContext.request.contextPath}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="<c:url value="/images/favicon.ico"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/vendor/bootstrap/css/bootstrap.css"/>">
@@ -44,19 +45,19 @@
                 <fmt:message key="confirmation.text"/>
                 ${requestScope.email}
             </p>
+            <p class="ms-sm-3"><fmt:message key="confirm.codeDescription"/></p>
             <form class="form-inline" method="POST" action="${pageContext.request.contextPath}/controller">
                 <input type="hidden" name="command" value="confirm_account">
                 <div class="form-group mx-sm-3 mt-2 mb-1">
                     <fmt:message key="confirmation.fieldPlaceholder" var="fieldPlaceholder"/>
                     <fmt:message key="confirmation.buttonPlaceholder" var="buttonPlaceholder"/>
-                    <input type="number" min="100000" max="999999" name="code" placeholder="${fieldPlaceholder}"
+                    <input type="number" step="1" min="100000" max="999999" name="code" placeholder="${fieldPlaceholder}"
                            class="form-control">
                 </div>
                 <div class="flex-c justify-content-around">
                     <button type="submit" class="btn btn-primary my-3">${buttonPlaceholder}</button>
                     <button id="resendCode" type="button" class="btn my-3">
-                        <fmt:message key="confirmation.resendCode"/>
-                    </button>
+                        <fmt:message key="confirmation.resendCode"/></button>
                 </div>
             </form>
             <div class="flex-c justify-content-lg-start mx-sm-4">

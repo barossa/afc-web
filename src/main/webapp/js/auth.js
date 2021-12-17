@@ -20,7 +20,6 @@
 
     $('.validate-form').on('submit',function(){
         let check = true;
-
         for(let i=0; i<input.length; i++) {
             if(validate(input[i]) === false){
                 showAlert(input[i]);

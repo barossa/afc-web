@@ -21,4 +21,5 @@ public class PagePath {
     public static final String MODERATOR_PAGE = "/jsp/pages/moderatingPage.jsp";
     public static final String MY_PROFILE = "/jsp/pages/myProfile.jsp";
     public static final String EDIT_USER_MODAL = "/jsp/components/editUserModal.jsp";
+    public static final String EDIT_ANNOUNCEMENT_PAGE = "/jsp/pages/editAnnouncement.jsp";
 }

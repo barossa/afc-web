@@ -18,12 +18,23 @@ body {
 #main > article {
     flex: 1;
 }
-#main > #images {
-    flex: 0 0 55vw;
+#leftPanel > #images {
+    flex: 0 0 60vw;
     /*max-height: 80vh;*/
     order: -1;
     margin: 1.5rem 1rem 1.5rem 1.5rem;
+}
+#leftPanel > #adControl {
+    margin: 1.5rem 1rem 1.5rem 1.5rem;
+}
+#adControl > .card-body {
+    height: min-content;
+    display: flex;
+    justify-content: center;
+}
 
+#adControl > .card-body > * {
+    margin: 0 1rem;
 }
 
 .carousel-item{
@@ -41,7 +52,7 @@ body {
 
 #images{
     max-height: 70vh;
-    max-width: 45vw !important;
+    max-width: 50vw !important;
 
     background-color: rgba(177, 182, 149,0.75);
     align-items: center !important;
@@ -58,7 +69,7 @@ aside {
     margin-top: 1.5rem !important;
     margin-right: 2rem !important;
     margin-bottom: 1.5rem;
-    max-height: 70vh;
+    height: min-content;
 }
 
 header, footer {

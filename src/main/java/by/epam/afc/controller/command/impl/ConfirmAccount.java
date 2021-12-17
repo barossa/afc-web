@@ -1,5 +1,7 @@
-package by.epam.afc.controller.command;
+package by.epam.afc.controller.command.impl;
 
+import by.epam.afc.controller.command.Command;
+import by.epam.afc.controller.command.Router;
 import by.epam.afc.dao.entity.User;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.UserService;
@@ -21,7 +23,7 @@ import static by.epam.afc.controller.SessionAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
-public class ConfirmAccount implements Command{
+public class ConfirmAccount implements Command {
     private static final Logger logger = LogManager.getLogger(ConfirmAccount.class);
 
     @Override

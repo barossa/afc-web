@@ -5,7 +5,12 @@ import by.epam.afc.controller.command.Router;
 import by.epam.afc.dao.entity.*;
 import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.impl.AnnouncementServiceImpl;
+import by.epam.afc.service.util.ImageHelper;
+import by.epam.afc.service.util.RequestParameterConverter;
+import by.epam.afc.service.validator.AnnouncementValidator;
+import by.epam.afc.service.validator.ImageValidator;
 import by.epam.afc.service.validator.impl.AnnouncementValidatorImpl;
+import by.epam.afc.service.validator.impl.ImageValidatorImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -13,93 +18,87 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static by.epam.afc.controller.PagePath.*;
 import static by.epam.afc.controller.RequestAttribute.*;
-import static by.epam.afc.controller.SessionAttribute.UPLOADED_IMAGES;
 import static by.epam.afc.controller.SessionAttribute.USER;
-import static by.epam.afc.controller.command.Router.DispatchType.*;
+import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
+import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
+import static by.epam.afc.dao.entity.Announcement.Status.MODERATING;
+import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
 public class SubmitAnnouncement implements Command {
     private static final Logger logger = LogManager.getLogger(SubmitAnnouncement.class);
 
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
-        List<Image> uploadedImages = (List<Image>) session.getAttribute(UPLOADED_IMAGES);
-        session.setAttribute(UPLOADED_IMAGES, null);
-        if(uploadedImages.isEmpty()){
-            logger.warn("No one image is uploaded for submitting announcement");
-        }
-
-        Map<String, String> attributes = getAnnouncementAttributes(request);
-        AnnouncementValidatorImpl announcementValidator = AnnouncementValidatorImpl.getInstance();
-        Map<String, String> validatedData = announcementValidator.validateData(attributes);
-
-        if(!validatedData.containsValue("")){
-
-            try {
+        RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();
+        AnnouncementValidator announcementValidator = AnnouncementValidatorImpl.getInstance();
+        ImageValidator imageValidator = ImageValidatorImpl.getInstance();
+        Map<String, String> announcementData = parameterConverter.findAnnouncementData(request.getParameterMap());
+        Map<String, String> validatedData = announcementValidator.validateData(announcementData);
+        List<Image> images = validateImages(request.getParameterValues(IMAGE), imageValidator);
+        validatedData.entrySet().stream().filter(e->e.getValue().equals(NOT_VALID))
+                .forEach(e-> System.out.printf("KEY:%s is empty!", e.getKey()));
+        try {
+            if (!validatedData.containsValue(NOT_VALID) && !images.isEmpty()) {
+                HttpSession session = request.getSession();
                 User owner = (User) session.getAttribute(USER);
-                String title = validatedData.get(TITLE);
-                BigDecimal price = new BigDecimal(validatedData.get(PRICE));
-                String description = validatedData.get(DESCRIPTION);
-                int categoryId = Integer.parseInt(validatedData.get(CATEGORY));
-                Category category = new Category(categoryId);
-                int regionId = Integer.parseInt(validatedData.get(REGION));
-                Region region = new Region(regionId);
-
-                Announcement announcement = Announcement.getBuilder()
-                        .owner(owner)
-                        .title(title)
-                        .price(price)
-                        .description(description)
-                        .category(category)
-                        .region(region)
-                        .images(uploadedImages)
-                        .build();
-
+                Announcement announcement = buildAnnouncement(validatedData);
+                announcement.setOwner(owner);
+                images.forEach(image -> image.setUploadedBy(owner));
+                announcement.setImages(images);
                 AnnouncementServiceImpl announcementService = AnnouncementServiceImpl.getInstance();
                 Optional<Announcement> saved = announcementService.save(announcement);
-
                 if(saved.isPresent()){
-                    logger.debug("Announcement saved");
-                    return new Router(REDIRECT,request.getContextPath() + INDEX);
-                }else{
-                    return new Router(FORWARD, SUBMIT_AD_PAGE);
+                    return new Router(FORWARD, MY_ANNOUNCEMENTS_PAGE);
                 }
 
-            } catch (ServiceException e) {
-                logger.error("Error occurred while submitting announcement", e);
-                request.setAttribute(EXCEPTION_MESSAGE,"Error occurred while submitting announcement");
-                return new Router(FORWARD, request.getContextPath() + ERROR_500);
             }
-
-        }else{
-            logger.warn("Invalid announcements data received!");
             return new Router(FORWARD, SUBMIT_AD_PAGE);
+        } catch (ServiceException e) {
+            logger.error("Error occurred while submitting announcement", e);
+            request.setAttribute(EXCEPTION_MESSAGE, "Error occurred while submitting announcement");
+            return new Router(FORWARD, request.getContextPath() + ERROR_500);
         }
     }
 
-    private Map<String, String> getAnnouncementAttributes(HttpServletRequest request){
-        Map<String, String> attributes = new HashMap<>();
+    private Announcement buildAnnouncement(Map<String, String> validatedData){
+        String title = validatedData.get(TITLE);
+        String description = validatedData.get(DESCRIPTION);
+        BigDecimal price = new BigDecimal(validatedData.get(PRICE));
+        int categoryId = Integer.parseInt(validatedData.get(CATEGORY));
+        int regionId = Integer.parseInt(validatedData.get(REGION));
+        Category category = new Category(categoryId);
+        Region region = new Region(regionId);
 
-        String title = request.getParameter(TITLE);
-        String price = request.getParameter(PRICE);
-        String description = request.getParameter(DESCRIPTION);
-        String region = request.getParameter(REGION);
-        String category = request.getParameter(CATEGORY);
-
-        attributes.put(TITLE, title);
-        attributes.put(PRICE, price);
-        attributes.put(DESCRIPTION, description);
-        attributes.put(REGION, region);
-        attributes.put(CATEGORY, category);
-
-        return attributes;
+        Announcement announcement = Announcement.getBuilder()
+                .title(title)
+                .price(price)
+                .description(description)
+                .category(category)
+                .region(region)
+                .status(MODERATING)
+                .build();
+        return announcement;
     }
 
+    private List<Image> validateImages(String[] images, ImageValidator imageValidator){
+        if(images == null){
+            return new ArrayList<>();
+        }
+        ImageHelper imageHelper = ImageHelper.getInstance();
+        List<Image> validatedImages = Arrays.stream(images)
+                .filter(imageValidator::validateImage)
+                .map(imageHelper::fixImage)
+                .map(base64 -> Image.getBuilder()
+                        .base64(base64)
+                        .uploadData(LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
+        return validatedImages;
+    }
 }

@@ -244,14 +244,14 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
     public Optional<Announcement> update(Announcement announcement) throws DaoException {
         Optional<Announcement> byId = findById(announcement.getId());
         if (!byId.isPresent()) {
-            logger.error("Announcement by id=" + announcement.getId() + " is not presented to update!");
+            logger.error("Announcement by id={} is not presented to update!", announcement.getId());
             return Optional.empty();
         }
         try (Connection connection = pool.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_ANNOUNCEMENT)) {
             fillStatement(statement, announcement);
-            statement.setInt(9, announcement.getId());
-            statement.setInt(10, announcement.getRegion().getId());
+            statement.setInt(9, announcement.getRegion().getId());
+            statement.setInt(10, announcement.getId());
             statement.execute();
             return Optional.of(announcement);
         } catch (SQLException e) {

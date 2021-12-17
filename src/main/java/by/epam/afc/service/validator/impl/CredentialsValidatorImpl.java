@@ -139,31 +139,23 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
 
     @Override
     public Map<String, String> validateCredentials(Map<String, String> credentialsMap) {
-        Map<String, String> correctCredentials = new HashMap<>(credentialsMap);
+        Map<String, String> correctCredentials = new HashMap<>();
+        String firstname = credentialsMap.get(FIRSTNAME);
+        String lastname = credentialsMap.get(LASTNAME);
+        String login = credentialsMap.get(LOGIN);
+        String email = credentialsMap.get(EMAIL);
+        String phone = credentialsMap.get(PHONE);
+        correctCredentials.put(FIRSTNAME, validateName(firstname) ? firstname : NOT_VALID);
+        correctCredentials.put(LASTNAME, validateName(lastname) ? lastname : NOT_VALID);
+        correctCredentials.put(LOGIN, validateLogin(login) ? login : NOT_VALID);
+        correctCredentials.put(EMAIL, validateEmail(email) ? email : NOT_VALID);
+        correctCredentials.put(PHONE, validatePhone(phone) ? phone : NOT_VALID);
 
-        if (!validateName(correctCredentials.get(FIRSTNAME))) {
-            correctCredentials.put(FIRSTNAME, NOT_VALID);
-        }
-        if (!validateName(correctCredentials.get(LASTNAME))) {
-            correctCredentials.put(LASTNAME, NOT_VALID);
-        }
-        if (!validateLogin(correctCredentials.get(LOGIN))) {
-            correctCredentials.put(LOGIN, NOT_VALID);
-        }
-        if (!validateEmail(correctCredentials.get(EMAIL))) {
-            correctCredentials.put(EMAIL, NOT_VALID);
-        }
-        if (!validatePhone(correctCredentials.get(PHONE))) {
-            correctCredentials.put(PHONE, NOT_VALID);
-        }
-
-        String password = correctCredentials.get(PASSWORD);
-        String passwordRepeat = correctCredentials.get(PASSWORD_REPEAT);
-        if (!password.equals(passwordRepeat)) {
-            correctCredentials.put(PASSWORD, NOT_VALID);
-            correctCredentials.put(PASSWORD_REPEAT, NOT_VALID);
-        }
-
+        String password = credentialsMap.get(PASSWORD);
+        String passwordRepeat = credentialsMap.get(PASSWORD_REPEAT);
+        boolean check = password.equals(passwordRepeat);
+        correctCredentials.put(PASSWORD, check ? password : NOT_VALID);
+        correctCredentials.put(PASSWORD_REPEAT, check ? passwordRepeat : NOT_VALID);
         return correctCredentials;
     }
 }

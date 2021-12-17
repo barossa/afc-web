@@ -147,8 +147,13 @@ public class UserServiceImpl implements UserService {
             Optional<User> optionalUser = userDao.findById(user.getId());
             User oldUser = optionalUser.orElseThrow(DaoException::new);
             oldUser.setStatus(ACTIVE);
-            Optional<User> activatedUser = userDao.update(oldUser);
-            return activatedUser;
+            Optional<User> activatedUserOptional = userDao.update(oldUser);
+            if(activatedUserOptional.isPresent()){
+                User activatedUser = activatedUserOptional.get();
+                initializeProfileImage(activatedUser);
+                return Optional.of(activatedUser);
+            }
+            return Optional.empty();
         } catch (DaoException e) {
             logger.error("Can't activate user account:", e);
             throw new ServiceException("Can't activate user account", e);

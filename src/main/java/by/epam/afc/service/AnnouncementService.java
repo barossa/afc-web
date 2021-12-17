@@ -20,5 +20,11 @@ public interface AnnouncementService {
 
     Optional<Announcement> findById(String id) throws ServiceException;
 
+    Optional<Announcement> updateAnnouncement(Map<String, List<String>> parameterMap, User user) throws ServiceException;
+
     boolean confirmAnnouncement(int id) throws ServiceException;
+
+    boolean deactivateAnnouncement(int id, String reason) throws ServiceException;
+
+    boolean changeAnnouncementsStatus(Announcement announcement, User user) throws ServiceException;
 }

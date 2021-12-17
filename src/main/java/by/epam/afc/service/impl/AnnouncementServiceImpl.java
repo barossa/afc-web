@@ -13,27 +13,33 @@ import by.epam.afc.exception.ServiceException;
 import by.epam.afc.service.AnnouncementService;
 import by.epam.afc.service.util.ImageHelper;
 import by.epam.afc.service.util.PaginationHelper;
+import by.epam.afc.service.util.RequestParameterConverter;
 import by.epam.afc.service.util.SearchHelper;
 import by.epam.afc.service.validator.AnnouncementFilterValidator;
+import by.epam.afc.service.validator.AnnouncementValidator;
+import by.epam.afc.service.validator.ImageValidator;
 import by.epam.afc.service.validator.NumberValidator;
-import by.epam.afc.service.validator.SearchRequestValidator;
 import by.epam.afc.service.validator.impl.AnnouncementFilterValidatorImpl;
+import by.epam.afc.service.validator.impl.AnnouncementValidatorImpl;
+import by.epam.afc.service.validator.impl.ImageValidatorImpl;
 import by.epam.afc.service.validator.impl.NumberValidatorImpl;
-import by.epam.afc.service.validator.impl.SearchRequestValidatorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static by.epam.afc.controller.RequestAttribute.*;
-import static by.epam.afc.dao.entity.Announcement.Status.ACTIVE;
-import static by.epam.afc.dao.entity.Announcement.Status.MODERATING;
+import static by.epam.afc.dao.entity.Announcement.Status.*;
+import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
 public class AnnouncementServiceImpl implements AnnouncementService {
     private static final AnnouncementServiceImpl instance = new AnnouncementServiceImpl();
@@ -66,18 +72,8 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public Optional<Announcement> save(Announcement announcement) throws ServiceException {
         AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
         announcement.setPublicationDate(LocalDateTime.now());
-        announcement.setStatus(ACTIVE);
-
+        announcement.setStatus(MODERATING);
         try {
-            int categoryId = announcement.getCategory().getId();
-            int regionId = announcement.getRegion().getId();
-            Optional<Category> categoryOptional = announcementDao.findCategory(categoryId);
-            Optional<Region> regionOptional = announcementDao.findRegion(regionId);
-            if (!categoryOptional.isPresent() || !regionOptional.isPresent()) {
-                logger.debug("Submitted category or region is not presented!");
-                return Optional.empty();
-            }
-
             Optional<Announcement> announcementOptional = announcementDao.save(announcement);
             if (announcementOptional.isPresent()) {
                 Announcement savedAnnouncement = announcementOptional.get();
@@ -85,7 +81,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 
                 ImageDao imageDao = DaoHolder.getImageDao();
                 List<Image> savedImages = imageDao.saveAnnouncementImages(announcement);
-
                 if (savedImages.isEmpty()) {
                     logger.warn("No image saved with announcement!");
                 } else {
@@ -109,9 +104,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         try {
             AnnouncementFilterValidator filterValidator = AnnouncementFilterValidatorImpl.getInstance();
             Map<String, List<String>> validatedParameters = filterValidator.validateParameterMap(parameterMap);
-            List<String> searches = validateSearch(parameterMap.get(SEARCH));
-            validatedParameters.put(SEARCH, searches);
-
             AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
             List<Announcement> allAnnouncements = announcementDao.findAll();
             List<Announcement> filteredAnnouncements = filterData(allAnnouncements, validatedParameters);
@@ -180,36 +172,116 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     @Override
+    public Optional<Announcement> updateAnnouncement(Map<String, List<String>> parameterMap, User user) throws ServiceException {
+        try {
+            NumberValidator numberValidator = NumberValidatorImpl.getInstance();
+            List<Image> validatedImages = parseImages(parameterMap.get(IMAGE));
+            Optional<Integer> optionalId = parameterMap.get(ID).stream()
+                    .filter(numberValidator::validateNumber)
+                    .map(Integer::parseInt)
+                    .findFirst();
+            AnnouncementValidator announcementValidator = AnnouncementValidatorImpl.getInstance();
+            RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();
+            Map<String, String> singleValueParameters = parameterConverter.singleValueMap(parameterMap);
+            Map<String, String> announcementData = announcementValidator.validateData(singleValueParameters);
+            announcementData.entrySet().stream()
+                    .filter(e->e.getValue().equalsIgnoreCase(NOT_VALID))
+                    .forEach(e-> System.out.printf("Key:%s is empty!\n", e.getKey()));
+            if (optionalId.isPresent() && !announcementData.containsValue(NOT_VALID)) {
+                AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
+                Optional<Announcement> optionalAnnouncement = announcementDao.findById(optionalId.get());
+                if (optionalAnnouncement.isPresent()) {
+                    Announcement announcement = optionalAnnouncement.get();
+                    User owner = announcement.getOwner();
+                    if(user.getId() != owner.getId()){
+                        return Optional.empty();
+                    }
+                    validatedImages.forEach(image -> image.setUploadedBy(owner));
+                    mapAnnouncement(announcement, announcementData);
+                    if (!validatedImages.isEmpty()) {
+                        announcement.setImages(validatedImages);
+                        ImageDao imageDao = DaoHolder.getImageDao();
+                        imageDao.saveAnnouncementImages(announcement);
+                    }
+                    announcement.setStatus(MODERATING);
+                    return announcementDao.update(announcement);
+                }
+            }
+            return Optional.empty();
+        } catch (DaoException e) {
+            logger.error("Can't update announcement info:", e);
+            throw new ServiceException("Can't update announcement info", e);
+        }
+    }
+
+    @Override
     public boolean confirmAnnouncement(int id) throws ServiceException {
-        try{
+        try {
             AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
             Optional<Announcement> announcementOptional = announcementDao.findById(id);
-            if(!announcementOptional.isPresent()){
+            if (!announcementOptional.isPresent()) {
                 return false;
             }
             Announcement announcement = announcementOptional.get();
-            if(announcement.getStatus() == MODERATING){
+            if (announcement.getStatus() == MODERATING) {
                 announcement.setStatus(ACTIVE);
                 Optional<Announcement> optionalAnnouncement = announcementDao.update(announcement);
                 return optionalAnnouncement.isPresent();
-            }else{
+            } else {
                 return false;
             }
-        }catch (DaoException e){
+        } catch (DaoException e) {
             logger.error("Can't confirm announcement:", e);
             throw new ServiceException("Can't confirm announcement", e);
         }
     }
 
-    private List<String> validateSearch(List<String> searches) {
-        if (searches == null) {
-            return new ArrayList<>();
+    @Override
+    public boolean deactivateAnnouncement(int id, String reason) throws ServiceException {
+        try {
+            AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
+            Optional<Announcement> announcementOptional = announcementDao.findById(id);
+            AnnouncementValidator announcementValidator = AnnouncementValidatorImpl.getInstance();
+            if (!announcementOptional.isPresent() || !announcementValidator.validateDescription(reason)) {
+                return false;
+            }
+            Announcement announcement = announcementOptional.get();
+            Announcement.Status status = announcement.getStatus();
+            if (status == MODERATING || status == ACTIVE) {
+                announcement.setStatus(INACTIVE);
+                announcement.setDescription(reason);
+                Optional<Announcement> optionalAnnouncement = announcementDao.update(announcement);
+                return optionalAnnouncement.isPresent();
+            } else {
+                return false;
+            }
+        } catch (DaoException e) {
+            logger.error("Can't deactivate announcement:", e);
+            throw new ServiceException("Can't deactivate announcement", e);
         }
-        SearchRequestValidator searchValidator = SearchRequestValidatorImpl.getInstance();
-        List<String> validatedSearches = searches.stream()
-                .filter(searchValidator::validateRequest)
-                .collect(Collectors.toList());
-        return validatedSearches;
+    }
+
+    @Override
+    public boolean changeAnnouncementsStatus(Announcement announcement, User user) throws ServiceException {
+        try {
+            AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
+            Optional<Announcement> announcementOptional = announcementDao.findById(announcement.getId());
+            if (!announcementOptional.isPresent()) {
+                return false;
+            }
+            Announcement oldAnnouncement = announcementOptional.get();
+            User owner = oldAnnouncement.getOwner();
+            if (owner.getId() == user.getId()) {
+                oldAnnouncement.setStatus(announcement.getStatus());
+                Optional<Announcement> updatedAnnouncement = announcementDao.update(oldAnnouncement);
+                return updatedAnnouncement.isPresent();
+            } else {
+                return false;
+            }
+        } catch (DaoException e) {
+            logger.error("Can't change announcement status:", e);
+            throw new ServiceException("Can't change announcement status", e);
+        }
     }
 
     private List<Announcement> filterData(List<Announcement> announcements, Map<String, List<String>> parameterMap) {
@@ -224,20 +296,20 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         Predicate<Announcement> minPricePredicate = announcement -> minPrices.stream().allMatch(price -> announcement.getPrice().intValue() >= price);
         Predicate<Announcement> maxPricePredicate = announcement -> maxPrices.stream().allMatch(price -> announcement.getPrice().intValue() <= price);
         Predicate<Announcement> statusPredicate = announcement -> statuses.stream()
-                .map(String::toUpperCase)
-                .allMatch(status -> announcement.getStatus().toString().equals(status));
+                .allMatch(status -> announcement.getStatus().toString().equalsIgnoreCase(status));
         SearchHelper searchHelper = SearchHelper.getInstance();
         Predicate<Announcement> searchPredicate = announcement -> searches.stream()
-                .map(search -> searchHelper.completeRegex(search.toUpperCase()))
-                .allMatch(regex -> announcement.getTitle().toUpperCase().matches(regex));
-
+                .map(searchHelper::completeRegex)
+                .map(Pattern::compile)
+                .map(pattern -> pattern.matcher(announcement.getTitle().toUpperCase()))
+                .allMatch(Matcher::find);
         List<Announcement> filteredAnnouncements = announcements.stream()
                 .filter(!regions.isEmpty() ? regionPredicate : a -> true)
                 .filter(!categories.isEmpty() ? categoryPredicate : a -> true)
                 .filter(!minPrices.isEmpty() ? minPricePredicate : a -> true)
                 .filter(!maxPrices.isEmpty() ? maxPricePredicate : a -> true)
                 .filter(!statuses.isEmpty() ? statusPredicate : a -> true)
-                .filter(searchPredicate)
+                .filter(!searches.isEmpty() ? searchPredicate : a -> true)
                 .collect(Collectors.toList());
 
         return filteredAnnouncements;
@@ -271,5 +343,37 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         Image profileImage = imageOptional.orElseThrow(DaoException::new);
         owner.setProfileImage(profileImage);
         announcement.setOwner(owner);
+    }
+
+    private void mapAnnouncement(Announcement announcement, Map<String, String> announcementData) {
+        String title = announcementData.get(TITLE);
+        int categoryId = Integer.parseInt(announcementData.get(CATEGORY));
+        int regionId = Integer.parseInt(announcementData.get(REGION));
+        Category category = new Category(categoryId);
+        Region region = new Region(regionId);
+        String description = announcementData.get(DESCRIPTION);
+        BigDecimal price = new BigDecimal(announcementData.get(PRICE));
+        announcement.setTitle(title);
+        announcement.setCategory(category);
+        announcement.setRegion(region);
+        announcement.setDescription(description);
+        announcement.setPrice(price);
+    }
+
+    private List<Image> parseImages(List<String> images) {
+        ImageValidator imageValidator = ImageValidatorImpl.getInstance();
+        ImageHelper imageHelper = ImageHelper.getInstance();
+        if (images == null) {
+            return new ArrayList<>();
+        }
+        List<Image> validatedImages = images.stream()
+                .filter(imageValidator::validateImage)
+                .map(imageHelper::fixImage)
+                .map(image -> Image.getBuilder()
+                        .uploadData(LocalDateTime.now())
+                        .base64(image)
+                        .build())
+                .collect(Collectors.toList());
+        return validatedImages;
     }
 }
