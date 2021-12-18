@@ -26,7 +26,6 @@ import static by.epam.afc.controller.PagePath.*;
 import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
-import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 import static by.epam.afc.dao.entity.Announcement.Status.MODERATING;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
@@ -41,8 +40,6 @@ public class SubmitAnnouncement implements Command {
         Map<String, String> announcementData = parameterConverter.findAnnouncementData(request.getParameterMap());
         Map<String, String> validatedData = announcementValidator.validateData(announcementData);
         List<Image> images = validateImages(request.getParameterValues(IMAGE), imageValidator);
-        validatedData.entrySet().stream().filter(e->e.getValue().equals(NOT_VALID))
-                .forEach(e-> System.out.printf("KEY:%s is empty!", e.getKey()));
         try {
             if (!validatedData.containsValue(NOT_VALID) && !images.isEmpty()) {
                 HttpSession session = request.getSession();
@@ -53,7 +50,7 @@ public class SubmitAnnouncement implements Command {
                 announcement.setImages(images);
                 AnnouncementServiceImpl announcementService = AnnouncementServiceImpl.getInstance();
                 Optional<Announcement> saved = announcementService.save(announcement);
-                if(saved.isPresent()){
+                if (saved.isPresent()) {
                     return new Router(FORWARD, MY_ANNOUNCEMENTS_PAGE);
                 }
 
@@ -66,7 +63,7 @@ public class SubmitAnnouncement implements Command {
         }
     }
 
-    private Announcement buildAnnouncement(Map<String, String> validatedData){
+    private Announcement buildAnnouncement(Map<String, String> validatedData) {
         String title = validatedData.get(TITLE);
         String description = validatedData.get(DESCRIPTION);
         BigDecimal price = new BigDecimal(validatedData.get(PRICE));
@@ -86,8 +83,8 @@ public class SubmitAnnouncement implements Command {
         return announcement;
     }
 
-    private List<Image> validateImages(String[] images, ImageValidator imageValidator){
-        if(images == null){
+    private List<Image> validateImages(String[] images, ImageValidator imageValidator) {
+        if (images == null) {
             return new ArrayList<>();
         }
         ImageHelper imageHelper = ImageHelper.getInstance();

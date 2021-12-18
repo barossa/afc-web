@@ -21,7 +21,7 @@ import java.util.Optional;
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
 
-public final class AnnouncementDaoImpl implements AnnouncementDao {
+public class AnnouncementDaoImpl implements AnnouncementDao {
     private static final Logger logger = LogManager.getLogger(AnnouncementDaoImpl.class);
 
     private static final String SELECT_ALL_ANNOUNCEMENTS = "SELECT " + ANNOUNCEMENT_ID + "," + OWNER_ID + "," + TITLE + "," + PRICE + ","
@@ -60,10 +60,6 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
     private static final String SELECT_ALL_CATEGORIES = "SELECT " + CATEGORY_ID + "," + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENT_CATEGORIES
             + " ORDER BY " + CATEGORY_ID + ";";
-
-    private static final String SELECT_CATEGORY_BY_DESCRIPTION = "SELECT " + CATEGORY_ID + "," + CATEGORY_DESCRIPTION
-            + " FROM " + ANNOUNCEMENT_CATEGORIES
-            + " WHERE " + CATEGORY_DESCRIPTION + "=?;";
 
     private static final String SELECT_CATEGORY_BY_ID = "SELECT " + CATEGORY_ID + "," + CATEGORY_DESCRIPTION
             + " FROM " + ANNOUNCEMENT_CATEGORIES
@@ -157,26 +153,6 @@ public final class AnnouncementDaoImpl implements AnnouncementDao {
         } catch (SQLException e) {
             logger.error("Can't find region by id: ", e);
             throw new DaoException("Can't find region by id", e);
-        }
-    }
-
-    @Override
-    public Optional<Category> findCategory(String category) throws DaoException {
-        try (Connection connection = pool.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SELECT_CATEGORY_BY_DESCRIPTION)) {
-            statement.setString(1, category);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                CategoryRowMapper mapper = CategoryRowMapper.getInstance();
-                Category foundedCategory = mapper.mapRows(resultSet);
-                return Optional.of(foundedCategory);
-            } else {
-                return Optional.empty();
-            }
-        } catch (SQLException e) {
-            logger.error("Can't find category by name: ", e);
-            throw new DaoException("Can't find category by name", e);
         }
     }
 

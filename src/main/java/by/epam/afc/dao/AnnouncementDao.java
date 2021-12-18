@@ -14,8 +14,6 @@ public interface AnnouncementDao extends BaseDao<Announcement> {
 
     List<Category> findAllCategories() throws DaoException;
 
-    Optional<Category> findCategory(String category) throws DaoException;
-
     Optional<Category> findCategory(int id) throws DaoException;
 
     List<Region> findAllRegions() throws DaoException;

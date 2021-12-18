@@ -19,7 +19,7 @@ import java.util.Optional;
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
 
-public final class UserDaoImpl implements UserDao {
+public class UserDaoImpl implements UserDao {
 
     private static final String SELECT_ALL_USERS = "SELECT " + USER_ID + ", " + FIRST_NAME + ", " + LAST_NAME + ", "
             + LOGIN + ", " + EMAIL + ", " + PHONE + ", " + ROLE_DESCRIPTION + ", " + STATUS_DESCRIPTION + ", "

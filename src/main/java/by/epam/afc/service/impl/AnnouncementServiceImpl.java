@@ -184,9 +184,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();
             Map<String, String> singleValueParameters = parameterConverter.singleValueMap(parameterMap);
             Map<String, String> announcementData = announcementValidator.validateData(singleValueParameters);
-            announcementData.entrySet().stream()
-                    .filter(e->e.getValue().equalsIgnoreCase(NOT_VALID))
-                    .forEach(e-> System.out.printf("Key:%s is empty!\n", e.getKey()));
             if (optionalId.isPresent() && !announcementData.containsValue(NOT_VALID)) {
                 AnnouncementDaoImpl announcementDao = DaoHolder.getAnnouncementDao();
                 Optional<Announcement> optionalAnnouncement = announcementDao.findById(optionalId.get());

@@ -20,7 +20,7 @@ import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.ANNOUNCEMENT_IMAGES;
 import static by.epam.afc.dao.TableName.IMAGES;
 
-public final class ImageDaoImpl implements ImageDao {
+public class ImageDaoImpl implements ImageDao {
 
     private static final String SELECT_ALL_IMAGES = "SELECT " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BASE_64
             + " FROM " + IMAGES + ";";
