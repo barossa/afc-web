@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
+/**
+ * The type Image helper.
+ */
 public class ImageHelper {
     private static final Logger logger = LogManager.getLogger(ImageHelper.class);
 
@@ -29,14 +32,31 @@ public class ImageHelper {
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ImageHelper getInstance() {
         return instance;
     }
 
+    /**
+     * Gets no image picture.
+     *
+     * @return the no image picture
+     */
     public Image getNoImagePicture() {
         return noImage;
     }
 
+    /**
+     * Load image image.
+     *
+     * @param filepath the filepath
+     * @return the image
+     * @throws IOException the io exception
+     */
     public Image loadImage(String filepath) throws IOException {
         Image image = Image.getBuilder()
                 .build();
@@ -47,6 +67,13 @@ public class ImageHelper {
         return image;
     }
 
+    /**
+     * Read input stream byte [ ].
+     *
+     * @param inputStream the input stream
+     * @return the byte [ ]
+     * @throws IOException the io exception
+     */
     public byte[] readInputStream(InputStream inputStream) throws IOException {
         if (inputStream == null) {
             logger.error("Image input stream is empty!");
@@ -63,7 +90,13 @@ public class ImageHelper {
         return outputStream.toByteArray();
     }
 
-    public String fixImage(String base64){
+    /**
+     * Fix image string.
+     *
+     * @param base64 the base 64
+     * @return the string
+     */
+    public String fixImage(String base64) {
         return base64.replaceAll(FIX_TARGET, FIX_CONTENT);
     }
 }

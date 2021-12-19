@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * The type Mail sender.
+ */
 public class MailSender {
     private static final Logger logger = LogManager.getLogger();
     private static final String PROPERTY_PATH = "prop/mail.properties";
@@ -29,6 +32,13 @@ public class MailSender {
         }
     }
 
+    /**
+     * Send mail.
+     *
+     * @param userMail    the user mail
+     * @param messageText the message text
+     * @param subject     the subject
+     */
     public void send(String userMail, String messageText, String subject) {
         try {
             MimeMessage message = initMessage(userMail, messageText, subject);

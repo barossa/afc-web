@@ -23,9 +23,19 @@ import static by.epam.afc.controller.SessionAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
+/**
+ * The type Confirm account.
+ */
 public class ConfirmAccount implements Command {
     private static final Logger logger = LogManager.getLogger(ConfirmAccount.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -46,7 +56,7 @@ public class ConfirmAccount implements Command {
                     session.setAttribute(SENT_TIME, null);
                 }
             }
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             logger.error("Error occurred while activating user account:", e);
             request.setAttribute(EXCEPTION_MESSAGE, "Error occurred while activating user account:" + e.getMessage());
             return new Router(FORWARD, ERROR_500);

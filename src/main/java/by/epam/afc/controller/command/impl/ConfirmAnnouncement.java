@@ -18,22 +18,32 @@ import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.RequestAttribute.ID;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Confirm announcement.
+ */
 public class ConfirmAnnouncement implements Command {
     private static final Logger logger = LogManager.getLogger(ConfirmAnnouncement.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        try{
+        try {
             NumberValidator numberValidator = NumberValidatorImpl.getInstance();
             String idParam = request.getParameter(ID);
             boolean idValid = numberValidator.validateNumber(idParam);
-            if(idValid){
+            if (idValid) {
                 int id = Integer.parseInt(idParam);
                 AnnouncementService announcementService = AnnouncementServiceImpl.getInstance();
                 announcementService.confirmAnnouncement(id);
             }
             return new Router(FORWARD, MODERATOR_PAGE);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             logger.error("Can't confirm announcement:", e);
             request.setAttribute(EXCEPTION_MESSAGE, "Can't confirm announcement:" + e.getMessage());
             return new Router(FORWARD, ERROR_500);

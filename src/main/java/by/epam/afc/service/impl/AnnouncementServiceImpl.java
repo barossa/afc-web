@@ -41,6 +41,9 @@ import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.dao.entity.Announcement.Status.*;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
+/**
+ * The type Announcement service.
+ */
 public class AnnouncementServiceImpl implements AnnouncementService {
     private static final AnnouncementServiceImpl instance = new AnnouncementServiceImpl();
     private static final Logger logger = LogManager.getLogger(AnnouncementServiceImpl.class);
@@ -50,10 +53,21 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     private AnnouncementServiceImpl() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static AnnouncementServiceImpl getInstance() {
         return instance;
     }
 
+    /**
+     * Find all list.
+     *
+     * @return the list
+     * @throws ServiceException the service exception
+     */
     @Override
     public List<Announcement> findAll() throws ServiceException {
         try {
@@ -68,6 +82,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Save optional.
+     *
+     * @param announcement the announcement
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<Announcement> save(Announcement announcement) throws ServiceException {
         AnnouncementDao announcementDao = DaoHolder.getAnnouncementDao();
@@ -99,6 +120,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Find announcements pagination.
+     *
+     * @param parameterMap the parameter map
+     * @return the pagination
+     * @throws ServiceException the service exception
+     */
     @Override
     public Pagination<Announcement> findAnnouncements(Map<String, List<String>> parameterMap) throws ServiceException {
         try {
@@ -124,6 +152,14 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Find announcements pagination.
+     *
+     * @param parameterMap the parameter map
+     * @param user         the user
+     * @return the pagination
+     * @throws ServiceException the service exception
+     */
     @Override
     public Pagination<Announcement> findAnnouncements(Map<String, List<String>> parameterMap, User user) throws ServiceException {
         try {
@@ -150,6 +186,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Find by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<Announcement> findById(String id) throws ServiceException {
         try {
@@ -171,6 +214,14 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         return Optional.empty();
     }
 
+    /**
+     * Update announcement optional.
+     *
+     * @param parameterMap the parameter map
+     * @param user         the user
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<Announcement> updateAnnouncement(Map<String, List<String>> parameterMap, User user) throws ServiceException {
         try {
@@ -190,7 +241,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
                 if (optionalAnnouncement.isPresent()) {
                     Announcement announcement = optionalAnnouncement.get();
                     User owner = announcement.getOwner();
-                    if(user.getId() != owner.getId()){
+                    if (user.getId() != owner.getId()) {
                         return Optional.empty();
                     }
                     validatedImages.forEach(image -> image.setUploadedBy(owner));
@@ -211,6 +262,13 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Confirm announcement boolean.
+     *
+     * @param id the id
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean confirmAnnouncement(int id) throws ServiceException {
         try {
@@ -233,6 +291,14 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Deactivate announcement boolean.
+     *
+     * @param id     the id
+     * @param reason the reason
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean deactivateAnnouncement(int id, String reason) throws ServiceException {
         try {
@@ -258,6 +324,14 @@ public class AnnouncementServiceImpl implements AnnouncementService {
         }
     }
 
+    /**
+     * Change announcements status boolean.
+     *
+     * @param announcement the announcement
+     * @param user         the user
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean changeAnnouncementsStatus(Announcement announcement, User user) throws ServiceException {
         try {

@@ -19,6 +19,9 @@ import java.util.ResourceBundle;
 import static by.epam.afc.controller.PagePath.CONTROLLER;
 import static by.epam.afc.controller.RequestAttribute.*;
 
+/**
+ * The type Pagination panel tag.
+ */
 public class PaginationPanelTag extends TagSupport {
     private static final Logger logger = LogManager.getLogger(PaginationPanelTag.class);
 
@@ -40,10 +43,21 @@ public class PaginationPanelTag extends TagSupport {
 
     private String command;
 
+    /**
+     * Sets the command name.
+     *
+     * @param command the command name
+     */
     public void setCommand(MethodExpression command) {
         this.command = command.getExpressionString();
     }
 
+    /**
+     * Do start tag int.
+     *
+     * @return the int
+     * @throws JspException the jsp exception
+     */
     @Override
     public int doStartTag() throws JspException {
         try {

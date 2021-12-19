@@ -16,6 +16,9 @@ import static by.epam.afc.controller.RequestAttribute.EMAIL;
 import static by.epam.afc.controller.SessionAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type To confirm page.
+ */
 public class ToConfirmPage implements Command {
     private static final int DISPLAYING_SYMBOLS = 5;
     private static final int EMAIL_NAME_PART = 0;
@@ -29,6 +32,13 @@ public class ToConfirmPage implements Command {
     /*Countdown time in seconds*/
     private static final long COUNTDOWN_SECONDS = 30;
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();

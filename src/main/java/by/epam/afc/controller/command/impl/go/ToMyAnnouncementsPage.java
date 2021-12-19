@@ -8,7 +8,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import static by.epam.afc.controller.PagePath.MY_ANNOUNCEMENTS_PAGE;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type To my announcements page.
+ */
 public class ToMyAnnouncementsPage implements Command {
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         return new Router(FORWARD, MY_ANNOUNCEMENTS_PAGE);

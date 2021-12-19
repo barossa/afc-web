@@ -20,14 +20,33 @@ import static by.epam.afc.controller.RequestAttribute.COMMAND;
 import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Controller.
+ */
 @WebServlet(name = "controller", urlPatterns = {"/controller"})
 public class Controller extends HttpServlet {
     private static final Logger logger = LogManager.getLogger(Controller.class);
 
+    /**
+     * Do get.
+     *
+     * @param request  the request
+     * @param response the response
+     * @throws ServletException the servlet exception
+     * @throws IOException      Signals that an I/O exception has occurred
+     */
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
+    /**
+     * Do post.
+     *
+     * @param req  the req
+     * @param resp the resp
+     * @throws ServletException the servlet exception
+     * @throws IOException      Signals that an I/O exception has occurred
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);

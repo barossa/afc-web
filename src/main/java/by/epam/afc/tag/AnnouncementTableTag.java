@@ -21,6 +21,9 @@ import java.util.ResourceBundle;
 import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 import static by.epam.afc.controller.SessionAttribute.USER;
 
+/**
+ * The type Announcement table tag.
+ */
 public class AnnouncementTableTag extends TagSupport {
     private static final Logger logger = LogManager.getLogger(AnnouncementTableTag.class);
 
@@ -28,6 +31,12 @@ public class AnnouncementTableTag extends TagSupport {
     private static final String FREE_ANNOUNCEMENT = "announcements.free";
     private static final String MY_ANNOUNCEMENT = "announcements.myAnnouncement";
 
+    /**
+     * Do start tag int.
+     *
+     * @return the int
+     * @throws JspException the jsp exception
+     */
     @Override
     public int doStartTag() throws JspException {
         try {

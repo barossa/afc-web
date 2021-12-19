@@ -21,6 +21,9 @@ import java.util.Optional;
 
 import static by.epam.afc.controller.ContextAttribute.*;
 
+/**
+ * The type Servlet context listener.
+ */
 @WebListener
 public class ServletContextListenerImpl implements ServletContextListener {
     private static final Logger logger = LogManager.getLogger(ServletContextListenerImpl.class);
@@ -51,7 +54,6 @@ public class ServletContextListenerImpl implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        //Destroying connection pool
         try {
             ConnectionPool.getInstance().destroyPool();
         } catch (DaoException e) {
@@ -85,12 +87,13 @@ public class ServletContextListenerImpl implements ServletContextListener {
         return new ArrayList<>();
     }
 
-    private Image loadGuestImage(){
+    private Image loadGuestImage() {
         Image image = Image.getBuilder()
                 .build();
-        try {ImageDao imageDao = DaoHolder.getImageDao();
+        try {
+            ImageDao imageDao = DaoHolder.getImageDao();
             Optional<Image> optionalImage = imageDao.findById(GUEST_IMAGE_ID);
-            image =  optionalImage.orElseThrow(DaoException::new);
+            image = optionalImage.orElseThrow(DaoException::new);
         } catch (DaoException e) {
             logger.error("Error occurred while loading GUEST profile picture");
         }

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Pagination helper.
+ */
 public class PaginationHelper {
     private static final PaginationHelper instance = new PaginationHelper();
 
@@ -17,10 +20,24 @@ public class PaginationHelper {
     private PaginationHelper() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static PaginationHelper getInstance() {
         return instance;
     }
 
+    /**
+     * Gets page.
+     *
+     * @param <T>            the type parameter
+     * @param elements       the elements
+     * @param page           the page
+     * @param elementsOnPage the elements on page
+     * @return the page
+     */
     public <T extends BaseEntity> Pagination<T> getPage(List<T> elements, int page, int elementsOnPage) {
         int from = page * elementsOnPage;
         int to = from + elementsOnPage - 1;
@@ -43,8 +60,14 @@ public class PaginationHelper {
         return new Pagination<>(pageElements, next, previous, page);
     }
 
-    public int findPage(List<String> pages){
-        if(pages == null){
+    /**
+     * Find page int.
+     *
+     * @param pages the pages
+     * @return the int
+     */
+    public int findPage(List<String> pages) {
+        if (pages == null) {
             return DEFAULT_PAGE;
         }
         NumberValidator validator = NumberValidatorImpl.getInstance();

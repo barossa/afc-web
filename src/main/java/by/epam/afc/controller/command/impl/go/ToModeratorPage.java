@@ -23,9 +23,19 @@ import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.dao.entity.Announcement.Status.MODERATING;
 
+/**
+ * The type To moderator page.
+ */
 public class ToModeratorPage implements Command {
     private static final Logger logger = LogManager.getLogger(ToModeratorPage.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

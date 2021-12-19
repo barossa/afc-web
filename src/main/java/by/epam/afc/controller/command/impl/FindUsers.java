@@ -22,19 +22,29 @@ import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Find users.
+ */
 public class FindUsers implements Command {
     private static final Logger logger = LogManager.getLogger(FindUsers.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        try{
+        try {
             RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();
             Map<String, List<String>> requestParameters = parameterConverter.transform(request.getParameterMap());
             UserService userService = UserServiceImpl.getInstance();
             Pagination<User> pagination = userService.findUsers(requestParameters);
             request.setAttribute(PAGINATION, pagination);
             return new Router(FORWARD, ADMINISTRATOR_PAGE);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             logger.error("Can't display user's control page", e);
             request.setAttribute(EXCEPTION_MESSAGE, "Can't display user's control page:" + e.getMessage());
             return new Router(FORWARD, ERROR_500);

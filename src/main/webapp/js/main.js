@@ -26,7 +26,7 @@
         };
         <!--DISABLE BACK BUTTON-->
 
-        /*<!-- BLOCK F5 -->
+        <!-- BLOCK F5 -->
         $(document).ready(function() {
             $(window).keydown(function(event){
                 if(event.keyCode === 116) {
@@ -35,7 +35,7 @@
                 }
             });
         });
-        <!-- BLOCK F5 -->*/
+        <!-- BLOCK F5 -->
 
         <!--ANNOUNCEMENTS PAGE -->
         $('#sb').on('click', function () {

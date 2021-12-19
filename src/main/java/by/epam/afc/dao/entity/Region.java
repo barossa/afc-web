@@ -1,18 +1,38 @@
 package by.epam.afc.dao.entity;
 
-public class Region extends BaseEntity{
+/**
+ * The type Region.
+ */
+public class Region extends BaseEntity {
     private final String regionName;
 
-    public Region(int id, String regionName){
+    /**
+     * Instantiates a new Region.
+     *
+     * @param id         the id
+     * @param regionName the region name
+     */
+    public Region(int id, String regionName) {
         super(id);
         this.regionName = regionName;
     }
 
-    public Region(int id){
+    /**
+     * Instantiates a new Region.
+     *
+     * @param id the id
+     */
+    public Region(int id) {
         super(id);
         regionName = "";
     }
 
+    /**
+     * Equals boolean.
+     *
+     * @param o the o
+     * @return the boolean
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -24,6 +44,11 @@ public class Region extends BaseEntity{
         return regionName != null ? regionName.equals(region.regionName) : region.regionName == null;
     }
 
+    /**
+     * Hash code int.
+     *
+     * @return the int
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -31,6 +56,11 @@ public class Region extends BaseEntity{
         return result;
     }
 
+    /**
+     * To string string.
+     *
+     * @return the string
+     */
     @Override
     public String toString() {
         return "Region{" +

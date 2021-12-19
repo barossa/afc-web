@@ -11,10 +11,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-class ConnectionFactory{
+/**
+ * The type Connection factory.
+ */
+class ConnectionFactory {
     private static final Logger logger = LogManager.getLogger(ConnectionFactory.class);
 
     private static final String PROPERTIES_PATH = "/prop/db.properties";
+    private static final String DRIVER_NAME_KEY = "driver";
     private static final String URL_PROPERTY_NAME = "url";
     private static final Properties props = new Properties();
 
@@ -24,7 +28,7 @@ class ConnectionFactory{
         String driverName = null;
         try (InputStream inputStream = ConnectionFactory.class.getResourceAsStream(PROPERTIES_PATH)) {
             props.load(inputStream);
-            driverName = (String) props.get("driver");
+            driverName = (String) props.get(DRIVER_NAME_KEY);
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
             logger.fatal("Can't register driver: " + driverName, e);
@@ -35,17 +39,31 @@ class ConnectionFactory{
         }
     }
 
+    /**
+     * Instantiates a new Connection factory.
+     */
     ConnectionFactory() {
     }
 
-    static ConnectionFactory getInstance(){
-        if(instance == null){
+    /**
+     * Get instance connection factory.
+     *
+     * @return the connection factory
+     */
+    static ConnectionFactory getInstance() {
+        if (instance == null) {
             instance = new ConnectionFactory();
         }
         return instance;
     }
 
-    Connection getConnection() throws DaoException{
+    /**
+     * Gets connection.
+     *
+     * @return the connection
+     * @throws DaoException the dao exception
+     */
+    Connection getConnection() throws DaoException {
         try {
             Connection connection = DriverManager.getConnection(props.getProperty(URL_PROPERTY_NAME), props);
             return new ProxyConnection(connection);

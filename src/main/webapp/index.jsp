@@ -10,7 +10,7 @@
         <jsp:forward page="/controller?command=to_confirm_page"/>
     </c:when>
     <c:when test="${sessionScope.user.role != 'GUEST' && sessionScope.user.status == 'BANNED'}">
-        <jsp:forward page="/jsp/pages/auth/banPage.jsp"/>
+        <jsp:forward page="/controller?command=to_ban_page"/>
     </c:when>
     <c:otherwise>
         <jsp:forward page="/controller?command=find_announcements"/>

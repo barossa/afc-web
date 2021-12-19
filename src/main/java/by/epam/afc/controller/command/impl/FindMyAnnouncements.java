@@ -25,9 +25,19 @@ import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Find my announcements.
+ */
 public class FindMyAnnouncements implements Command {
     private static final Logger logger = LogManager.getLogger(FindMyAnnouncements.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

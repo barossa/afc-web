@@ -1,10 +1,12 @@
 package by.epam.afc.controller.command;
 
+/**
+ * The enum Command type.
+ */
 public enum CommandType {
     LOGIN_COMMAND,
     LOGOUT_COMMAND,
     CHANGE_LOCALE,
-    FORGOT_PASSWORD,
     REGISTER_COMMAND,
     TO_LOGIN_PAGE,
     TO_REGISTER_PAGE,

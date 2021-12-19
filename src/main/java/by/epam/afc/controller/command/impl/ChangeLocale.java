@@ -11,11 +11,21 @@ import static by.epam.afc.controller.RequestAttribute.LOCALE;
 import static by.epam.afc.controller.SessionAttribute.LATEST_PATH;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Change locale.
+ */
 public class ChangeLocale implements Command {
     private static final String COMMAND_NAME = "CHANGE_LOCALE";
     private static final String REFERER_HEADER = "referer";
     private static final int NO_OCCURRENCES = -1;
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();

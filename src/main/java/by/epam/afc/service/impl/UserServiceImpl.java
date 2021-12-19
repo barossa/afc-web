@@ -33,6 +33,9 @@ import static by.epam.afc.dao.entity.User.Role.USER;
 import static by.epam.afc.dao.entity.User.Status.*;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
+/**
+ * The type User service.
+ */
 public class UserServiceImpl implements UserService {
     private static final UserServiceImpl instance = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
@@ -42,21 +45,47 @@ public class UserServiceImpl implements UserService {
     private UserServiceImpl() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static UserServiceImpl getInstance() {
         return instance;
     }
 
+    /**
+     * Find user by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<User> findById(int id) throws ServiceException {
         try {
             UserDaoImpl userDao = DaoHolder.getUserDao();
-            return userDao.findById(id);
+            Optional<User> userOptional = userDao.findById(id);
+            if(userOptional.isPresent()){
+                User user = userOptional.get();
+                initializeProfileImage(user);
+                return Optional.of(user);
+            }
+            return Optional.empty();
         } catch (DaoException e) {
             logger.error("Can't find user by id:", e);
             throw new ServiceException("Can't find user by id", e);
         }
     }
 
+    /**
+     * Authenticate user optional.
+     *
+     * @param authField the auth field
+     * @param password  the password
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<User> authenticate(String authField, char[] password) throws ServiceException {
         CredentialsValidatorImpl validator = CredentialsValidatorImpl.getInstance();
@@ -105,6 +134,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Register user optional.
+     *
+     * @param credentialsMap the credentials map
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<User> register(Map<String, String> credentialsMap) throws ServiceException {
         CredentialsValidatorImpl credentialsValidator = CredentialsValidatorImpl.getInstance();
@@ -132,6 +168,7 @@ public class UserServiceImpl implements UserService {
             User savedUser = optionalSaved.get();
             char[] password = validatedCredentials.get(PASSWORD).toCharArray();
             updatePassword(savedUser, password);
+            initializeProfileImage(savedUser);
             return Optional.of(savedUser);
 
         } catch (DaoException e) {
@@ -140,6 +177,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Activate user optional.
+     *
+     * @param user the user
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<User> activate(User user) throws ServiceException {
         try {
@@ -148,7 +192,7 @@ public class UserServiceImpl implements UserService {
             User oldUser = optionalUser.orElseThrow(DaoException::new);
             oldUser.setStatus(ACTIVE);
             Optional<User> activatedUserOptional = userDao.update(oldUser);
-            if(activatedUserOptional.isPresent()){
+            if (activatedUserOptional.isPresent()) {
                 User activatedUser = activatedUserOptional.get();
                 initializeProfileImage(activatedUser);
                 return Optional.of(activatedUser);
@@ -160,6 +204,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Update my credentials optional.
+     *
+     * @param credentials the credentials
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<User> updateMyCredentials(Map<String, String> credentials) throws ServiceException {
         try {
@@ -195,6 +246,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Update user credentials optional.
+     *
+     * @param credentials the credentials
+     * @return the optional
+     * @throws ServiceException the service exception
+     */
     @Override
     public Optional<User> updateCredentials(Map<String, String> credentials) throws ServiceException {
         try {
@@ -237,6 +295,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Ban user boolean.
+     *
+     * @param id     the id
+     * @param reason the reason
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean banUser(int id, String reason) throws ServiceException {
         try {
@@ -259,6 +325,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Update user password boolean.
+     *
+     * @param user        the user
+     * @param newPassword the new password
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean updatePassword(User user, char[] newPassword) throws ServiceException {
         try {
@@ -272,6 +346,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Find exists login boolean.
+     *
+     * @param login the login
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean findLogin(String login) throws ServiceException {
         try {
@@ -284,6 +365,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Find exists email boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean findEmail(String email) throws ServiceException {
         try {
@@ -296,6 +384,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Find exists phone boolean.
+     *
+     * @param phone the phone
+     * @return the boolean
+     * @throws ServiceException the service exception
+     */
     @Override
     public boolean findPhone(String phone) throws ServiceException {
         try {
@@ -308,6 +403,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Find users pagination.
+     *
+     * @param parameterMap the parameter map
+     * @return the pagination
+     * @throws ServiceException the service exception
+     */
     @Override
     public Pagination<User> findUsers(Map<String, List<String>> parameterMap) throws ServiceException {
         try {
@@ -334,7 +436,7 @@ public class UserServiceImpl implements UserService {
             Image image = optionalImage.orElseThrow(DaoException::new);
             user.setProfileImage(image);
         } catch (DaoException e) {
-            logger.error("Can't initialize user profile image", e);
+            logger.warn("Can't initialize user profile image", e);
         }
     }
 

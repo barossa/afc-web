@@ -22,16 +22,26 @@ import static by.epam.afc.controller.RequestAttribute.ID;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type To edit user modal.
+ */
 public class ToEditUserModal implements Command {
     private static final Logger logger = LogManager.getLogger(ToEditUserModal.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
-        try{
+        try {
             String idParam = request.getParameter(ID);
             NumberValidator numberValidator = NumberValidatorImpl.getInstance();
             boolean valid = numberValidator.validateNumber(idParam);
-            if(valid){
+            if (valid) {
                 UserService userService = UserServiceImpl.getInstance();
                 int id = Integer.parseInt(idParam);
                 Optional<User> userOptional = userService.findById(id);
@@ -39,7 +49,7 @@ public class ToEditUserModal implements Command {
                 request.setAttribute(USER, userOptional.orElse(empty));
             }
             return new Router(FORWARD, EDIT_USER_MODAL);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             logger.error("Can't load edit modal:", e);
             request.setAttribute(EXCEPTION_MESSAGE, "Can't load edit modal: " + e.getMessage());
             return new Router(FORWARD, ERROR_500);

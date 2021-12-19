@@ -21,6 +21,9 @@ import java.util.Optional;
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
 
+/**
+ * The type Announcement dao.
+ */
 public class AnnouncementDaoImpl implements AnnouncementDao {
     private static final Logger logger = LogManager.getLogger(AnnouncementDaoImpl.class);
 
@@ -74,9 +77,19 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
 
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
+    /**
+     * Instantiates a new Announcement dao.
+     */
     AnnouncementDaoImpl() {
     }
 
+    /**
+     * Find announcement list by owner.
+     *
+     * @param owner the owner
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Announcement> findByOwner(User owner) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -96,6 +109,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Find all categories list.
+     *
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Category> findAllCategories() throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -115,6 +134,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Find all regions list.
+     *
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Region> findAllRegions() throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -135,6 +160,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Find region optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Region> findRegion(int id) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -156,6 +188,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Find category optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Category> findCategory(int id) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -177,6 +216,12 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Find all announcements list.
+     *
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Announcement> findAll() throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -197,6 +242,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Find announcement by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Announcement> findById(int id) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -216,6 +268,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Update announcement optional.
+     *
+     * @param announcement the announcement
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Announcement> update(Announcement announcement) throws DaoException {
         Optional<Announcement> byId = findById(announcement.getId());
@@ -236,6 +295,13 @@ public class AnnouncementDaoImpl implements AnnouncementDao {
         }
     }
 
+    /**
+     * Save announcement optional.
+     *
+     * @param announcement the announcement
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Announcement> save(Announcement announcement) throws DaoException {
         try (Connection connection = pool.getConnection();

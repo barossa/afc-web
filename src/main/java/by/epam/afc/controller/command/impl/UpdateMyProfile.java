@@ -23,9 +23,19 @@ import static by.epam.afc.controller.RequestAttribute.ID;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Update my profile.
+ */
 public class UpdateMyProfile implements Command {
     private static final Logger logger = LogManager.getLogger(UpdateMyProfile.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

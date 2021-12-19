@@ -29,9 +29,19 @@ import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.dao.entity.Announcement.Status.MODERATING;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
+/**
+ * The type Submit announcement.
+ */
 public class SubmitAnnouncement implements Command {
     private static final Logger logger = LogManager.getLogger(SubmitAnnouncement.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();

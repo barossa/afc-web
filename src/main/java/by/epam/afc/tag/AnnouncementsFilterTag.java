@@ -20,6 +20,9 @@ import static by.epam.afc.controller.ContextAttribute.CATEGORIES;
 import static by.epam.afc.controller.ContextAttribute.REGIONS;
 import static by.epam.afc.controller.RequestAttribute.*;
 
+/**
+ * The type Announcements filter tag.
+ */
 public class AnnouncementsFilterTag extends TagSupport {
     private static final Logger logger = LogManager.getLogger(AnnouncementTableTag.class);
 
@@ -30,6 +33,12 @@ public class AnnouncementsFilterTag extends TagSupport {
     private static final String REGIONS_LABEL = "filter.region";
     private static final String RESET_BUTTON = "filter.reset";
 
+    /**
+     * Do start tag int.
+     *
+     * @return the int
+     * @throws JspException the jsp exception
+     */
     @Override
     public int doStartTag() throws JspException {
         try {

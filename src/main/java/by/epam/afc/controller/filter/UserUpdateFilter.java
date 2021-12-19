@@ -21,10 +21,22 @@ import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.dao.entity.User.Role.GUEST;
 
-@WebFilter(urlPatterns = {"/controller", "/"})
+/**
+ * The type User update filter.
+ */
+@WebFilter(urlPatterns = {"/controller", "/index.jsp"})
 public class UserUpdateFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(UserUpdateFilter.class);
 
+    /**
+     * Do filter.
+     *
+     * @param servletRequest  the servlet request
+     * @param servletResponse the servlet response
+     * @param filterChain     the filter chain
+     * @throws IOException      Signals that an I/O exception has occurred
+     * @throws ServletException the servlet exception
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;

@@ -9,6 +9,9 @@ import java.util.Optional;
 
 import static by.epam.afc.controller.command.CommandType.*;
 
+/**
+ * The type Command provider.
+ */
 public class CommandProvider {
     private static final CommandProvider instance = new CommandProvider();
     private final EnumMap<CommandType, Command> commands = new EnumMap<>(CommandType.class);
@@ -16,7 +19,6 @@ public class CommandProvider {
     private CommandProvider() {
         commands.put(LOGIN_COMMAND, new LoginCommand());
         commands.put(CHANGE_LOCALE, new ChangeLocale());
-        commands.put(FORGOT_PASSWORD, new ForgotPassword());
         commands.put(REGISTER_COMMAND, new RegisterCommand());
         commands.put(LOGOUT_COMMAND, new LogoutCommand());
         commands.put(TO_LOGIN_PAGE, new ToLoginPage());
@@ -43,13 +45,23 @@ public class CommandProvider {
         commands.put(CHANGE_ANNOUNCEMENT_STATUS, new ChangeAnnouncementStatus());
         commands.put(TO_EDIT_ANNOUNCEMENT, new ToEditAnnouncement());
         commands.put(UPDATE_ANNOUNCEMENT, new UpdateAnnouncement());
-        //commands.add(commandType,new Command());
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static CommandProvider getInstance() {
         return instance;
     }
 
+    /**
+     * Define command optional.
+     *
+     * @param commandName the command name
+     * @return the optional
+     */
     public Optional<Command> defineCommand(String commandName) {
         Optional<CommandType> commandType = typeForName(commandName);
         if (commandType.isPresent()) {
@@ -59,6 +71,12 @@ public class CommandProvider {
         return Optional.empty();
     }
 
+    /**
+     * Type for name optional.
+     *
+     * @param commandName the command name
+     * @return the optional
+     */
     public Optional<CommandType> typeForName(String commandName) {
         try {
             CommandType commandType = valueOf(commandName.toUpperCase());

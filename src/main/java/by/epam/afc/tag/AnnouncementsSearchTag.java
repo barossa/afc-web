@@ -15,15 +15,24 @@ import java.util.ResourceBundle;
 
 import static by.epam.afc.controller.RequestAttribute.SEARCH;
 
+/**
+ * The type Announcements search tag.
+ */
 public class AnnouncementsSearchTag extends TagSupport {
     private static final Logger logger = LogManager.getLogger();
 
     private static final String SEARCH_PLACEHOLDER = "announcements.searchPlaceholder";
     private static final String SEARCH_BUTTON = "announcements.search";
 
+    /**
+     * Do start tag int.
+     *
+     * @return the int
+     * @throws JspException the jsp exception
+     */
     @Override
     public int doStartTag() throws JspException {
-        try{
+        try {
             JspWriter jspWriter = pageContext.getOut();
             jspWriter.write("<form id=\"searchForm\" onsubmit=\"return false;\">" +
                     "<div id=\"search\">" +

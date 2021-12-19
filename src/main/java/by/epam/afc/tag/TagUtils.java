@@ -13,10 +13,12 @@ import java.util.ResourceBundle;
 import static by.epam.afc.controller.RequestAttribute.LOCALE;
 import static by.epam.afc.controller.RequestAttribute.PAGINATION;
 
+/**
+ * The type Tag utils.
+ */
 public final class TagUtils {
     private static final String BUNDLE_BASENAME = "prop.pagecontent";
     private static final String LOCALE_SPLITTER = "_";
-    ;
     private static final String TO_BE_CONTINUED = "...";
     private static final int LANG_KEY = 0;
     private static final int COUNTRY_KEY = 1;
@@ -25,6 +27,12 @@ public final class TagUtils {
     private TagUtils() {
     }
 
+    /**
+     * Find bundle resource bundle.
+     *
+     * @param session the session
+     * @return the resource bundle
+     */
     public static ResourceBundle findBundle(HttpSession session) {
         String locale = (String) session.getAttribute(LOCALE);
         String[] tags = locale.split(LOCALE_SPLITTER);
@@ -33,6 +41,12 @@ public final class TagUtils {
         return resourceBundle;
     }
 
+    /**
+     * Find attributes map.
+     *
+     * @param request the request
+     * @return the map
+     */
     public static Map<String, List<String>> findAttributes(ServletRequest request) {
         Pagination pagination = (Pagination) request.getAttribute(PAGINATION);
         Map<String, List<String>> requestAttributes = pagination.getRequestAttributes();
@@ -40,6 +54,12 @@ public final class TagUtils {
     }
 
 
+    /**
+     * Gets short description.
+     *
+     * @param announcement the announcement
+     * @return the short description
+     */
     public static String getShortDescription(Announcement announcement) {
         String description = announcement.getDescription();
         if (description == null || description.isEmpty()) {

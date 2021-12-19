@@ -24,6 +24,9 @@ import static by.epam.afc.dao.entity.User.Role.GUEST;
 import static by.epam.afc.dao.entity.User.Status.BANNED;
 import static by.epam.afc.dao.entity.User.Status.DELAYED_REG;
 
+/**
+ * The type Command access filter.
+ */
 @WebFilter(urlPatterns = {"/controller"})
 public class CommandAccessFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(CommandAccessFilter.class);
@@ -37,6 +40,12 @@ public class CommandAccessFilter implements Filter {
 
     private static final String FORWARD_URL = CONTROLLER + "?" + COMMAND + "=";
 
+    /**
+     * Init.
+     *
+     * @param filterConfig the filter config
+     * @throws ServletException the servlet exception
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         inactiveUserCommands = Arrays.asList(
@@ -92,6 +101,15 @@ public class CommandAccessFilter implements Filter {
         administratorCommands.addAll(moderatorCommands);
     }
 
+    /**
+     * Do filter.
+     *
+     * @param servletRequest  the servlet request
+     * @param servletResponse the servlet response
+     * @param filterChain     the filter chain
+     * @throws IOException      Signals that an I/O exception has occurred
+     * @throws ServletException the servlet exception
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;

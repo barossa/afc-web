@@ -1,8 +1,12 @@
 package by.epam.afc.dao;
 
+/**
+ * The type Column name.
+ */
 public class ColumnName {
 
-    private ColumnName(){}
+    private ColumnName() {
+    }
 
     /*USERS*/
     public static final String USER_ID = "user_id";
@@ -18,32 +22,14 @@ public class ColumnName {
     public static final String ABOUT = "about";
     public static final String PROFILE_IMAGE_ID = "profile_image_id";
 
-    /*USER DIALOGS*/
-    public static final String RECORD_ID = "record_id";
-    public static final String DIALOG_ID = "dialog_id";
-    public static final String VISIBLE = "visible";
-
-    /*DIALOGS*/
-    public static final String TYPE_ID = "type_id";
-    public static final String ANNOUNCEMENT_ID = "announcement_id";
-
-    /*DIALOG_TYPES*/
-    public static final String TYPE_DESCRIPTION = "type_description";
-
-    /*MESSAGES*/
-    public static final String MESSAGE_ID = "message_id";
-    public static final String SENDER_ID = "sender_id";
-    public static final String SENT_TIME = "sent_time";
-    public static final String TEXT_CONTENT = "text_content";
-    public static final String GRAPHIC_CONTENT = "graphic_content";
-    public static final String IMAGE_ID = "image_id";
-
     /*IMAGES*/
     public static final String UPLOAD_DATA = "upload_data";
     public static final String UPLOADED_BY = "uploaded_by";
     public static final String BASE_64 = "base64";
+    public static final String IMAGE_ID = "image_id";
 
     /*ANNOUNCEMENTS*/
+    public static final String ANNOUNCEMENT_ID = "announcement_id";
     public static final String OWNER_ID = "owner_id";
     public static final String TITLE = "title";
     public static final String PRICE = "price";

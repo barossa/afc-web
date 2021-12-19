@@ -20,6 +20,9 @@ import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.ANNOUNCEMENT_IMAGES;
 import static by.epam.afc.dao.TableName.IMAGES;
 
+/**
+ * The type Image dao.
+ */
 public class ImageDaoImpl implements ImageDao {
 
     private static final String SELECT_ALL_IMAGES = "SELECT " + IMAGE_ID + ", " + UPLOAD_DATA + ", " + UPLOADED_BY + ", " + BASE_64
@@ -48,9 +51,18 @@ public class ImageDaoImpl implements ImageDao {
     private static final Logger logger = LogManager.getLogger(ImageRowMapper.class);
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
+    /**
+     * Instantiates a new Image dao.
+     */
     ImageDaoImpl() {
     }
 
+    /**
+     * Find all images list.
+     *
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Image> findAll() throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -72,6 +84,13 @@ public class ImageDaoImpl implements ImageDao {
         }
     }
 
+    /**
+     * Find image by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Image> findById(int id) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -93,6 +112,13 @@ public class ImageDaoImpl implements ImageDao {
         }
     }
 
+    /**
+     * Update image optional.
+     *
+     * @param image the image
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Image> update(Image image) throws DaoException {
         Optional<Image> byId = findById(image.getId());
@@ -115,6 +141,13 @@ public class ImageDaoImpl implements ImageDao {
         }
     }
 
+    /**
+     * Save announcement optional.
+     *
+     * @param image the image
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<Image> save(Image image) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -139,6 +172,13 @@ public class ImageDaoImpl implements ImageDao {
         }
     }
 
+    /**
+     * Find images list by announcement.
+     *
+     * @param announcement the announcement
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Image> findByAnnouncement(Announcement announcement) throws DaoException {
         try (Connection connection = pool.getConnection();
@@ -161,6 +201,13 @@ public class ImageDaoImpl implements ImageDao {
         }
     }
 
+    /**
+     * Save announcement images list.
+     *
+     * @param announcement the announcement
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<Image> saveAnnouncementImages(Announcement announcement) throws DaoException {
         List<Image> imagesToSave = announcement.getImages();
@@ -180,7 +227,7 @@ public class ImageDaoImpl implements ImageDao {
 
             selectOldImages.setInt(1, announcement.getId());
             ResultSet resultSet = selectOldImages.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 int imageId = resultSet.getInt(IMAGE_ID);
                 dropOldImage.setInt(1, imageId);
                 dropOldImage.execute();

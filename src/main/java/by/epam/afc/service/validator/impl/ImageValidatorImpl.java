@@ -5,6 +5,9 @@ import by.epam.afc.service.validator.ImageValidator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The type Image validator.
+ */
 public class ImageValidatorImpl implements ImageValidator {
     private static final ImageValidatorImpl instance = new ImageValidatorImpl();
 
@@ -16,13 +19,24 @@ public class ImageValidatorImpl implements ImageValidator {
         imagePattern = Pattern.compile(IMAGE_REGEX, Pattern.CASE_INSENSITIVE);
     }
 
-    public static ImageValidatorImpl getInstance(){
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static ImageValidatorImpl getInstance() {
         return instance;
     }
 
+    /**
+     * Validate image boolean.
+     *
+     * @param base64 the base 64
+     * @return the boolean
+     */
     @Override
     public boolean validateImage(String base64) {
-        if(base64 != null){
+        if (base64 != null) {
             Matcher matcher = imagePattern.matcher(base64);
             return matcher.find();
         }

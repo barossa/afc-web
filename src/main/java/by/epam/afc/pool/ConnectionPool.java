@@ -15,6 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * The type Connection pool.
+ */
 public class ConnectionPool {
     private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 
@@ -46,6 +49,11 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static ConnectionPool getInstance() {
         if (!instanceCreated.get()) {
             lock.lock();
@@ -61,6 +69,11 @@ public class ConnectionPool {
         return instance;
     }
 
+    /**
+     * Gets connection.
+     *
+     * @return the connection
+     */
     public Connection getConnection() {
         ProxyConnection connection = null;
         try {
@@ -72,12 +85,18 @@ public class ConnectionPool {
         return connection;
     }
 
+    /**
+     * Release connection boolean.
+     *
+     * @param connection the connection
+     * @return the boolean
+     */
     public boolean releaseConnection(Connection connection) {
         if (connection instanceof ProxyConnection) {
             ProxyConnection proxyConnection = (ProxyConnection) connection;
             try {
                 boolean removed = busyConnections.remove(proxyConnection);
-                if(removed) {
+                if (removed) {
                     freeConnections.put(proxyConnection);
                 }
                 return removed;
@@ -91,6 +110,11 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * Destroy pool.
+     *
+     * @throws DaoException the dao exception
+     */
     public void destroyPool() throws DaoException {
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
             try {
@@ -125,6 +149,11 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * To string string.
+     *
+     * @return the string
+     */
     @Override
     public String toString() {
         return "ConnectionPool{" +

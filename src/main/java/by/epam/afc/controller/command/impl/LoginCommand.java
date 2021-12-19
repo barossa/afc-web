@@ -18,7 +18,17 @@ import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 
+/**
+ * The type Login command.
+ */
 public class LoginCommand implements Command {
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         Router router;

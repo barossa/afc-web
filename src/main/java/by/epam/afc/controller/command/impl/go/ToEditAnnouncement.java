@@ -21,9 +21,19 @@ import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type To edit announcement.
+ */
 public class ToEditAnnouncement implements Command {
     private static final Logger logger = LogManager.getLogger(ShowAnnouncement.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

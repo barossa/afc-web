@@ -7,9 +7,12 @@ import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
 import static by.epam.afc.controller.RequestAttribute.LOCALE;
-import static by.epam.afc.controller.SessionAttribute.*;
+import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.dao.entity.User.Role.GUEST;
 
+/**
+ * The type Http session listener.
+ */
 @WebListener
 public class HttpSessionListenerImpl implements HttpSessionListener {
     @Override

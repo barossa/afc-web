@@ -9,32 +9,58 @@ import java.util.stream.Collectors;
 import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
+/**
+ * The type Request parameter converter.
+ */
 public class RequestParameterConverter {
     private static final RequestParameterConverter instance = new RequestParameterConverter();
 
     private RequestParameterConverter() {
     }
 
-    public static RequestParameterConverter getInstance(){
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static RequestParameterConverter getInstance() {
         return instance;
     }
 
+    /**
+     * Transform map.
+     *
+     * @param parameterMap the parameter map
+     * @return the map
+     */
     public Map<String, List<String>> transform(Map<String, String[]> parameterMap) {
         Map<String, List<String>> requestParams = parameterMap.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> Arrays.stream(e.getValue()).collect(Collectors.toList())));
         return requestParams;
     }
 
-    public Map<String, String> singleValueMap(Map<String, List<String>> parameterMap){
+    /**
+     * Single value map map.
+     *
+     * @param parameterMap the parameter map
+     * @return the map
+     */
+    public Map<String, String> singleValueMap(Map<String, List<String>> parameterMap) {
         Map<String, String> singleValueMap = parameterMap.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         val -> val.getValue().stream()
-                        .findFirst()
-                        .orElse(NOT_VALID)));
+                                .findFirst()
+                                .orElse(NOT_VALID)));
         return singleValueMap;
     }
 
-    public Map<String, String> findCredentials(Map<String, String[]> parameterMap){
+    /**
+     * Find credentials map.
+     *
+     * @param parameterMap the parameter map
+     * @return the map
+     */
+    public Map<String, String> findCredentials(Map<String, String[]> parameterMap) {
         String id = getSingle(parameterMap.get(ID));
         String firstname = getSingle(parameterMap.get(FIRSTNAME));
         String lastname = getSingle(parameterMap.get(LASTNAME));
@@ -63,7 +89,13 @@ public class RequestParameterConverter {
         return credentials;
     }
 
-    public Map<String, String> findAnnouncementData(Map<String, String[]> parameterMap){
+    /**
+     * Find announcement data map.
+     *
+     * @param parameterMap the parameter map
+     * @return the map
+     */
+    public Map<String, String> findAnnouncementData(Map<String, String[]> parameterMap) {
         Map<String, String> announcementData = new HashMap<>();
         String title = getSingle(parameterMap.get(TITLE));
         String price = getSingle(parameterMap.get(PRICE));
@@ -78,8 +110,8 @@ public class RequestParameterConverter {
         return announcementData;
     }
 
-    private String getSingle(String[] params){
-        if(params == null){
+    private String getSingle(String[] params) {
+        if (params == null) {
             return "";
         }
         return Arrays.stream(params).findFirst().orElse("");

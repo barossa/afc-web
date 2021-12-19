@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 
 import static by.epam.afc.controller.RequestAttribute.*;
 
+/**
+ * The type Credentials validator.
+ */
 public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final CredentialsValidatorImpl instance = new CredentialsValidatorImpl();
 
@@ -25,6 +28,9 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
     private static final int MAX_EMAIL_LENGTH = 100;
     private static final int MAX_ABOUT_LENGTH = 200;
 
+    /**
+     * The constant NOT_VALID.
+     */
     public static final String NOT_VALID = "";
 
     private final Pattern namePattern;
@@ -43,10 +49,21 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         aboutPattern = Pattern.compile(ABOUT_REGEX);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static CredentialsValidatorImpl getInstance() {
         return instance;
     }
 
+    /**
+     * Validate name boolean.
+     *
+     * @param name the name
+     * @return the boolean
+     */
     @Override
     public boolean validateName(String name) {
         if (name != null) {
@@ -58,6 +75,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         return false;
     }
 
+    /**
+     * Validate login boolean.
+     *
+     * @param login the login
+     * @return the boolean
+     */
     @Override
     public boolean validateLogin(String login) {
         if (login != null) {
@@ -69,6 +92,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         return false;
     }
 
+    /**
+     * Validate email boolean.
+     *
+     * @param email the email
+     * @return the boolean
+     */
     @Override
     public boolean validateEmail(String email) {
         if (email != null) {
@@ -80,6 +109,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         return false;
     }
 
+    /**
+     * Validate phone boolean.
+     *
+     * @param phone the phone
+     * @return the boolean
+     */
     @Override
     public boolean validatePhone(String phone) {
         if (phone != null) {
@@ -91,6 +126,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         return false;
     }
 
+    /**
+     * Validate password boolean.
+     *
+     * @param password the password
+     * @return the boolean
+     */
     @Override
     public boolean validatePassword(String password) {
         if (password != null && password.length() > 0) {
@@ -100,6 +141,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         return false;
     }
 
+    /**
+     * Validate about boolean.
+     *
+     * @param about the about
+     * @return the boolean
+     */
     @Override
     public boolean validateAbout(String about) {
         if (about != null) {
@@ -111,6 +158,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         return false;
     }
 
+    /**
+     * Validate status boolean.
+     *
+     * @param status the status
+     * @return the boolean
+     */
     @Override
     public boolean validateStatus(String status) {
         if (status == null) {
@@ -124,6 +177,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         }
     }
 
+    /**
+     * Validate role boolean.
+     *
+     * @param role the role
+     * @return the boolean
+     */
     @Override
     public boolean validateRole(String role) {
         if (role == null) {
@@ -137,6 +196,12 @@ public class CredentialsValidatorImpl implements CredentialsValidator {
         }
     }
 
+    /**
+     * Validate credentials map.
+     *
+     * @param credentialsMap the credentials map
+     * @return the map
+     */
     @Override
     public Map<String, String> validateCredentials(Map<String, String> credentialsMap) {
         Map<String, String> correctCredentials = new HashMap<>();

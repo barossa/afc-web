@@ -22,9 +22,19 @@ import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Update announcement.
+ */
 public class UpdateAnnouncement implements Command {
     private static final Logger logger = LogManager.getLogger(UpdateAnnouncement.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

@@ -3,6 +3,9 @@ package by.epam.afc.dao.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The type Dao holder.
+ */
 public final class DaoHolder {
     private static final Logger logger = LogManager.getLogger(DaoHolder.class);
 
@@ -17,18 +20,33 @@ public final class DaoHolder {
         logger.info("Dao initialized successfully.");
     }
 
-    private DaoHolder(){
+    private DaoHolder() {
     }
 
-    public static UserDaoImpl getUserDao(){
+    /**
+     * Gets user dao.
+     *
+     * @return the user dao
+     */
+    public static UserDaoImpl getUserDao() {
         return userDao;
     }
 
-    public static ImageDaoImpl getImageDao(){
+    /**
+     * Gets image dao.
+     *
+     * @return the image dao
+     */
+    public static ImageDaoImpl getImageDao() {
         return imageDao;
     }
 
-    public static AnnouncementDaoImpl getAnnouncementDao(){
+    /**
+     * Gets announcement dao.
+     *
+     * @return the announcement dao
+     */
+    public static AnnouncementDaoImpl getAnnouncementDao() {
         return announcementDao;
     }
 

@@ -23,9 +23,19 @@ import static by.epam.afc.controller.PagePath.ERROR_500;
 import static by.epam.afc.controller.RequestAttribute.EXCEPTION_MESSAGE;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Update user.
+ */
 public class UpdateUser implements Command {
     private static final Logger logger = LogManager.getLogger(UpdateUser.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

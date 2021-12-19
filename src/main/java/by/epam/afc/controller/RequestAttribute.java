@@ -1,5 +1,8 @@
 package by.epam.afc.controller;
 
+/**
+ * The type Request attribute.
+ */
 public class RequestAttribute {
     private RequestAttribute(){}
 
@@ -30,13 +33,9 @@ public class RequestAttribute {
     public static final String STATUS = "status";
     public static final String ROLE = "role";
     public static final String IMAGE = "image";
-    public static final String ANNOUNCEMENTS = "announcements";
     public static final String ANNOUNCEMENT = "announcement";
-    public static final String NEXT_PAGE = "nextPage";
-    public static final String PREVIOUS_PAGE = "previousPage";
     public static final String PAGE = "page";
     public static final String PAGINATION = "pagination";
     public static final String CODE = "code";
     public static final String REASON = "reason";
-
 }

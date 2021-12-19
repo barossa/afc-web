@@ -28,12 +28,25 @@ import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 import static by.epam.afc.service.validator.impl.CredentialsValidatorImpl.NOT_VALID;
 
+/**
+ * The type Register command.
+ */
 public class RegisterCommand implements Command {
     private static final Logger logger = LogManager.getLogger(RegisterCommand.class);
 
     private static final String JSON_CONTENT_TYPE = "application/json";
+    /**
+     * The constant REDIRECT_KEY.
+     */
     public static final String REDIRECT_KEY = "redirect";
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         RequestParameterConverter parameterConverter = RequestParameterConverter.getInstance();

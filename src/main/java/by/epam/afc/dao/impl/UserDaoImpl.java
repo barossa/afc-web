@@ -19,6 +19,9 @@ import java.util.Optional;
 import static by.epam.afc.dao.ColumnName.*;
 import static by.epam.afc.dao.TableName.*;
 
+/**
+ * The type User dao.
+ */
 public class UserDaoImpl implements UserDao {
 
     private static final String SELECT_ALL_USERS = "SELECT " + USER_ID + ", " + FIRST_NAME + ", " + LAST_NAME + ", "
@@ -65,9 +68,18 @@ public class UserDaoImpl implements UserDao {
 
     private final ConnectionPool pool = ConnectionPool.getInstance();
 
+    /**
+     * Instantiates a new User dao.
+     */
     UserDaoImpl() {
     }
 
+    /**
+     * Find all users list.
+     *
+     * @return the list
+     * @throws DaoException the dao exception
+     */
     @Override
     public List<User> findAll() throws DaoException {
         try (
@@ -89,6 +101,13 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * Find user by id optional.
+     *
+     * @param id the id
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> findById(int id) throws DaoException {
         try (
@@ -111,6 +130,13 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * Update user optional.
+     *
+     * @param user the user
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> update(User user) throws DaoException {
         Optional<User> toUpdate = findById(user.getId());
@@ -142,6 +168,13 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * Save user optional.
+     *
+     * @param user the user
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> save(User user) throws DaoException {
         try (
@@ -177,6 +210,13 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * Find user's encrypted password optional.
+     *
+     * @param user the user
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<String> findEncryptedPassword(User user) throws DaoException {
         Optional<User> optionalUser = findUniqUser(user);
@@ -204,6 +244,13 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * Find uniq user optional.
+     *
+     * @param user the user
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> findUniqUser(User user) throws DaoException {
         String login = user.getLogin();
@@ -222,6 +269,13 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * Find user by login optional.
+     *
+     * @param login the login
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> findByLogin(String login) throws DaoException {
         Optional<Integer> optionalUserId = findUserIdByLogin(login);
@@ -232,6 +286,13 @@ public class UserDaoImpl implements UserDao {
         return findById(userId);
     }
 
+    /**
+     * Find user by email optional.
+     *
+     * @param email the email
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> findByEmail(String email) throws DaoException {
         Optional<Integer> optionalUserId = findUserIdByEmail(email);
@@ -242,6 +303,13 @@ public class UserDaoImpl implements UserDao {
         return findById(userId);
     }
 
+    /**
+     * Find user by phone optional.
+     *
+     * @param phone the phone
+     * @return the optional
+     * @throws DaoException the dao exception
+     */
     @Override
     public Optional<User> findByPhone(String phone) throws DaoException {
         Optional<Integer> optionalUserId = findUserIdByPhone(phone);
@@ -252,6 +320,14 @@ public class UserDaoImpl implements UserDao {
         return findById(userId);
     }
 
+    /**
+     * Update user password boolean.
+     *
+     * @param user the user
+     * @param hash the hash
+     * @return the boolean
+     * @throws DaoException the dao exception
+     */
     @Override
     public boolean updateUserPassword(User user, String hash) throws DaoException {
         Optional<User> toUpdate = findById(user.getId());

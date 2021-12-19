@@ -1,24 +1,40 @@
 package by.epam.afc.dao.mapper.impl;
 
 import by.epam.afc.dao.entity.Image;
-import by.epam.afc.dao.mapper.RowMapper;
 import by.epam.afc.dao.entity.User;
+import by.epam.afc.dao.mapper.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static by.epam.afc.dao.ColumnName.*;
 
+/**
+ * The type User row mapper.
+ */
 public class UserRowMapper implements RowMapper<User> {
     private static final UserRowMapper instance = new UserRowMapper();
 
-    private UserRowMapper(){}
+    private UserRowMapper() {
+    }
 
-    public static UserRowMapper getInstance(){
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static UserRowMapper getInstance() {
         return instance;
     }
 
 
+    /**
+     * Map user rows.
+     *
+     * @param rs the rs
+     * @return the user
+     * @throws SQLException the sql exception
+     */
     @Override
     public User mapRows(ResultSet rs) throws SQLException {
         Image profileImage = Image.getBuilder()

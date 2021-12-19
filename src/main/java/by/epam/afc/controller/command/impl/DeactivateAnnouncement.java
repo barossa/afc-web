@@ -19,9 +19,19 @@ import static by.epam.afc.controller.PagePath.MODERATOR_PAGE;
 import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Deactivate announcement.
+ */
 public class DeactivateAnnouncement implements Command {
     private static final Logger logger = LogManager.getLogger(DeactivateAnnouncement.class);
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

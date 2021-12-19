@@ -22,10 +22,20 @@ import static by.epam.afc.controller.PagePath.ERROR_500;
 import static by.epam.afc.controller.RequestAttribute.*;
 import static by.epam.afc.controller.command.Router.DispatchType.FORWARD;
 
+/**
+ * The type Find announcements.
+ */
 public class FindAnnouncements implements Command {
     private static final Logger logger = LogManager.getLogger(FindAnnouncements.class);
     private static final String ACTIVE_STATUS = "active";
 
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         try {

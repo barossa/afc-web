@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 import static by.epam.afc.controller.RequestAttribute.*;
 
+/**
+ * The type Announcement filter validator.
+ */
 public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValidator {
     private static final AnnouncementFilterValidatorImpl instance = new AnnouncementFilterValidatorImpl();
     private static final NumberValidator numberValidator = NumberValidatorImpl.getInstance();
@@ -19,10 +22,21 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
     private AnnouncementFilterValidatorImpl() {
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static AnnouncementFilterValidatorImpl getInstance() {
         return instance;
     }
 
+    /**
+     * Validate region boolean.
+     *
+     * @param region the region
+     * @return the boolean
+     */
     @Override
     public boolean validateRegion(String region) {
         if (region == null || region.isEmpty()) {
@@ -31,6 +45,12 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
         return numberValidator.validateNumber(region);
     }
 
+    /**
+     * Validate category boolean.
+     *
+     * @param category the category
+     * @return the boolean
+     */
     @Override
     public boolean validateCategory(String category) {
         if (category == null || category.isEmpty()) {
@@ -39,6 +59,12 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
         return numberValidator.validateNumber(category);
     }
 
+    /**
+     * Validate price boolean.
+     *
+     * @param price the price
+     * @return the boolean
+     */
     @Override
     public boolean validatePrice(String price) {
         if (price == null || price.isEmpty()) {
@@ -47,6 +73,12 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
         return numberValidator.validateNumber(price);
     }
 
+    /**
+     * Validate status boolean.
+     *
+     * @param status the status
+     * @return the boolean
+     */
     @Override
     public boolean validateStatus(String status) {
         if (status == null || status.isEmpty()) {
@@ -58,14 +90,26 @@ public class AnnouncementFilterValidatorImpl implements AnnouncementFilterValida
         return statuses.contains(status.toUpperCase());
     }
 
+    /**
+     * Validate search boolean.
+     *
+     * @param search the search
+     * @return the boolean
+     */
     @Override
     public boolean validateSearch(String search) {
-        if(search == null || search.isEmpty()){
+        if (search == null || search.isEmpty()) {
             return false;
         }
         return searchValidator.validateRequest(search);
     }
 
+    /**
+     * Validate announcement parameter map map.
+     *
+     * @param parameterMap the parameter map
+     * @return the map
+     */
     @Override
     public Map<String, List<String>> validateParameterMap(Map<String, List<String>> parameterMap) {
         Map<String, List<String>> requestParams = new HashMap<>();

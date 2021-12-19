@@ -12,7 +12,17 @@ import static by.epam.afc.controller.SessionAttribute.USER;
 import static by.epam.afc.controller.command.Router.DispatchType.REDIRECT;
 import static by.epam.afc.dao.entity.User.Role.GUEST;
 
+/**
+ * The type Logout command.
+ */
 public class LogoutCommand implements Command {
+    /**
+     * Execute router.
+     *
+     * @param request  the request
+     * @param response the response
+     * @return the router
+     */
     @Override
     public Router execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();

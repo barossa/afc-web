@@ -1,5 +1,8 @@
 package by.epam.afc.controller;
 
+/**
+ * The type Session attribute.
+ */
 public class SessionAttribute {
 
     private SessionAttribute(){}
